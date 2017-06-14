@@ -3,152 +3,166 @@
 
 band::band(void)
 {
-	compXaveNum =2;
-	movingTheo = "EMA";
-	bandOpenEdge = 0.5;
-	bandCloseEdge = 3;
-	direction = "SHORT";
+	compXaveNum_ =2;
+	movingTheo_ = "MA";
+	band_open_edge_ = 0.5;
+	band_close_edge_ = 2;
+	direction_ = "LONG";
 }
 
 
 band::~band(void)
 {
+	vector<double>().swap(vector_prices_);
 }
 
-double band::getMAData(vector<double> prices){
+double band::GetMAData(vector<double> &vector_prices_){
 	double sum =0;
-	if (prices.size()==0)
+	if (vector_prices_.size()==0)
 	{
 		return 0;
 	}
-	for (int i = 0; i < prices.size(); i++)
+	for (int i = vector_prices_.size()-1; i >=0 && i >= vector_prices_.size() - compXaveNum_; i--)
 	{
-		sum +=prices[i];
+		sum +=vector_prices_[i];
 	}
-	return sum/prices.size();
+	return sum/compXaveNum_;
 }
 
-double band::getSDData(vector<double> prices){
-	int size = prices.size();
+double band::GetSDData(vector<double> &vector_prices_){
+	int size = vector_prices_.size();
 	if (size ==0)
 	{
 		return 0;
 	}
 	double sum = 0;
-	for (int i = 0; i < prices.size(); i++)
+	for (int i = size-1; i >=0 && i >= size - compXaveNum_; i--)
 	{
-		sum +=prices[i];
+		sum +=vector_prices_[i];
 	}
-	double avg = sum/size;
+	double avg = sum/compXaveNum_;
 	sum = 0;
-	for (int i = 0; i < size; i++)
+	for (int i = size-1; i >=0 && i >= size - compXaveNum_; i--)
 	{
-		sum += (prices[i]-avg)*(prices[i]-avg);
+		sum += (vector_prices_[i]-avg)*(vector_prices_[i]-avg);
 	}
 	return sqrt(sum);
 }
 
-double band::getEMAData(double price){
-	if (prices.size()==1)
+double band::GetEMAData(double price){
+	if (vector_prices_.size()==1)
 	{
-		emaTickNum =1;
-		lastPrice = price;
-		return lastPrice;
+		current_ema_tick_num_ =1;
+		last_mea_val_ = price;
+		return last_mea_val_;
 	}
-	if (emaTickNum < compXaveNum)
+	if (current_ema_tick_num_ < compXaveNum_)
 	{
-		emaTickNum +=1;
+		current_ema_tick_num_ +=1;
 	}
-	double ret = ((emaTickNum-1)*lastPrice + 2*price)/(emaTickNum+1);
-	lastPrice = ret;
+	double ret = ((current_ema_tick_num_ - 1)*last_mea_val_ + 2*price)/(current_ema_tick_num_ + 1);
+	last_mea_val_ = ret;
 	return ret;
 }
 
 
-bool band::isLongOpenTime(double price,double middleval,double upval){
-	if (price < upval && price > middleval)
+
+bool band::IsBandOpenTime(){
+	if (direction_	==	"LONG")
 	{
-		return true;
+		double upval = cur_middle_value_ + cur_sd_val_ * band_open_edge_;
+		if (cur_lastprice_ > cur_middle_value_ && cur_lastprice_ < upval)
+		{
+		 cout<<"this is open signal"<<endl;
+	             cout<<"the price is "<<cur_lastprice_<<endl;
+				cout<<"the middle val is "<<cur_middle_value_<<endl;
+				   cout<<"the cur sd  is "<<cur_sd_val_<<endl;
+	             cout<<"this middle val is  "<<cur_middle_value_<<endl;
+                 cout<<"this up val is "<<upval<<endl;
+			return true;
+		}
+	}
+	else if (direction_	==	"SHORT")
+	{
+		double downval = cur_middle_value_ - cur_sd_val_ * band_open_edge_;
+		if (cur_lastprice_ > downval && cur_lastprice_ < cur_middle_value_)
+		{
+			cout<<"this is open signal"<<endl;
+	         cout<<"the price is "<<cur_lastprice_<<endl;
+			  cout<<"the middle val is "<<cur_middle_value_<<endl;
+				   cout<<"the cur sd  is "<<cur_sd_val_<<endl;
+	          cout<<"this middle val is  "<<cur_middle_value_<<endl;
+			  cout<<"this downval val is "<< downval<<endl;
+			return true;
+		}
 	}
 	return false;
 }
 
-bool band::isLongCloseTime(double price,double profitval,double lossval){
-	if (price < lossval || price > profitval)
+bool band::IsBandCloseTime(){
+
+	if (direction_	==	"LONG")
 	{
-		return true;
+		double profitval = cur_middle_value_ + cur_sd_val_ * band_close_edge_;
+		double lossval = cur_middle_value_ - cur_sd_val_ * band_open_edge_;
+		if (cur_lastprice_ > profitval || cur_lastprice_ < lossval)
+		{
+				  cout<<"this is close signal"<<endl;
+	               cout<<"the price is "<<cur_lastprice_<<endl;
+				   cout<<"the middle val is "<<cur_middle_value_<<endl;
+				   cout<<"the cur sd  is "<<cur_sd_val_<<endl;
+	               cout<<"this profitval val is  "<<profitval<<endl;
+	               cout<<"this lossval val is "<<lossval<<endl;
+			return true;
+		}
+	}
+	else if (direction_	==	"SHORT")
+	{
+		double profitval = cur_middle_value_ - cur_sd_val_ * band_close_edge_;
+		double lossval = cur_middle_value_ + cur_sd_val_ * band_open_edge_;
+		if (cur_lastprice_ > lossval || cur_lastprice_ < profitval)
+		{
+				  cout<<"this is close signal"<<endl;
+	              cout<<"the price is "<<cur_lastprice_<<endl;
+				  	cout<<"the middle val is "<<cur_middle_value_<<endl;
+				   cout<<"the cur sd  is "<<cur_sd_val_<<endl;
+	              cout<<"this profitval val is  "<<profitval<<endl;
+	                cout<<"this lossval val is "<<lossval<<endl;
+			return true;
+		}
 	}
 	return false;
 }
 
-bool band::isShortOpenTime(double price,double middleval,double downval){
-	if (price>downval && price < middleval)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool band::isShortCloseTime(double price,double profitval,double lossval){
-	if (price > lossval || price < profitval )
-	{
-		return true;
-	}
-	return false;
-}
 
 void band::getPrices(double price){
-	if (prices.size() < compXaveNum)
+	cur_lastprice_ = price;
+	if (vector_prices_.size() < compXaveNum_-1)
 	{
-		prices.push_back(price);
-		double tmp = getEMAData(price);
+		vector_prices_.push_back(price);
+		double tmp = GetEMAData(price);
+		return;
 	}
 	else{
-		prices.push_back(price);
-		vector<double>::iterator it = prices.begin();
-		it = prices.erase(it);
+		vector_prices_.push_back(price);
 	}
-	double tmpma;
-	if (movingTheo == "MA"){
-		tmpma = getMAData(prices);
+	if (movingTheo_ == "MA"){
+		cur_middle_value_ = GetMAData(vector_prices_);
 	}
 	else
 	{
-		tmpma = getEMAData(price);
+		cur_middle_value_ = GetEMAData(cur_lastprice_);
 	}
-	double tmpsd = getSDData(prices);
-	if (direction =="LONG")
-	{
-		bool isLoneOpen = isLongOpenTime(price,tmpma,tmpma + tmpsd*bandOpenEdge);
-		bool isLongClose = isLongCloseTime(price,tmpma+tmpsd*bandCloseEdge,tmpma - tmpsd*bandOpenEdge);
-		if (isLoneOpen)
-		{
-			cout<<"this is long open "<<price<<endl;
-			cout<<"the tmpsd is  "<<tmpma<<endl;
-			cout<<"the tmpsd up is  "<<tmpma+tmpsd*bandOpenEdge<<endl;
-		}
-		else if(isLongClose){
-		  cout<<"this is long close " <<price<<endl;
-		  	cout<<"the tmpma is "<<tmpma<<endl;
-			cout<<"the tmpsd  profit is  "<<tmpma+tmpsd*bandCloseEdge<<endl;
-			cout<<"the tmpsd  loss is  "<<tmpma - tmpsd*bandOpenEdge<<endl;
+	cur_sd_val_ = GetSDData(vector_prices_);
 
-		}
-	}
-	else if (direction =="SHORT")
-	{
-		bool isShortOpen =isShortOpenTime(price,tmpma,tmpma-tmpsd*bandOpenEdge);
-		bool isShortClose = isShortCloseTime(price,tmpma-tmpsd*bandCloseEdge,tmpma + tmpsd*bandOpenEdge);
-		if (isShortOpen)
-		{
-			cout<<"this is short open "<<price<<endl;
-			cout<<"the tmpsd is  "<<tmpma<<endl;
-			cout<<"the tmpsd  down is  "<<tmpma - tmpsd*bandOpenEdge<<endl;
-		}
-		else if (isShortClose){
-			cout<<"this is short close "<<price<<endl;
-			cout<<"the tmpsd  profit is  "<<tmpma-tmpsd*bandCloseEdge<<endl;
-			cout<<"the tmpsd  loss is  "<<tmpma + tmpsd*bandOpenEdge<<endl;
-		}
-	}
+	bool band_open_signal = IsBandOpenTime();
+	/*
+	if (band_open_signal){
+
+	}*/
+	bool band_close_signal = IsBandCloseTime();
+	/*
+	if(band_close_signal){
+
+	}*/
 }

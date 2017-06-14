@@ -10,7 +10,11 @@ int main(){
   {
 	  bandtrigger.getPrices(prices[i]);
   }
-  
+  int a =1;
+  if (a ==1)
+  {
+	  cout<<"the a is -1"<<endl;
+  }
   int i;
   cin>>i;
   return 0;

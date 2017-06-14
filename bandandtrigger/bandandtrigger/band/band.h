@@ -12,21 +12,26 @@ public:
 	~band(void);
 	void getPrices(double price);
 private:
-	double getMAData(vector<double> prices);
-	double getSDData(vector<double> prices);
-	double getEMAData(double price);
-	bool isLongOpenTime(double price,double middleval,double upval);
-	bool isLongCloseTime(double price,double profitval,double lossval);
-	bool isShortOpenTime(double price,double middleval,double downval);
-	bool isShortCloseTime(double price,double profitval,double lossval);
+	// 判断是不是达到了布林带的开仓和平仓条件
+	bool IsBandCloseTime();
+	bool IsBandOpenTime();
+	//根据现在的price的一个列表，计算列表里面的ma数据。
+	double GetMAData(vector<double> &prices);
+	// 根据现在的price的一个列表，计算列表里面的标准差
+	double GetSDData(vector<double> &prices);
+	// 根据传入的这个lastprice，计算返回的ema的值。
+	double GetEMAData(double price);
 private:
-	vector<double> prices;
-	double lastPrice;
-	int emaTickNum;
-	int compXaveNum;
-	double bandOpenEdge;
-	double bandCloseEdge;
-	string direction;
-	string movingTheo;
+	vector<double> vector_prices_;
+	double cur_lastprice_;
+	double last_mea_val_;
+	int current_ema_tick_num_;
+	double band_open_edge_;
+	double band_close_edge_;
+	double cur_middle_value_;
+	double cur_sd_val_;
+	int compXaveNum_;
+	string direction_;
+	string movingTheo_;
 };
 
