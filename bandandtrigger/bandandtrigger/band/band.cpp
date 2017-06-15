@@ -165,7 +165,8 @@ void band::getPrices(double price){
 	string insert = id +  "," +time+","+to_string(cur_lastprice_)
 		+","+to_string(cur_middle_value_)+"," + to_string(cur_sd_val_);
 	cout<<insert<<endl;
-	strToFile("test.txt",insert);
+	string path = "test.txt";
+	strToFile(path,insert);
 	
 	bool band_open_signal = IsBandOpenTime();
 	/*
@@ -180,13 +181,11 @@ void band::getPrices(double price){
 }
 
  void band::strToFile(string path,string error) {
-	// char *filePath =path.data;
-  ofstream file_in;
-  file_in.open(path, std::ios::out | std::ios::app);
-  if (! file_in.is_open())
-  {
-	  return;
-  }
-  file_in <<error<<endl;
-  file_in.close();
+  const char *filePath =path.data();
+  FILE *file_fd = fopen(filePath, "a");
+  char *huiche = "\n";
+  const char *data = error.data();
+  int writeLen = fwrite(data, 1, strlen(data), file_fd);
+  int writeLen1 = fwrite(huiche, 1, 1, file_fd);
+  fclose(file_fd);
 }

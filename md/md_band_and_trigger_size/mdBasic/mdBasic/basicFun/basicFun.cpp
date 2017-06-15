@@ -69,12 +69,11 @@ vector<string> split(string target,string pattern){
 }
 
  void WriteMesgToFile(string path,string mesg){
-  ofstream file_in;
-  file_in.open(path, std::ios::out | std::ios::app);
-  if (! file_in.is_open())
-  {
-	  return;
-  }
-  file_in <<mesg<<endl;
-  file_in.close();
+  const char *filePath =path.data();
+  FILE *file_fd = fopen(filePath, "a");
+  char *huiche = "\n";
+  const char *data = mesg.data();
+  int writeLen = fwrite(data, 1, strlen(data), file_fd);
+  int writeLen1 = fwrite(huiche, 1, 1, file_fd);
+  fclose(file_fd);
  }
