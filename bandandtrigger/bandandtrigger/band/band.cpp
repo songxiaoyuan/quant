@@ -107,12 +107,13 @@ bool band::IsBandCloseTime(){
 		double lossval = cur_middle_value_ - cur_sd_val_ * band_open_edge_;
 		if (cur_lastprice_ > profitval || cur_lastprice_ < lossval)
 		{
+			/*
 				  cout<<"this is close signal"<<endl;
 	               cout<<"the price is "<<cur_lastprice_<<endl;
 				   cout<<"the middle val is "<<cur_middle_value_<<endl;
 				   cout<<"the cur sd  is "<<cur_sd_val_<<endl;
 	               cout<<"this profitval val is  "<<profitval<<endl;
-	               cout<<"this lossval val is "<<lossval<<endl;
+	               cout<<"this lossval val is "<<lossval<<endl; */
 			return true;
 		}
 	}
@@ -122,12 +123,12 @@ bool band::IsBandCloseTime(){
 		double lossval = cur_middle_value_ + cur_sd_val_ * band_open_edge_;
 		if (cur_lastprice_ > lossval || cur_lastprice_ < profitval)
 		{
-				  cout<<"this is close signal"<<endl;
+				/*  cout<<"this is close signal"<<endl;
 	              cout<<"the price is "<<cur_lastprice_<<endl;
 				  	cout<<"the middle val is "<<cur_middle_value_<<endl;
 				   cout<<"the cur sd  is "<<cur_sd_val_<<endl;
 	              cout<<"this profitval val is  "<<profitval<<endl;
-	                cout<<"this lossval val is "<<lossval<<endl;
+	                cout<<"this lossval val is "<<lossval<<endl;  */
 			return true;
 		}
 	}
@@ -155,6 +156,17 @@ void band::getPrices(double price){
 	}
 	cur_sd_val_ = GetSDData(vector_prices_);
 
+		string id = "pb1706";
+	string time ="12:13:14";
+	/*cout<<cur_lastprice_<<endl;
+	cout<<cur_middle_value_<<endl;
+	cout<<cur_sd_val_<<endl;
+	*/
+	string insert = id +  "," +time+","+to_string(cur_lastprice_)
+		+","+to_string(cur_middle_value_)+"," + to_string(cur_sd_val_);
+	cout<<insert<<endl;
+	strToFile("test.txt",insert);
+	
 	bool band_open_signal = IsBandOpenTime();
 	/*
 	if (band_open_signal){
@@ -165,4 +177,16 @@ void band::getPrices(double price){
 	if(band_close_signal){
 
 	}*/
+}
+
+ void band::strToFile(string path,string error) {
+	// char *filePath =path.data;
+  ofstream file_in;
+  file_in.open(path, std::ios::out | std::ios::app);
+  if (! file_in.is_open())
+  {
+	  return;
+  }
+  file_in <<error<<endl;
+  file_in.close();
 }

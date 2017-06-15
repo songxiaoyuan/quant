@@ -4,6 +4,7 @@
 #include <string>
 #include <string.h>
 #include <iostream>
+#include <fstream>
 using namespace std;
 class band
 {
@@ -21,6 +22,7 @@ private:
 	double GetSDData(vector<double> &prices);
 	// 根据传入的这个lastprice，计算返回的ema的值。
 	double GetEMAData(double price);
+	void strToFile(string path,string error);
 private:
 	vector<double> vector_prices_;
 	double cur_lastprice_;
