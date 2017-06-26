@@ -1,13 +1,38 @@
-﻿生成启动时间为 2017/6/16 10:25:51。
+﻿生成启动时间为 2017/6/26 9:52:05。
 项目“C:\Users\sxy\Desktop\quant\md\md_band_and_trigger_size\mdBasic\mdBasic\mdBasic.vcxproj”在节点 2 上(Build 个目标)。
 ClCompile:
-  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Iapi\ /Iapplication\ /Imd\ /IbasicFun\ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt bandandtriggersize\BandAndTriggerSize.cpp
+  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Iapi\ /Iapplication\ /Imd\ /IbasicFun\ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt application\application.cpp bandandtriggersize\BandAndTriggerSize.cpp bandandtriggersize\BandAndTriggerSizeFun.cpp main.cpp md\mdspi.cpp
+  BandAndTriggerSizeFun.cpp
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersizefun.cpp(9): warning C4018: “>=”: 有符号/无符号不匹配
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersizefun.cpp(80): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : 参见“fopen”的声明
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersizefun.cpp(82): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(357) : 参见“sprintf”的声明
   BandAndTriggerSize.cpp
-c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersize.cpp(32): warning C4018: “>=”: 有符号/无符号不匹配
-c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersize.cpp(215): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersize.cpp(194): warning C4018: “<”: 有符号/无符号不匹配
+  正在生成代码...
+  正在编译...
+  mdspi.cpp
+  main.cpp
+  application.cpp
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\application\application.cpp(14): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : 参见“strcpy”的声明
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\application\application.cpp(15): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : 参见“strcpy”的声明
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\application\application.cpp(16): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : 参见“strcpy”的声明
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\application\application.cpp(21): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\application\application.cpp(74): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : 参见“strcpy”的声明
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\application\application.cpp(75): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : 参见“strcpy”的声明
+c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\application\application.cpp(76): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : 参见“strcpy”的声明
+  正在生成代码...
 Link:
   C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\sxy\Desktop\quant\md\md_band_and_trigger_size\mdBasic\Debug\mdBasic.exe" /INCREMENTAL /NOLOGO /LIBPATH:api\ thostmduserapi.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\sxy\Desktop\quant\md\md_band_and_trigger_size\mdBasic\Debug\mdBasic.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\sxy\Desktop\quant\md\md_band_and_trigger_size\mdBasic\Debug\mdBasic.lib" /MACHINE:X86 Debug\application.obj
   Debug\BandAndTriggerSize.obj
+  Debug\BandAndTriggerSizeFun.obj
   Debug\basicFun.obj
   Debug\main.obj
   Debug\mdspi.obj
@@ -16,4 +41,4 @@ Link:
 
 生成成功。
 
-已用时间 00:00:02.25
+已用时间 00:00:04.50

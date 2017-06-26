@@ -30,6 +30,9 @@
     <ClCompile Include="bandandtriggersize\BandAndTriggerSize.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="bandandtriggersize\BandAndTriggerSizeFun.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api\ThostFtdcMdApi.h">
@@ -54,6 +57,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="bandandtriggersize\BandAndTriggerSize.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="bandandtriggersize\BandAndTriggerSizeFun.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

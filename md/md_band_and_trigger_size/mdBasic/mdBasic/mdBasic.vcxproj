@@ -81,6 +81,7 @@
   <ItemGroup>
     <ClCompile Include="application\application.cpp" />
     <ClCompile Include="bandandtriggersize\BandAndTriggerSize.cpp" />
+    <ClCompile Include="bandandtriggersize\BandAndTriggerSizeFun.cpp" />
     <ClCompile Include="basicFun\basicFun.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="md\mdspi.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="api\ThostFtdcUserApiStruct.h" />
     <ClInclude Include="application\application.h" />
     <ClInclude Include="bandandtriggersize\BandAndTriggerSize.h" />
+    <ClInclude Include="bandandtriggersize\BandAndTriggerSizeFun.h" />
     <ClInclude Include="basicFun\basicFun.h" />
     <ClInclude Include="md\mdspi.h" />
   </ItemGroup>

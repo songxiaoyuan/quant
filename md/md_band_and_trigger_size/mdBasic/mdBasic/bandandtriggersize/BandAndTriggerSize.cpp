@@ -13,6 +13,12 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 	volume_edge_ =0 ;
 	openinterest_edge_ = 0;
 	multiple_val_ = 5;
+	now_rsi_bar_tick_ = 0;
+	rsi_bar_period_ =100;
+	rsi_period_ = 10;
+	pre_rsi_lastprice_ = 0;
+	rsi_data_ = 0;
+	pre_ema_val_=0;
 	pre_price_ = CThostFtdcDepthMarketDataField();
 	cur_price_ = CThostFtdcDepthMarketDataField();
 }
@@ -23,54 +29,6 @@ BandAndTriggerSize::~BandAndTriggerSize(void)
 	vector<double>().swap(vector_prices_);
 }
 
-double BandAndTriggerSize::GetMAData(vector<double> &vector_prices_){
-	double sum =0;
-	if (vector_prices_.size()==0)
-	{
-		return 0;
-	}
-	for (int i = vector_prices_.size()-1; i >=0 && i >= vector_prices_.size() - compXaveNum_; i--)
-	{
-		sum +=vector_prices_[i];
-	}
-	return sum/compXaveNum_;
-}
-
-double BandAndTriggerSize::GetSDData(vector<double> &vector_prices_){
-	int size = vector_prices_.size();
-	if (size ==0)
-	{
-		return 0;
-	}
-	double sum = 0;
-	for (int i = size-1; i >=0 && i >= size - compXaveNum_; i--)
-	{
-		sum +=vector_prices_[i];
-	}
-	double avg = sum/compXaveNum_;
-	sum = 0;
-	for (int i = size-1; i >=0 && i >= size - compXaveNum_; i--)
-	{
-		sum += (vector_prices_[i]-avg)*(vector_prices_[i]-avg);
-	}
-	return sqrt(sum/compXaveNum_);
-}
-
-double BandAndTriggerSize::GetEMAData(double price){
-	if (vector_prices_.size()==1)
-	{
-		current_ema_tick_num_ =1;
-		last_mea_val_ = price;
-		return last_mea_val_;
-	}
-	if (current_ema_tick_num_ < compXaveNum_)
-	{
-		current_ema_tick_num_ +=1;
-	}
-	double ret = ((current_ema_tick_num_ - 1)*last_mea_val_ + 2*price)/(current_ema_tick_num_ + 1);
-	last_mea_val_ = ret;
-	return ret;
-}
 
 bool BandAndTriggerSize::IsBandOpenTime(){
 	if (direction_	==	"LONG")
@@ -212,10 +170,31 @@ void BandAndTriggerSize::getPrices(CThostFtdcDepthMarketDataField *pDepthMarketD
 	cur_price_.BidPrice1 = pDepthMarketData->BidPrice1;
 	//cout<<cur_price_.BidPrice1<<endl;
 	//cout<<pre_price_.LastPrice<<endl;
-	if (vector_prices_.size() < compXaveNum_-1)
+
+	if (pre_price_.LastPrice ==0)
+	{
+		pre_price_ = cur_price_;
+		pre_rsi_lastprice_ = pre_price_.LastPrice;
+		return;
+	}
+	if (now_rsi_bar_tick_ >= rsi_bar_period_)
+	{
+		double tmpdiff = cur_lastprice_ - pre_price_.LastPrice;
+		pre_rsi_lastprice_ = cur_lastprice_;
+		now_rsi_bar_tick_ =1;
+		rsi_data_ = GetRSIData(tmpdiff,rsi_vector_,rsi_period_);
+		rsi_vector_.push_back(tmpdiff);
+	}
+	else{
+		now_rsi_bar_tick_ +=1;
+		double tmpdiff = cur_lastprice_ - pre_price_.LastPrice;
+		rsi_data_ = GetRSIData(tmpdiff,rsi_vector_,rsi_period_);
+	}
+
+	if (vector_prices_.size() < compXaveNum_)
 	{
 		vector_prices_.push_back(cur_lastprice_);
-		double tmp = GetEMAData(cur_lastprice_);
+		pre_ema_val_ = GetEMAData(cur_lastprice_,pre_ema_val_,vector_prices_.size());
 		pre_price_ = cur_price_;
 		return;
 	}
@@ -223,13 +202,14 @@ void BandAndTriggerSize::getPrices(CThostFtdcDepthMarketDataField *pDepthMarketD
 		vector_prices_.push_back(cur_lastprice_);
 	}
 	if (movingTheo_ == "MA"){
-		cur_middle_value_ = GetMAData(vector_prices_);
+		cur_middle_value_ = GetMAData(vector_prices_,compXaveNum_);
 	}
 	else
 	{
-		cur_middle_value_ = GetEMAData(cur_lastprice_);
+		cur_middle_value_ = GetEMAData(cur_lastprice_,pre_ema_val_,compXaveNum_);
+		pre_ema_val_ = cur_middle_value_;
 	}
-	cur_sd_val_ = GetSDData(vector_prices_);
+	cur_sd_val_ = GetSDData(vector_prices_,compXaveNum_);
 
 	string id = pDepthMarketData->InstrumentID;
 	string date = pDepthMarketData->TradingDay;
@@ -243,7 +223,7 @@ void BandAndTriggerSize::getPrices(CThostFtdcDepthMarketDataField *pDepthMarketD
 	string insert = id +  ","+date+","+time+","+to_string(cur_lastprice_)
 		+","+to_string(cur_middle_value_)+"," + to_string(cur_sd_val_);
 	//cout<<insert<<endl;
-	WriteMesgToFile(path,insert);
+	WriteMesgToFile12(path,insert);
 	bool band_open_signal = IsBandOpenTime();
 	bool trigger_size_open_signal = IsTriggerSizeOpenTime();	
 	if (band_open_signal){

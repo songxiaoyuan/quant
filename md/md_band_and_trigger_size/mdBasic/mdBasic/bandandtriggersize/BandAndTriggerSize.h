@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "../api/ThostFtdcMdApi.h"
 #include "../basicFun/basicFun.h"
+#include "BandAndTriggerSizeFun.h"
 #include <vector>
 #include <math.h>
 #include <string>
@@ -17,12 +18,6 @@ private:
 	// 判断是不是达到了布林带的开仓和平仓条件
 	bool IsBandCloseTime();
 	bool IsBandOpenTime();
-	//根据现在的price的一个列表，计算列表里面的ma数据。
-	double GetMAData(vector<double> &prices);
-	// 根据现在的price的一个列表，计算列表里面的标准差
-	double GetSDData(vector<double> &prices);
-	// 根据传入的这个lastprice，计算返回的ema的值。
-	double GetEMAData(double price);
 
 	bool IsDownTime(double edge);
 	bool IsUpTime(double edge);
@@ -45,6 +40,15 @@ private:
 	int volume_edge_;
 	int openinterest_edge_;
 	int multiple_val_;
+
+	double rsi_data_;
+	double pre_rsi_lastprice_;
+	int now_rsi_bar_tick_;
+	vector<double> rsi_vector_;
+	int rsi_bar_period_;
+	int rsi_period_;
+
+	double pre_ema_val_;
 	CThostFtdcDepthMarketDataField pre_price_;
 	CThostFtdcDepthMarketDataField cur_price_;
 	string direction_;
