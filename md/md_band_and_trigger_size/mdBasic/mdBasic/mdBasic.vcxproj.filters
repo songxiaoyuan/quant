@@ -66,4 +66,9 @@
   <ItemGroup>
     <Text Include="config.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Debug.zip">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
 </Project>

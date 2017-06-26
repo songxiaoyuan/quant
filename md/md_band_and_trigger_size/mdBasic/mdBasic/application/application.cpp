@@ -11,7 +11,7 @@ void application::ConfigFun() {
 	string path = "config.txt";
 	unordered_map<string,string> ret =  GetConfigInfo(path);
 	MDFRONT=ChangeStrToChar(ret["MDFRONT"]);
-	strcpy(APPID,ChangeStrToChar(ret["APPID"]));
+	strcpy(APPID,ChangeStrToChar(ret["BROKERID"]));
 	strcpy(USERID,ChangeStrToChar(ret["USERID"]));
 	strcpy(PASSWD,ChangeStrToChar(ret["PASSWD"]));
 	vector<string> instruments = split(ret["INSTRUMENT"],",");

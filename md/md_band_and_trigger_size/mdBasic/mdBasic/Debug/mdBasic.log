@@ -1,18 +1,7 @@
-﻿生成启动时间为 2017/6/26 9:52:05。
+﻿生成启动时间为 2017/6/26 11:47:19。
 项目“C:\Users\sxy\Desktop\quant\md\md_band_and_trigger_size\mdBasic\mdBasic\mdBasic.vcxproj”在节点 2 上(Build 个目标)。
 ClCompile:
-  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Iapi\ /Iapplication\ /Imd\ /IbasicFun\ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt application\application.cpp bandandtriggersize\BandAndTriggerSize.cpp bandandtriggersize\BandAndTriggerSizeFun.cpp main.cpp md\mdspi.cpp
-  BandAndTriggerSizeFun.cpp
-c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersizefun.cpp(9): warning C4018: “>=”: 有符号/无符号不匹配
-c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersizefun.cpp(80): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : 参见“fopen”的声明
-c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersizefun.cpp(82): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(357) : 参见“sprintf”的声明
-  BandAndTriggerSize.cpp
-c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\bandandtriggersize\bandandtriggersize.cpp(194): warning C4018: “<”: 有符号/无符号不匹配
-  正在生成代码...
-  正在编译...
-  mdspi.cpp
+  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Iapi\ /Iapplication\ /Imd\ /IbasicFun\ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt application\application.cpp main.cpp
   main.cpp
   application.cpp
 c:\users\sxy\desktop\quant\md\md_band_and_trigger_size\mdbasic\mdbasic\application\application.cpp(14): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
@@ -41,4 +30,4 @@ Link:
 
 生成成功。
 
-已用时间 00:00:04.50
+已用时间 00:00:01.92

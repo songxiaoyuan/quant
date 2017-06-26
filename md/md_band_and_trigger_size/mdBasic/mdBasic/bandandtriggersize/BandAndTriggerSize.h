@@ -7,6 +7,7 @@
 #include <string>
 #include <string.h>
 #include <iostream>
+#include <unordered_map>
 using namespace std;
 class BandAndTriggerSize
 {
@@ -41,6 +42,7 @@ private:
 	int openinterest_edge_;
 	int multiple_val_;
 
+	double limit_rsi_data_;
 	double rsi_data_;
 	double pre_rsi_lastprice_;
 	int now_rsi_bar_tick_;

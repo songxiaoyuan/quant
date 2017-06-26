@@ -1,0 +1,3 @@
+limit_rsi_data 80
+rsi_bar_period 100
+rsi_period 10
