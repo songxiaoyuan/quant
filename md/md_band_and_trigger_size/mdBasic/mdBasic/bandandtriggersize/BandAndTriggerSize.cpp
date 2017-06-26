@@ -3,7 +3,7 @@
 
 BandAndTriggerSize::BandAndTriggerSize(void)
 {
-	compXaveNum_ =100;
+	compXaveNum_ =1000;
 	movingTheo_ = "EMA";
 	band_open_edge_ = 1;
 	band_close_edge_ = 2;
@@ -53,7 +53,7 @@ double BandAndTriggerSize::GetSDData(vector<double> &vector_prices_){
 	{
 		sum += (vector_prices_[i]-avg)*(vector_prices_[i]-avg);
 	}
-	return sqrt(sum);
+	return sqrt(sum/compXaveNum_);
 }
 
 double BandAndTriggerSize::GetEMAData(double price){
@@ -238,11 +238,12 @@ void BandAndTriggerSize::getPrices(CThostFtdcDepthMarketDataField *pDepthMarketD
 	cout<<cur_middle_value_<<endl;
 	cout<<cur_sd_val_<<endl;
 	*/
+	//cout<<id<<endl;
 	string path = id+"_"+date;
 	string insert = id +  ","+date+","+time+","+to_string(cur_lastprice_)
 		+","+to_string(cur_middle_value_)+"," + to_string(cur_sd_val_);
 	//cout<<insert<<endl;
-	//WriteMesgToFile(path,insert);
+	WriteMesgToFile(path,insert);
 	bool band_open_signal = IsBandOpenTime();
 	bool trigger_size_open_signal = IsTriggerSizeOpenTime();	
 	if (band_open_signal){
