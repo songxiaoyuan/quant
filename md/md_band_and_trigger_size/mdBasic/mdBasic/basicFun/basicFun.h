@@ -11,4 +11,5 @@ vector<string> split(string target,string pattern);
 char * ChangeStrToChar(string str);
 void strToFile(string error);
 void WriteMesgToFile(string path,string mesg);
+vector<string> GetConfigInfo123(string path);
 

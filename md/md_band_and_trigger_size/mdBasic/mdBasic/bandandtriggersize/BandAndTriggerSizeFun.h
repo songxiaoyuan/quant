@@ -1,6 +1,34 @@
 #pragma once
 #include <vector>
+#include <iostream>
+#include <string>
+#include <string.h>
+#include <math.h>
+#include <fstream>
 using namespace std;
+
+typedef struct
+{
+	double Volume;
+	double OpenInterest;
+	double Turnover;
+	double AskPrice1;
+	double LastPrice;
+	double BidPrice1;
+	int multiple;
+}BandAndTriggerSizePriceInfo;
+
+	// 判断是不是达到了布林带的开仓和平仓条件
+bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double openval);
+bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double loss_band,double profit_band,double rsival,double limit_rsi);
+
+bool IsTriggerSizeOpenTime(char direction,BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price
+				,double volume_edge,double openinterest_edge,int spread );
+bool IsTriggerSizeCloseTime(char direction,BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price
+				,double volume_edge,double openinterest_edge,int spread);
+
+bool IsDownTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price,int spread);
+bool IsUpTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price,int spread);
 //根据现在的price的一个列表，计算列表里面的ma数据。
 double GetMAData(vector<double> &vector_prices,int period);
 // 根据现在的price的一个列表，计算列表里面的标准差

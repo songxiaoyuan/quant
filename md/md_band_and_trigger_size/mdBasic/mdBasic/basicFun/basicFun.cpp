@@ -21,6 +21,24 @@ unordered_map<string,string> GetConfigInfo(string path){
 	}
 }
 
+vector<string> GetConfigInfo123(string path){
+	vector<string> ret;
+	FILE *file_fd = fopen((char*)path.c_str(),"r");
+	if (NULL ==file_fd)
+	{
+		cout<<"cant find the config file"<<endl;
+		return ret;
+	}
+	char tmp[1024] = {0};
+	while(!feof(file_fd)){
+		memset(tmp, 0, sizeof(tmp));
+		fgets(tmp, sizeof(tmp) - 1, file_fd);
+		ret.push_back((string)tmp);
+	}
+	fclose(file_fd);
+	return ret;
+}
+
 vector<string> split(string target,string pattern){
 	vector<string> ret;
 	if(pattern.empty()) return ret;

@@ -44,10 +44,6 @@ double GetEMAData(double price,double pre_ema_val,int period){
 
 double GetRSIData(double tmpdiff,vector<double> &rsi_vector,int period){
 	period = period -1;
-	if (rsi_vector.size() ==0)
-	{
-		return 0;
-	}
 	double rise = 0;
 	double total = 0;
 	if (tmpdiff >0) {
@@ -82,5 +78,147 @@ void WriteMesgToFile12(string path,string mesg){
   sprintf(tmp,"%s\n",mesg.c_str());
   int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
   fclose(file_fd);
+}
+
+bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double openval){
+	if (direction =='l')
+	{
+		double upval = middle + sd * openval;
+		if (lastprice > middle && lastprice < upval)
+		{
+			return true;
+		}
+	}
+	else if (direction	==	's')
+	{
+		double downval = middle - sd * openval;
+		if (lastprice > downval && lastprice < middle)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double loss_band,double profit_band,double rsival,double limit_rsi){
+
+	if (direction	==	'l')
+	{
+		double profitval = middle + sd * profit_band;
+		double lossval = middle - sd * loss_band;
+		if ( loss_band !=0  && lastprice < lossval)
+		{
+			return true;
+		}
+		if (lastprice > profitval && rsival > limit_rsi )
+		{
+			return true;
+		}
+	}
+	else if (direction	==	's')
+	{
+		double profitval = middle - sd * profitval;
+		double lossval = middle + sd * loss_band;
+		if (loss_band !=0 && lastprice > lossval)
+		{
+			return true;
+		}
+		double tmp_rsi = 100 - rsival;
+		if (lastprice < profitval && tmp_rsi > limit_rsi)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsTriggerSizeOpenTime(char direction,BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price
+				,double volume_edge,double openinterest_edge,int spread ){
+	if (now_price->Volume - pre_price->Volume < volume_edge )
+	 {
+		 cout<<now_price->Volume<<endl;
+		return false;
+	}
+	if (now_price->OpenInterest - pre_price->OpenInterest <= openinterest_edge)
+	{
+		return false;
+	}
+	if (direction =='l')
+	{
+		return IsUpTime(now_price,pre_price,spread);
+		
+	}
+	else if (direction =='s')
+	{
+		return IsDownTime(now_price,pre_price,spread);
+	}
+	return false;
+}
+
+bool IsTriggerSizeCloseTime(char direction,BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price
+				,double volume_edge,double openinterest_edge,int spread){
+	if (now_price->Volume - pre_price->Volume < volume_edge )
+	 {
+		return false;
+	}
+	if (now_price->OpenInterest - pre_price->OpenInterest >= - openinterest_edge)
+	{
+		return false;
+	}
+	bool ret = false;
+	if (direction =='l')
+	{
+		return IsDownTime(now_price,pre_price,spread);
+	}
+	else if (direction =='s')
+	{
+		return IsUpTime(now_price,pre_price,spread);
+	}
+	return false;
+}
+
+bool IsDownTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price,int spread)
+{
+	int multiple=now_price->multiple;    
+	int diffVolume	=	now_price->Volume	-	pre_price->Volume;   
+	double diffTurnover	=	now_price->Turnover	-	pre_price->Turnover;  
+
+	if (diffVolume	==	0	||	diffTurnover	==	0	||	multiple	==	0)
+	{
+		return false;
+	}
+
+	double avePrice	=	diffTurnover/diffVolume/multiple;
+
+	double temp	=	100*(pre_price->AskPrice1	-	avePrice)/(pre_price->AskPrice1-pre_price->BidPrice1);
+	if (temp >=	spread)
+	{
+		return true;
+	}
+	return false;
+
+}
+
+bool IsUpTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price,int spread)
+{
+	int multiple=now_price->multiple;   //返回合约乘数
+	int diffVolume	=	now_price->Volume	-	pre_price->Volume;  //返回持仓量的变化
+	double diffTurnover	=	now_price->Turnover	-	pre_price->Turnover;  //返回成交金额的变化
+
+	if (diffVolume	==	0	||	diffTurnover	==	0	||	multiple	==	0)
+	{
+		return false;
+	}
+	double avePrice	=	diffTurnover/diffVolume/multiple;
+
+	double temp	=	100*(avePrice	-	pre_price->BidPrice1)/(pre_price->AskPrice1-pre_price->BidPrice1);
+
+	if (temp >=	spread)
+	{
+		return true;
+
+	}
+	return false;
+
 }
 
