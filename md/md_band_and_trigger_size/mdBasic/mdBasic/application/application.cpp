@@ -9,7 +9,8 @@ application::application() {
 void application::ConfigFun() {
     //此函数主要是用来获取一些配置信息包括前置地址等。通过读取config.txt来获得信息。
 	string path = "config.txt";
-	unordered_map<string,string> ret =  GetConfigInfo(path);
+	unordered_map<string,string> ret =  GetConfigInfoRetMap(path);
+	//cout<<ret["MDFRONT"]<<endl;
 	MDFRONT=ChangeStrToChar(ret["MDFRONT"]);
 	strcpy(APPID,ChangeStrToChar(ret["BROKERID"]));
 	strcpy(USERID,ChangeStrToChar(ret["USERID"]));
@@ -31,7 +32,8 @@ void application::Init() {
   pMdSpi = new CtpMdSpi();  //创建回调处理类对象MdSpi
   pMdApi->RegisterSpi(pMdSpi);        // 回调对象注入接口类
   pMdApi->RegisterFront(MDFRONT);     // 注册行情前置地址
-  pMdApi->Init();                     //接口线程启动, 开始工作
+  pMdApi->Init(); //接口线程启动, 开始工作
+  cout<<"has init"<<endl;
 }
 
 void application::Run() {

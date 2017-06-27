@@ -21,14 +21,14 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 	pre_ema_val_=0;
 
 	string path = "bandandtriggersizeconfig.txt";
-	vector<string> ret =  GetConfigInfo123(path);
+	vector<string> ret =  GetConfigInfo(path);
 	rsi_bar_period_ = atoi(ret[0].c_str());
 	rsi_period_ = atoi(ret[1].c_str());
 	limit_rsi_val_ = atoi(ret[2].c_str());
 
-	cout<<rsi_bar_period_<<endl;
-	cout<<rsi_period_<<endl;
-	cout<<limit_rsi_val_<<endl;
+	//cout<<rsi_bar_period_<<endl;
+	//cout<<rsi_period_<<endl;
+	//cout<<limit_rsi_val_<<endl;
 }
 
 
@@ -140,7 +140,7 @@ void BandAndTriggerSize::getPrices(CThostFtdcDepthMarketDataField *pDepthMarketD
 	string insert = id +  ","+date+","+time+","+to_string(cur_lastprice_)
 		+","+to_string(cur_middle_value_)+"," + to_string(cur_sd_val_)+","+ to_string(rsi_val_);
 	//cout<<insert<<endl;
-	WriteMesgToFile12(path,insert);
+	WriteMesgToFile(path,insert);
 	bool band_open_signal = IsTrendOpenTime();
 	if (band_open_signal){
 		cout<<"this is band open signal"<<endl;

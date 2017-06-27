@@ -1,44 +1,5 @@
 #include "basicFun.h"
 
-//此函数用来读取配置文件，然后根据文件信息，读出一个哈希表，用来进行保存
-unordered_map<string,string> GetConfigInfo(string path){
-	ifstream file(path);
-	unordered_map<string,string> ret;
-	if(file){
-		string line;
-		while(getline(file,line)){
-			vector<string> config = split(line," ");
-			if(config.size() ==(unsigned int)2){
-			  ret[config[0]] = config[1];
-			}
-		}
-		return ret;
-	}
-	else{
-		cout << "cant find the config.txt, please checkup"<<endl;
-		cout<<path<<endl;
-	    exit(1);
-	}
-}
-
-vector<string> GetConfigInfo123(string path){
-	vector<string> ret;
-	FILE *file_fd = fopen((char*)path.c_str(),"r");
-	if (NULL ==file_fd)
-	{
-		cout<<"cant find the config file"<<endl;
-		return ret;
-	}
-	char tmp[1024] = {0};
-	while(!feof(file_fd)){
-		memset(tmp, 0, sizeof(tmp));
-		fgets(tmp, sizeof(tmp) - 1, file_fd);
-		ret.push_back((string)tmp);
-	}
-	fclose(file_fd);
-	return ret;
-}
-
 vector<string> split(string target,string pattern){
 	vector<string> ret;
 	if(pattern.empty()) return ret;
@@ -54,6 +15,30 @@ vector<string> split(string target,string pattern){
 	{
 		ret.push_back(target.substr(start));
 	}
+	return ret;
+}
+
+unordered_map<string,string> GetConfigInfoRetMap(string path){
+	unordered_map<string,string> ret;
+	FILE *file_fd = fopen((char*)path.c_str(),"r");
+	if (NULL ==file_fd)
+	{
+		cout<<"cant find the config file"<<endl;
+		return ret;
+	}
+	char tmp[1024] = {0};
+	while(!feof(file_fd)){
+		memset(tmp, 0, sizeof(tmp));
+		fgets(tmp, sizeof(tmp) - 1, file_fd);
+		vector<string> tmp_vector = split((string)tmp," ");
+		ret[tmp_vector[0]] = tmp_vector[1].substr(0,tmp_vector[1].length()-1);
+	}
+	fclose(file_fd);
+	/*
+	 for(unordered_map<string,string>::iterator iter = ret.begin(); iter != ret.end(); iter++)    
+    {    
+		cout<<iter->first<<":"<<iter->second<<endl;    
+    } */
 	return ret;
 }
 
@@ -86,12 +71,3 @@ vector<string> split(string target,string pattern){
   fclose(file_fd);
 }
 
- void WriteMesgToFile(string path,string mesg){
-  const char *filePath =path.data();
-  FILE *file_fd = fopen(filePath, "a");
-  char *huiche = "\n";
-  const char *data = mesg.data();
-  int writeLen = fwrite(data, 1, strlen(data), file_fd);
-  int writeLen1 = fwrite(huiche, 1, 1, file_fd);
-  fclose(file_fd);
- }

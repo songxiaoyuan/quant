@@ -37,4 +37,5 @@ double GetSDData(vector<double> &vector_prices,int period);
 double GetEMAData(double price,double pre_ema_val,int period);
 //根据传入的当前的差值和保存差值的数据，以及rsi的周期，来求返回的rsi的值。
 double GetRSIData(double tmpdiff,vector<double> &rsi_vector,int period);
-void WriteMesgToFile12(string path,string mesg);
+void WriteMesgToFile(string path,string mesg);
+vector<string> GetConfigInfo(string path);

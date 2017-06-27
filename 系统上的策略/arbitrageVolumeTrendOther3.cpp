@@ -8,8 +8,8 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 		memset(&info->new_Price,0,sizeof(mdPrice));
 		memset(&info->last_Price,0,sizeof(mdPrice));
 
-		memset(&info->last_Price,0,sizeof(pre_price_));
-		memset(&info->last_Price,0,sizeof(cur_price_));
+		memset(&info->pre_price_,0,sizeof(BandAndTriggerSizePriceInfo));
+		memset(&info->cur_price_,0,sizeof(BandAndTriggerSizePriceInfo));
 
 		info->vector_prices_.clear();
 		info->rsi_vector_.clear();
@@ -70,21 +70,21 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 		return false;
 	}
 
-	cur_price_.Volume = volumeTrendInfo->new_Price.Volume;
-	cur_price_.OpenInterest = volumeTrendInfo->new_Price.OpenInterest;
-	cur_price_.Turnover = volumeTrendInfo->new_Price.Turnover;
-	cur_price_.LastPrice = volumeTrendInfo->new_Price.LastPrice;
-	cur_price_.AskPrice1 = volumeTrendInfo->new_Price.AskPrice1;
-	cur_price_.BidPrice1 = volumeTrendInfo->new_Price.BidPrice1;
-	cur_price_.multiple = getVolumeMultiple(g_arrChannel,md_index);
+	volumeTrendInfo->cur_price_.Volume = volumeTrendInfo->new_Price.Volume;
+	volumeTrendInfo->cur_price_.OpenInterest = volumeTrendInfo->new_Price.OpenInterest;
+	volumeTrendInfo->cur_price_.Turnover = volumeTrendInfo->new_Price.Turnover;
+	volumeTrendInfo->cur_price_.LastPrice = volumeTrendInfo->new_Price.LastPrice;
+	volumeTrendInfo->cur_price_.AskPrice1 = volumeTrendInfo->new_Price.AskPrice1;
+	volumeTrendInfo->cur_price_.BidPrice1 = volumeTrendInfo->new_Price.BidPrice1;
+	volumeTrendInfo->cur_price_.multiple = getVolumeMultiple(g_arrChannel,md_index);
 
-	pre_price_.Volume = volumeTrendInfo->last_Price.Volume;
-	pre_price_.OpenInterest = volumeTrendInfo->last_Price.OpenInterest;
-	pre_price_.Turnover = volumeTrendInfo->last_Price.Turnover;
-	pre_price_.LastPrice = volumeTrendInfo->last_Price.LastPrice;
-	pre_price_.AskPrice1 = volumeTrendInfo->last_Price.AskPrice1;
-	pre_price_.BidPrice1 = volumeTrendInfo->last_Price.BidPrice1;
-	pre_price_.multiple = getVolumeMultiple(g_arrChannel,md_index);
+	volumeTrendInfo->pre_price_.Volume = volumeTrendInfo->last_Price.Volume;
+	volumeTrendInfo->pre_price_.OpenInterest = volumeTrendInfo->last_Price.OpenInterest;
+	volumeTrendInfo->pre_price_.Turnover = volumeTrendInfo->last_Price.Turnover;
+	volumeTrendInfo->pre_price_.LastPrice = volumeTrendInfo->last_Price.LastPrice;
+	volumeTrendInfo->pre_price_.AskPrice1 = volumeTrendInfo->last_Price.AskPrice1;
+	volumeTrendInfo->pre_price_.BidPrice1 = volumeTrendInfo->last_Price.BidPrice1;
+	volumeTrendInfo->pre_price_.multiple = getVolumeMultiple(g_arrChannel,md_index);
 
 
 	volumeTrendInfo->band_open_edge_ = ((double)param->m_Param[param_index].PositionAdj)/10;
@@ -224,6 +224,8 @@ bool CHyArbitrageVolumeTrendOther3::isCloseTrendTime(SThreadChannel *threadChann
 
 	
 	int param_index	=	threadChannel->param_index;
+
+	VolumeTrendOther3Info *volumeTrendInfo	=	&m_volumeTrendOther3Info[param_index];
 
 	if (arbitrageDirection	==	Direction_long)
 	{

@@ -72,14 +72,6 @@ double GetRSIData(double tmpdiff,vector<double> &rsi_vector,int period){
 	return 100*rise/total;
 }
 
-void WriteMesgToFile12(string path,string mesg){
-  FILE *file_fd = fopen((char*)path.c_str(),"a");
-  char tmp[1024] = {0};
-  sprintf(tmp,"%s\n",mesg.c_str());
-  int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
-  fclose(file_fd);
-}
-
 bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double openval){
 	if (direction =='l')
 	{
@@ -219,6 +211,30 @@ bool IsUpTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo
 
 	}
 	return false;
-
 }
 
+vector<string> GetConfigInfo(string path){
+	vector<string> ret;
+	FILE *file_fd = fopen((char*)path.c_str(),"r");
+	if (NULL ==file_fd)
+	{
+		cout<<"cant find the config file"<<endl;
+		return ret;
+	}
+	char tmp[1024] = {0};
+	while(!feof(file_fd)){
+		memset(tmp, 0, sizeof(tmp));
+		fgets(tmp, sizeof(tmp) - 1, file_fd);
+		ret.push_back((string)tmp);
+	}
+	fclose(file_fd);
+	return ret;
+}
+
+void WriteMesgToFile(string path,string mesg){
+  FILE *file_fd = fopen((char*)path.c_str(),"a");
+  char tmp[1024] = {0};
+  sprintf(tmp,"%s\n",mesg.c_str());
+  int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
+  fclose(file_fd);
+}
