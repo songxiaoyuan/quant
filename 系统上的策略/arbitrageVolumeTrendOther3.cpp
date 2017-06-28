@@ -25,6 +25,10 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 		info->pre_rsi_lastprice_	==	0;
 		info->now_rsi_bar_tick_	==	0;
 
+		info->max_profit_ ==0;
+		info->open_price_ ==0;
+		info->limit_max_draw_down_ ==0;
+
 		string path = "bandandtriggersizeconfig.txt";
 		vector<string> ret =  GetConfigInfo(path);
 	
@@ -36,11 +40,11 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 double CHyArbitrageVolumeTrendOther3::calculateLessPrice(SThreadChannel *threadChannel,char OffsetFlag,char Direction,double fv,int perside)
 {
 	double price=0;
-	if (Direction	==	THOST_FTDC_D_Buy)				//Âò
+	if (Direction	==	THOST_FTDC_D_Buy)				//Ã‚Ã²
 	{
 		price	=	0;
 	}
-	else if(Direction	==	THOST_FTDC_D_Sell)			//Âô
+	else if(Direction	==	THOST_FTDC_D_Sell)			//Ã‚Ã´
 	{
 		price	=	MaxPrice;
 	}
@@ -91,7 +95,9 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 	volumeTrendInfo->band_loss_close_edge_ = ((double)param->m_Param[param_index].AdjEmaFast)/10;
 	volumeTrendInfo->band_profit_close_edge_ = ((double)param->m_Param[param_index].AdjEmaSlow)/10;
 
-	// ´Ë²¿·Ö´úÂëÖ÷ÒªÊÇÓÃÀ´±£´æ¼ÆËãcur_middle_value_ºÍsdµÄprice¡£
+	volumeTrendInfo->limit_max_draw_down_ = param->m_Param[param_index].maxDrawDown;
+
+	// Â´Ã‹Â²Â¿Â·Ã–Â´ÃºÃ‚Ã«Ã–Ã·Ã’ÂªÃŠÃ‡Ã“ÃƒÃ€Â´Â±Â£Â´Ã¦Â¼Ã†Ã‹Ã£cur_middle_value_ÂºÃsdÂµÃ„priceÂ¡Â£
 	volumeTrendInfo->cur_lastprice_ = volumeTrendInfo->new_Price.LastPrice;
 
 	if (volumeTrendInfo->pre_rsi_lastprice_ ==0)
@@ -126,7 +132,7 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 		// vector<double>::iterator it = vector_prices_.begin();
 		// it = vector_prices_.erase(it);
 	}
-	//ÒÑ¾­´ïµ½ÁËÖÜÆÚ£¬¿ªÊ¼¼ÆËãmiddle dataºÍsdµÄdata
+	//Ã’Ã‘Â¾Â­Â´Ã¯ÂµÂ½ÃÃ‹Ã–ÃœÃ†ÃšÂ£Â¬Â¿ÂªÃŠÂ¼Â¼Ã†Ã‹Ã£middle dataÂºÃsdÂµÃ„data
 	/*
 	if (param->m_Param[param_index].PositionAdj == 0){
 		volumeTrendInfo->cur_middle_value_ = GetEMAData(param_index,volumeTrendInfo->cur_lastprice_);
@@ -229,12 +235,28 @@ bool CHyArbitrageVolumeTrendOther3::isCloseTrendTime(SThreadChannel *threadChann
 
 	if (arbitrageDirection	==	Direction_long)
 	{
+		bool tmp_draw_down = IsMaxDrawDown('l',volumeTrendInfo->cur_lastprice_
+			,volumeTrendInfo->open_price_,volumeTrendInfo->cur_price_.multiple
+			,volumeTrendInfo->max_profit_,volumeTrendInfo->limit_max_draw_down_);
+		if (tmp_draw_down ==true)
+		{
+			return true;
+		}
+
 		return IsBandCloseTime('l',volumeTrendInfo->cur_lastprice_,volumeTrendInfo->cur_middle_value_,volumeTrendInfo->cur_sd_val_
 					,volumeTrendInfo->band_loss_close_edge_,volumeTrendInfo->band_profit_close_edge_
 					,volumeTrendInfo->rsi_data_,volumeTrendInfo->limit_rsi_data_);
 	}
 	else if (arbitrageDirection	==	Direction_short)
 	{
+		bool tmp_draw_down = IsMaxDrawDown('s',volumeTrendInfo->cur_lastprice_
+			,volumeTrendInfo->open_price_,volumeTrendInfo->cur_price_.multiple
+			,volumeTrendInfo->max_profit_,volumeTrendInfo->limit_max_draw_down_);
+		if (tmp_draw_down ==true)
+		{
+			return true;
+		}
+
 		return IsBandCloseTime('s',volumeTrendInfo->cur_lastprice_,volumeTrendInfo->cur_middle_value_,volumeTrendInfo->cur_sd_val_
 					,volumeTrendInfo->band_loss_close_edge_,volumeTrendInfo->band_profit_close_edge_
 					,volumeTrendInfo->rsi_data_,volumeTrendInfo->limit_rsi_data_);
@@ -253,12 +275,25 @@ void CHyArbitrageVolumeTrendOther3::cancelNotMatchOrder(SThreadChannel *threadCh
 		{
 			continue;
 		}
-		if (ordermsg->status	==	1) //¹Òµ¥×´Ì¬£¬¿¼ÂÇÊÇ·ñ³·µ¥
+		if (ordermsg->status	==	1) //Â¹Ã’ÂµÂ¥Ã—Â´ÃŒÂ¬Â£Â¬Â¿Â¼Ã‚Ã‡ÃŠÃ‡Â·Ã±Â³Â·ÂµÂ¥
 		{
 			tradingAction_action_Lock(threadChannel,ordermsg);
 		}
 	}
 	pthread_rwlock_unlock(&pTraderInfo->cs_trader_order);
+}
+
+void tradingOpenTraded(char *instrumentID){
+
+	//first  get the volumeTrendInfoã€‚
+	volumeTrendInfo->open_price_ = volumeTrendInfo->cur_lastprice_;
+	volumeTrendInfo->max_profit_ =0;
+}
+
+void tradingCloseTraded(char *instrumentID){
+   
+   	volumeTrendInfo->open_price_ = 0;
+	volumeTrendInfo->max_profit_ =0;
 }
 
 

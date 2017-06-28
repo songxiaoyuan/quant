@@ -1,30 +1,18 @@
 #include <iostream>
-#include "band\band.h"
+#include "band\BandAndTriggerSize.h"
+#include "basicfun\BasicFun.h"
 using namespace std;
 
 int main(){
-  cout<<"hello world"<<endl;
-  /*
-  double prices[7] = {100,102,102.3,99.9,100,102.9,99};
-  band bandtrigger;
-  for (int i = 0; i < 7; i++)
-  {
-	  bandtrigger.getPrices(prices[i]);
-  }
-  int a =1;
-  if (a ==1)
-  {
-	  cout<<"the a is -1"<<endl;
-  }*/
-  int tmp =5;
-  double tmp2 = (double)tmp/10;
-  int tmp3 =0;
-  if (tmp3 > tmp2)
-  {
-	  cout<<"this is true"<<endl;
-  }
-  cout<<tmp2<<endl;
   int i;
+  BandAndTriggerSize bt;
+  string path = "rb1710_20170627.csv";
+  vector<vector<string>> data = GetCSVFileData(path);
+  for (int i = 0; i < data.size(); i++)
+  {
+	  bt.getPrices(data[i]);
+  }
+  cout<<"end!!"<<endl;
   cin>>i;
   return 0;
 }

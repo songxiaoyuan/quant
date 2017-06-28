@@ -78,11 +78,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="band\band.cpp" />
+    <ClCompile Include="band\BandAndTriggerSize.cpp" />
+    <ClCompile Include="band\BandAndTriggerSizeFun.cpp" />
+    <ClCompile Include="basicfun\BasicFun.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="band\band.h" />
+    <ClInclude Include="band\BandAndTriggerSize.h" />
+    <ClInclude Include="band\BandAndTriggerSizeFun.h" />
+    <ClInclude Include="basicfun\BasicFun.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

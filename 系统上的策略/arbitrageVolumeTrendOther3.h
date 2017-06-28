@@ -19,6 +19,10 @@ typedef struct
 	double band_profit_close_edge_;
 	double band_loss_close_edge_;
 
+	double max_profit_;
+	double open_price_;
+	double limit_max_draw_down_;
+
 	double cur_spread_price_val_;
 	double limit_rsi_data_;
 	double rsi_data_;
@@ -41,6 +45,8 @@ public:
 	virtual bool get_fv(SThreadChannel *threadChannel,double &fv);
 	virtual void clearVector();
 	virtual double calculateLessPrice(SThreadChannel *threadChannel,char OffsetFlag,char Direction,double fv,int perside);
+	virtual void tradingOpenTraded(char *instrumentID);
+	virtual void tradingCloseTraded(char *instrumentID);
 
 private:
 

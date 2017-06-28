@@ -18,12 +18,24 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件\头文件</Filter>
     </ClCompile>
-    <ClCompile Include="band\band.cpp">
+    <ClCompile Include="band\BandAndTriggerSizeFun.cpp">
+      <Filter>资源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="basicfun\BasicFun.cpp">
+      <Filter>资源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="band\BandAndTriggerSize.cpp">
       <Filter>资源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="band\band.h">
+    <ClInclude Include="band\BandAndTriggerSizeFun.h">
+      <Filter>源文件\头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="basicfun\BasicFun.h">
+      <Filter>源文件\头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="band\BandAndTriggerSize.h">
       <Filter>源文件\头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -109,7 +109,7 @@ bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,dou
 	}
 	else if (direction	==	's')
 	{
-		double profitval = middle - sd * profitval;
+		double profitval = middle - sd * profit_band;
 		double lossval = middle + sd * loss_band;
 		if (loss_band !=0 && lastprice > lossval)
 		{
