@@ -94,6 +94,10 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,doub
 
 bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double loss_band,double profit_band,double rsival,double limit_rsi){
 
+	if (10000*(sd/lastprice) < 9)
+	{
+		return false;
+	}
 	if (direction	==	'l')
 	{
 		double profitval = middle + sd * profit_band;
@@ -231,6 +235,7 @@ vector<string> GetConfigInfo(string path){
 }
 
 void WriteMesgToFile(string path,string mesg){
+  return;
   FILE *file_fd = fopen((char*)path.c_str(),"a");
   char tmp[1024] = {0};
   sprintf(tmp,"%s\n",mesg.c_str());

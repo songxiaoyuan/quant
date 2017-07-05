@@ -95,7 +95,7 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 	volumeTrendInfo->band_loss_close_edge_ = ((double)param->m_Param[param_index].AdjEmaFast)/10;
 	volumeTrendInfo->band_profit_close_edge_ = ((double)param->m_Param[param_index].AdjEmaSlow)/10;
 
-	volumeTrendInfo->limit_max_draw_down_ = param->m_Param[param_index].maxDrawDown;
+	volumeTrendInfo->limit_max_draw_down_ = param->m_Param[param_index+1].maxDrawDown;
 
 	// ´Ë²¿·Ö´úÂëÖ÷ÒªÊÇÓÃÀ´±£´æ¼ÆËãcur_middle_value_ºÍsdµÄprice¡£
 	volumeTrendInfo->cur_lastprice_ = volumeTrendInfo->new_Price.LastPrice;
@@ -283,14 +283,31 @@ void CHyArbitrageVolumeTrendOther3::cancelNotMatchOrder(SThreadChannel *threadCh
 	pthread_rwlock_unlock(&pTraderInfo->cs_trader_order);
 }
 
-void tradingOpenTraded(char *instrumentID){
-
-	//first  get the volumeTrendInfo。
+void CHyArbitrageVolumeTrendOther3::tradingOpenTraded(char *instrumentID)
+{
+	int thread_index	=	getThreadChannelIndex_trading(instrumentID);
+	if (thread_index	==	-1)
+	{
+		return;
+	}
+	SThreadChannel * threadChannel	=	&m_arrThreadChannel[thread_index];
+	int param_index	=	threadChannel->param_index;
+	VolumeTrendOther3Info *volumeTrendInfo	=	&m_volumeTrendOther3Info[param_index];
+	
 	volumeTrendInfo->open_price_ = volumeTrendInfo->cur_lastprice_;
 	volumeTrendInfo->max_profit_ =0;
 }
 
-void tradingCloseTraded(char *instrumentID){
+void CHyArbitrageVolumeTrendOther3::tradingCloseTraded(char *instrumentID)
+{
+	int thread_index	=	getThreadChannelIndex_trading(instrumentID);
+	if (thread_index	==	-1)
+	{
+		return;
+	}
+	SThreadChannel * threadChannel	=	&m_arrThreadChannel[thread_index];
+	int param_index	=	threadChannel->param_index;
+	VolumeTrendOther3Info *volumeTrendInfo	=	&m_volumeTrendOther3Info[param_index];
    
    	volumeTrendInfo->open_price_ = 0;
 	volumeTrendInfo->max_profit_ =0;
