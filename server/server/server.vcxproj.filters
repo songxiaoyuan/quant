@@ -18,9 +18,6 @@
     <ClInclude Include="client_http.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="crypto.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="server_http.hpp">
       <Filter>头文件</Filter>
     </ClInclude>

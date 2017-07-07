@@ -48,10 +48,10 @@ void CtpMdSpi::OnRspUnSubMarketData(
 void CtpMdSpi::OnRtnDepthMarketData(
     CThostFtdcDepthMarketDataField *pDepthMarketData) {
   string InstrumentID = pDepthMarketData->InstrumentID;
-  //cout<<InstrumentID<<endl;
+  cout<<InstrumentID+","<<endl;
   //strToFile(InstrumentID);
-  double price = pDepthMarketData->LastPrice;
-  band_and_trigger_size_.getPrices(pDepthMarketData);
+ // double price = pDepthMarketData->LastPrice;
+  //band_and_trigger_size_.getPrices(pDepthMarketData);
 
 /*
   cout << pDepthMarketData->InstrumentID << endl;

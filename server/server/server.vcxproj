@@ -41,6 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>E:\boost;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\boost;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -77,7 +79,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="client_http.hpp" />
-    <ClInclude Include="crypto.hpp" />
     <ClInclude Include="server_http.hpp" />
     <ClInclude Include="status_code.hpp" />
     <ClInclude Include="utility.hpp" />

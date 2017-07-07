@@ -1,11 +1,36 @@
-﻿生成启动时间为 2017/7/5 14:24:44。
-项目“C:\Users\sxy\Desktop\quant\server\server\server.vcxproj”在节点 2 上(Build 个目标)。
-ClCompile:
-  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt http_examples.cpp
-  http_examples.cpp
-c:\users\sxy\desktop\quant\server\server\client_http.hpp(19): fatal error C1083: 无法打开包括文件:“boost/asio.hpp”: No such file or directory
-已完成生成项目“C:\Users\sxy\Desktop\quant\server\server\server.vcxproj”(Build 个目标)的操作 - 失败。
+﻿生成启动时间为 2017/7/6 10:41:16。
+     1>项目“C:\Users\Administrator\Desktop\quant\server\server\server.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt http_examples.cpp
+         http_examples.cpp
+         Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+         - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+         - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+         Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(23): error C2143: 语法错误 : 缺少“;”(在“=”的前面)
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(23): error C2873: “error_code”: 符号不能用在 using 声明中
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(23): error C2513: “int”: 在“=”前没有声明变量
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(25): error C2143: 语法错误 : 缺少“;”(在“=”的前面)
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(25): error C2873: “system_error”: 符号不能用在 using 声明中
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(25): error C2513: “int”: 在“=”前没有声明变量
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(27): error C2143: 语法错误 : 缺少“;”(在“=”的前面)
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(27): error C2873: “string_view”: 符号不能用在 using 声明中
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(27): error C2513: “int”: 在“=”前没有声明变量
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(27): error C2226: 语法错误 : 意外的“boost::string_ref”类型
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(82): error C2864: “SimpleWeb::ClientBase<socket_type>::Config::timeout”: 只有静态常量整型数据成员才可以在类中初始化
+                 c:\users\administrator\desktop\quant\server\server\client_http.hpp(74): 参见对正在编译的类 模板 实例化“SimpleWeb::ClientBase<socket_type>::Config”的引用
+                 c:\users\administrator\desktop\quant\server\server\client_http.hpp(532): 参见对正在编译的类 模板 实例化“SimpleWeb::ClientBase<socket_type>”的引用
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(84): error C2864: “SimpleWeb::ClientBase<socket_type>::Config::timeout_connect”: 只有静态常量整型数据成员才可以在类中初始化
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(107): error C2864: “SimpleWeb::ClientBase<socket_type>::Connection::in_use”: 只有静态常量整型数据成员才可以在类中初始化
+                 c:\users\administrator\desktop\quant\server\server\client_http.hpp(90): 参见对正在编译的类 模板 实例化“SimpleWeb::ClientBase<socket_type>::Connection”的引用
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(108): error C2864: “SimpleWeb::ClientBase<socket_type>::Connection::reconnecting”: 只有静态常量整型数据成员才可以在类中初始化
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(121): error C2143: 语法错误 : 缺少“)”(在“const”的前面)
+                 c:\users\administrator\desktop\quant\server\server\client_http.hpp(113): 参见对正在编译的类 模板 实例化“SimpleWeb::ClientBase<socket_type>::Session”的引用
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(122): error C2143: 语法错误 : 缺少“;”(在“}”的前面)
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(113): error C2143: 语法错误 : 缺少“;”(在“}”的前面)
+     1>c:\users\administrator\desktop\quant\server\server\client_http.hpp(113): fatal error C1004: 发现意外的文件尾
+     1>已完成生成项目“C:\Users\Administrator\Desktop\quant\server\server\server.vcxproj”(Build 个目标)的操作 - 失败。
 
 生成失败。
 
-已用时间 00:00:00.89
+已用时间 00:00:03.11

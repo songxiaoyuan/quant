@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <fstream>
-#include <vector>
+#include <vector>g
 #ifdef HAVE_OPENSSL
 #include "crypto.hpp"
 #endif

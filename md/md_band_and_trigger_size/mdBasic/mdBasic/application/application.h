@@ -2,6 +2,8 @@
 #include "../md/mdspi.h"
 #include "../basicFun/basicFun.h"
 #include <iostream>
+//#include <WinBase.h>
+#include <Windows.h>
 
 class application {
  public:

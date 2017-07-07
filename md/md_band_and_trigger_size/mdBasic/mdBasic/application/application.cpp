@@ -41,8 +41,11 @@ void application::Run() {
   cerr << "[2] userSubscribe "<< endl;
   cerr << "[3] Exit    " <<endl;
   cerr << "----------------------------------------------" << endl;
+  i = 1;
   while (1) {
-    cin >> i;
+    //cin >> i;
+	int tmp =1000;
+	Sleep(tmp);
     switch (i) {
       case 1: {
         //用户登录信息，包括md登录和trader登录
@@ -58,10 +61,11 @@ void application::Run() {
       }
       case 3: {
         // 程序退出，或者可以做别的操作。
-        exit(0);
+        //exit(0);
         break;
       }
     }
+	i +=1;
   }
   pMdApi->Join();
 }
