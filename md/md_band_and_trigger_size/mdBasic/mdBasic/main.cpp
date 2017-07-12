@@ -3,6 +3,7 @@
 using namespace std;
 
 int main(){
+	cout<<"hello world"<<endl;
   application* app = new application();
   app->ConfigFun();
   app->Init();
