@@ -1,22 +1,19 @@
-﻿生成启动时间为 2017/6/28 14:45:52。
-     1>项目“C:\Users\Administrator\Desktop\quant\bandandtrigger\bandandtrigger\bandandtrigger.vcxproj”在节点 2 上(Build 个目标)。
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt band\BandAndTriggerSize.cpp main.cpp
-         BandAndTriggerSize.cpp
-     1>c:\users\administrator\desktop\quant\bandandtrigger\bandandtrigger\band\bandandtriggersize.cpp(64): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-     1>c:\users\administrator\desktop\quant\bandandtrigger\bandandtrigger\band\bandandtriggersize.cpp(73): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-     1>c:\users\administrator\desktop\quant\bandandtrigger\bandandtrigger\band\bandandtriggersize.cpp(143): warning C4018: “<”: 有符号/无符号不匹配
-         正在生成代码...
-         正在跳过...(未检测到相关更改)
-         main.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Administrator\Desktop\quant\bandandtrigger\Debug\bandandtrigger.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Administrator\Desktop\quant\bandandtrigger\Debug\bandandtrigger.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Administrator\Desktop\quant\bandandtrigger\Debug\bandandtrigger.lib" /MACHINE:X86 Debug\BandAndTriggerSize.obj
-         Debug\BandAndTriggerSizeFun.obj
-         Debug\BasicFun.obj
-         Debug\main.obj
-         bandandtrigger.vcxproj -> C:\Users\Administrator\Desktop\quant\bandandtrigger\Debug\bandandtrigger.exe
-     1>已完成生成项目“C:\Users\Administrator\Desktop\quant\bandandtrigger\bandandtrigger\bandandtrigger.vcxproj”(Build 个目标)的操作。
+﻿生成启动时间为 2017/7/12 21:45:03。
+项目“C:\Users\sxy\Desktop\quant\bandandtrigger\bandandtrigger\bandandtrigger.vcxproj”在节点 2 上(Build 个目标)。
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt band\BandAndTriggerSizeFun.cpp
+  BandAndTriggerSizeFun.cpp
+c:\users\sxy\desktop\quant\bandandtrigger\bandandtrigger\band\bandandtriggersizefun.cpp(9): warning C4018: “>=”: 有符号/无符号不匹配
+c:\users\sxy\desktop\quant\bandandtrigger\bandandtrigger\band\bandandtriggersizefun.cpp(179): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\sxy\desktop\quant\bandandtrigger\bandandtrigger\band\bandandtriggersizefun.cpp(209): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\sxy\Desktop\quant\bandandtrigger\Debug\bandandtrigger.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\sxy\Desktop\quant\bandandtrigger\Debug\bandandtrigger.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\sxy\Desktop\quant\bandandtrigger\Debug\bandandtrigger.lib" /MACHINE:X86 Debug\BandAndTriggerSize.obj
+  Debug\BandAndTriggerSizeFun.obj
+  Debug\BasicFun.obj
+  Debug\main.obj
+  bandandtrigger.vcxproj -> C:\Users\sxy\Desktop\quant\bandandtrigger\Debug\bandandtrigger.exe
+已完成生成项目“C:\Users\sxy\Desktop\quant\bandandtrigger\bandandtrigger\bandandtrigger.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:01.41
+已用时间 00:00:02.27

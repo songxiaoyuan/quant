@@ -8,7 +8,7 @@ application::application() {
 
 void application::ConfigFun() {
     //此函数主要是用来获取一些配置信息包括前置地址等。通过读取config.txt来获得信息。
-	string path = "config.txt";
+	string path = "config_home.txt";
 	unordered_map<string,string> ret =  GetConfigInfoRetMap(path);
 	//cout<<ret["MDFRONT"]<<endl;
 	MDFRONT=ChangeStrToChar(ret["MDFRONT"]);
@@ -68,6 +68,10 @@ void application::Run() {
       }
     }
 	i +=1;
+	if (i>3)
+	{
+		break;
+	}
   }
   pMdApi->Join();
 }

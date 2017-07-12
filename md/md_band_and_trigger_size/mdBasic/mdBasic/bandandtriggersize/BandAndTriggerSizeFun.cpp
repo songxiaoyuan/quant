@@ -185,6 +185,13 @@ bool IsDownTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceIn
 	double temp	=	100*(pre_price->AskPrice1	-	avePrice)/(pre_price->AskPrice1-pre_price->BidPrice1);
 	if (temp >=	spread)
 	{
+		if (now_price->LastPrice >3000 && now_price->LastPrice <=4000)
+		{
+			string path ="diffvolume.txt";
+			char mesg[1024]={0};
+			sprintf(mesg,"this is short the diff volume is : %.2f",diffVolume);
+			WriteMesgToFile(path,(string)mesg);
+		}
 		return true;
 	}
 	return false;
@@ -204,9 +211,15 @@ bool IsUpTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo
 	double avePrice	=	diffTurnover/diffVolume/multiple;
 
 	double temp	=	100*(avePrice	-	pre_price->BidPrice1)/(pre_price->AskPrice1-pre_price->BidPrice1);
-
 	if (temp >=	spread)
 	{
+		if (now_price->LastPrice >3000 && now_price->LastPrice <=4000)
+		{
+			string path ="diffvolume.txt";
+			char mesg[1024]={0};
+			sprintf(mesg,"this is long the diff volume is : %.2f",diffVolume);
+			WriteMesgToFile(path,(string)mesg);
+		}
 		return true;
 
 	}

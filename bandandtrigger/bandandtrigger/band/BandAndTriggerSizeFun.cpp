@@ -188,6 +188,15 @@ bool IsDownTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceIn
 	double temp	=	100*(pre_price->AskPrice1	-	avePrice)/(pre_price->AskPrice1 - pre_price->BidPrice1);
 	if (temp >=	spread)
 	{
+		cout<<now_price->LastPrice<<endl;
+		if (now_price->LastPrice >3000 && now_price->LastPrice <=4000)
+		{
+			string path ="diffvolume.txt";
+			char mesg[1024]={0};
+			sprintf(mesg,"this is short the diff volume is : %d now volume is:%.2f, pre volume is:.2f",diffVolume,now_price->Volume,pre_price->Volume);
+			cout<<mesg<<endl;
+			WriteMesgToFileSO(path,(string)mesg);
+		}
 		return true;
 	}
 	return false;
@@ -210,6 +219,15 @@ bool IsUpTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo
 
 	if (temp >=	spread)
 	{
+		cout<<now_price->LastPrice<<endl;
+		if (now_price->LastPrice >3000 && now_price->LastPrice <=4000)
+		{
+			string path ="diffvolume.txt";
+			char mesg[1024]={0};
+			sprintf(mesg,"this is long the diff volume is : %d, now volume is:%.2f, pre volume is:%.2f",diffVolume,now_price->Volume,pre_price->Volume);
+			cout<<mesg<<endl;
+			WriteMesgToFileSO(path,(string)mesg);
+		}
 		return true;
 
 	}
@@ -235,7 +253,15 @@ vector<string> GetConfigInfo(string path){
 }
 
 void WriteMesgToFile(string path,string mesg){
-  return;
+	return;
+  FILE *file_fd = fopen((char*)path.c_str(),"a");
+  char tmp[1024] = {0};
+  sprintf(tmp,"%s\n",mesg.c_str());
+  int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
+  fclose(file_fd);
+}
+
+void WriteMesgToFileSO(string path,string mesg){
   FILE *file_fd = fopen((char*)path.c_str(),"a");
   char tmp[1024] = {0};
   sprintf(tmp,"%s\n",mesg.c_str());

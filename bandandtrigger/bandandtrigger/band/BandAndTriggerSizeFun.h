@@ -38,6 +38,7 @@ double GetEMAData(double price,double pre_ema_val,int period);
 //根据传入的当前的差值和保存差值的数据，以及rsi的周期，来求返回的rsi的值。
 double GetRSIData(double tmpdiff,vector<double> &rsi_vector,int period);
 void WriteMesgToFile(string path,string mesg);
+void WriteMesgToFileSO(string path,string mesg);
 vector<string> GetConfigInfo(string path);
 
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown);
