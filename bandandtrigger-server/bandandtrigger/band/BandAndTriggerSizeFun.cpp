@@ -75,10 +75,14 @@ double GetRSIData(double tmpdiff,vector<double> &rsi_vector,int period){
 	return 100*rise/total;
 }
 
-bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double openval){
+bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double open_edge,double limit_sd,double limit_sd_open_edge){
+	if (sd < limit_sd)
+	{
+		open_edge = limit_sd_open_edge;
+	}
 	if (direction =='l')
 	{
-		double upval = middle + sd * openval;
+		double upval = middle + sd * open_edge;
 		if (lastprice > middle && lastprice < upval)
 		{
 			return true;
@@ -86,7 +90,7 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,doub
 	}
 	else if (direction	==	's')
 	{
-		double downval = middle - sd * openval;
+		double downval = middle - sd * open_edge;
 		if (lastprice > downval && lastprice < middle)
 		{
 			return true;
@@ -95,11 +99,13 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,doub
 	return false;
 }
 
-bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double loss_band,double profit_band,double rsival,double limit_rsi){
-
-	if (10000*(sd/lastprice) < 9)
+bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
+					 ,double loss_band,double profit_band,double rsival,double limit_rsi
+					 ,double limit_sd,double limit_sd_loss_band)
+{
+	 if (sd < limit_sd)
 	{
-		return false;
+		loss_band = limit_sd_loss_band;
 	}
 	if (direction	==	'l')
 	{
@@ -197,15 +203,6 @@ bool IsDownTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceIn
 	double temp	=	100*(pre_price->AskPrice1	-	avePrice)/(pre_price->AskPrice1 - pre_price->BidPrice1);
 	if (temp >=	spread)
 	{
-		cout<<now_price->LastPrice<<endl;
-		if (now_price->LastPrice >3000 && now_price->LastPrice <=4000)
-		{
-			string path ="diffvolume.txt";
-			char mesg[1024]={0};
-			sprintf(mesg,"this is short the diff volume is : %d now volume is:%.2f, pre volume is:%.2f",diffVolume,now_price->Volume,pre_price->Volume);
-			cout<<mesg<<endl;
-			WriteMesgToFileSO(path,(string)mesg);
-		}
 		return true;
 	}
 	return false;
@@ -228,15 +225,6 @@ bool IsUpTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo
 
 	if (temp >=	spread)
 	{
-		cout<<now_price->LastPrice<<endl;
-		if (now_price->LastPrice >3000 && now_price->LastPrice <=4000)
-		{
-			string path ="diffvolume.txt";
-			char mesg[1024]={0};
-			sprintf(mesg,"this is long the diff volume is : %d, now volume is:%.2f, pre volume is:%.2f",diffVolume,now_price->Volume,pre_price->Volume);
-			cout<<mesg<<endl;
-			WriteMesgToFileSO(path,(string)mesg);
-		}
 		return true;
 
 	}

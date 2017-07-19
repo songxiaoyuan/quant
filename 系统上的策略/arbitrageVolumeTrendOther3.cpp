@@ -103,6 +103,11 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 	volumeTrendInfo->rsi_period_ = param->m_Param[param_index+1].AdjEmaFast;
 	volumeTrendInfo->limit_rsi_data_ = param->m_Param[param_index+1].AdjEmaSlow;
 
+	volumeTrendInfo->limit_sd_ = (double)param->m_Param[param_index+1].spread;
+	volumeTrendInfo->limit_sd_open_edge_ = param->m_Param[param_index+1].openEdge;
+	volumeTrendInfo->limit_sd_loss_close_edge_ = param->m_Param[param_index+1].closeEdge;
+
+
 	// ´Ë²¿·Ö´úÂëÖ÷ÒªÊÇÓÃÀ´±£´æ¼ÆËãcur_middle_value_ºÍsdµÄprice¡£
 	volumeTrendInfo->cur_lastprice_ = volumeTrendInfo->new_Price.LastPrice;
 
@@ -203,7 +208,8 @@ bool CHyArbitrageVolumeTrendOther3::isOpenTrendTime(SThreadChannel *threadChanne
 	if (arbitrageDirection	==	Direction_long)
 	{
 		bool is_band_open = IsBandOpenTime('l',volumeTrendInfo->cur_lastprice_,volumeTrendInfo->cur_middle_value_
-							,volumeTrendInfo->cur_sd_val_,volumeTrendInfo->band_open_edge_);
+							,volumeTrendInfo->cur_sd_val_,volumeTrendInfo->band_open_edge_
+							,volumeTrendInfo->limit_sd_,volumeTrendInfo->limit_sd_open_edge_);
 		if(is_band_open ==false){
 		  return false;
 		}
@@ -214,7 +220,8 @@ bool CHyArbitrageVolumeTrendOther3::isOpenTrendTime(SThreadChannel *threadChanne
 	else if (arbitrageDirection	==	Direction_short)
 	{
 		bool is_band_open = IsBandOpenTime('s',volumeTrendInfo->cur_lastprice_,volumeTrendInfo->cur_middle_value_
-							,volumeTrendInfo->cur_sd_val_,volumeTrendInfo->band_open_edge_);
+							,volumeTrendInfo->cur_sd_val_,volumeTrendInfo->band_open_edge_
+							,volumeTrendInfo->limit_sd_,volumeTrendInfo->limit_sd_open_edge_);
 		if(is_band_open ==false){
 		  return false;
 		}
@@ -251,7 +258,8 @@ bool CHyArbitrageVolumeTrendOther3::isCloseTrendTime(SThreadChannel *threadChann
 
 		return IsBandCloseTime('l',volumeTrendInfo->cur_lastprice_,volumeTrendInfo->cur_middle_value_,volumeTrendInfo->cur_sd_val_
 					,volumeTrendInfo->band_loss_close_edge_,volumeTrendInfo->band_profit_close_edge_
-					,volumeTrendInfo->rsi_data_,volumeTrendInfo->limit_rsi_data_);
+					,volumeTrendInfo->rsi_data_,volumeTrendInfo->limit_rsi_data_
+					,volumeTrendInfo->limit_sd_,volumeTrendInfo->limit_sd_loss_close_edge_);
 	}
 	else if (arbitrageDirection	==	Direction_short)
 	{
@@ -265,7 +273,8 @@ bool CHyArbitrageVolumeTrendOther3::isCloseTrendTime(SThreadChannel *threadChann
 
 		return IsBandCloseTime('s',volumeTrendInfo->cur_lastprice_,volumeTrendInfo->cur_middle_value_,volumeTrendInfo->cur_sd_val_
 					,volumeTrendInfo->band_loss_close_edge_,volumeTrendInfo->band_profit_close_edge_
-					,volumeTrendInfo->rsi_data_,volumeTrendInfo->limit_rsi_data_);
+					,volumeTrendInfo->rsi_data_,volumeTrendInfo->limit_rsi_data_
+					,volumeTrendInfo->limit_sd_,volumeTrendInfo->limit_sd_loss_close_edge_);
 	}
 	return false;
 }

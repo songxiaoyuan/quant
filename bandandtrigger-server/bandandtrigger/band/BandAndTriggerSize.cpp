@@ -36,6 +36,10 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 	limit_rsi_val_ =80;
 	pre_ema_val_=0;
 
+	limit_sd_ = 4;
+	limit_sd_open_edge_ = 1;
+	limit_sd_loss_close_edge_ = 3;
+
 	string path = "bandandtriggersizeconfig.txt";
 	vector<string> ret =  GetConfigInfo(path);
 	rsi_bar_period_ = atoi(ret[0].c_str());
@@ -57,7 +61,7 @@ BandAndTriggerSize::~BandAndTriggerSize(void)
 bool BandAndTriggerSize::IsTrendOpenTime(){
 	if (direction_ =="LONG")
 	{
-		bool is_band_open = IsBandOpenTime('l',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_open_edge_);
+		bool is_band_open = IsBandOpenTime('l',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_open_edge_,limit_sd_,limit_sd_open_edge_);
 		if(is_band_open == false){
 		  return false;
 		}
@@ -66,7 +70,7 @@ bool BandAndTriggerSize::IsTrendOpenTime(){
 	}
 	else if (direction_ =="SHORT")
 	{
-		bool is_band_open = IsBandOpenTime('s',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_open_edge_);
+		bool is_band_open = IsBandOpenTime('s',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_open_edge_,limit_sd_,limit_sd_open_edge_);
 		if(is_band_open ==false){
 		  return false;
 		}
@@ -90,7 +94,8 @@ bool BandAndTriggerSize::IsTrendCloseTime(){
 		{
 			return true;
 		}
-	  return IsBandCloseTime('l',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_loss_close_edge_,band_profit_close_edge_,rsi_val_,limit_rsi_val_);
+	  return IsBandCloseTime('l',cur_lastprice_,cur_middle_value_,cur_sd_val_
+		  ,band_loss_close_edge_,band_profit_close_edge_,rsi_val_,limit_rsi_val_,limit_sd_,limit_sd_loss_close_edge_);
 	}
 	else if (direction_ =="SHORT"){
 		bool tmp_draw_down = IsMaxDrawDown('s',cur_lastprice_,open_price_,multiple_val_,max_profit_,limit_max_draw_down_);
@@ -98,7 +103,8 @@ bool BandAndTriggerSize::IsTrendCloseTime(){
 		{
 			return true;
 		}
-	  return IsBandCloseTime('s',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_loss_close_edge_,band_profit_close_edge_,rsi_val_,limit_rsi_val_);
+	  return IsBandCloseTime('s',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_loss_close_edge_
+		  ,band_profit_close_edge_,rsi_val_,limit_rsi_val_,limit_sd_,limit_sd_loss_close_edge_);
 	}
 	return false;
 	
