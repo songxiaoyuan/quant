@@ -29,12 +29,14 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 		info->open_price_ ==0;
 		info->limit_max_draw_down_ ==0;
 
+		/*
 		string path = "bandandtriggersizeconfig.txt";
 		vector<string> ret =  GetConfigInfo(path);
 	
 		info->rsi_bar_period_ = atoi(ret[0].c_str());
 		info->rsi_period_ = atoi(ret[1].c_str());
 		info->limit_rsi_data_ = atoi(ret[2].c_str());
+		*/
 	}
 }
 double CHyArbitrageVolumeTrendOther3::calculateLessPrice(SThreadChannel *threadChannel,char OffsetFlag,char Direction,double fv,int perside)
@@ -96,6 +98,10 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 	volumeTrendInfo->band_profit_close_edge_ = ((double)param->m_Param[param_index].AdjEmaSlow)/10;
 
 	volumeTrendInfo->limit_max_draw_down_ = param->m_Param[param_index+1].maxDrawDown;
+
+	volumeTrendInfo->rsi_bar_period_ = param->m_Param[param_index+1].PositionAdj;
+	volumeTrendInfo->rsi_period_ = param->m_Param[param_index+1].AdjEmaFast;
+	volumeTrendInfo->limit_rsi_data_ = param->m_Param[param_index+1].AdjEmaSlow;
 
 	// ´Ë²¿·Ö´úÂëÖ÷ÒªÊÇÓÃÀ´±£´æ¼ÆËãcur_middle_value_ºÍsdµÄprice¡£
 	volumeTrendInfo->cur_lastprice_ = volumeTrendInfo->new_Price.LastPrice;
