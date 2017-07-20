@@ -51,6 +51,7 @@ private:
 	double open_price_;
 	double limit_max_draw_down_;
 
+
 	BandAndTriggerSizePriceInfo pre_price_;
 	BandAndTriggerSizePriceInfo cur_price_;
 	string direction_;
