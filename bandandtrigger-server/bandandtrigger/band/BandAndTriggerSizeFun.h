@@ -19,8 +19,10 @@ typedef struct
 }BandAndTriggerSizePriceInfo;
 
 	// 判断是不是达到了布林带的开仓和平仓条件
-bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double openval);
-bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double loss_band,double profit_band,double rsival,double limit_rsi);
+bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double openval,double limit_sd,double limit_sd_open_edge);
+bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
+					 ,double loss_band,double profit_band,double rsival,double limit_rsi
+					 ,double limit_sd,double limit_sd_loss_close_edge);
 
 bool IsTriggerSizeOpenTime(char direction,BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo *pre_price
 				,double volume_edge,double openinterest_edge,int spread );

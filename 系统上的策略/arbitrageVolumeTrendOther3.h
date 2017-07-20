@@ -23,6 +23,10 @@ typedef struct
 	double open_price_;
 	double limit_max_draw_down_;
 
+	double limit_sd_;
+	double limit_sd_open_edge_;
+	double limit_sd_loss_close_edge_;
+
 	double cur_spread_price_val_;
 	double limit_rsi_data_;
 	double rsi_data_;
