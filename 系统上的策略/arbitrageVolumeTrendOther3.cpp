@@ -104,8 +104,8 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 	volumeTrendInfo->limit_rsi_data_ = param->m_Param[param_index+1].AdjEmaSlow;
 
 	volumeTrendInfo->limit_sd_ = (double)param->m_Param[param_index+1].spread;
-	volumeTrendInfo->limit_sd_open_edge_ = param->m_Param[param_index+1].openEdge;
-	volumeTrendInfo->limit_sd_loss_close_edge_ = param->m_Param[param_index+1].closeEdge;
+	volumeTrendInfo->limit_sd_open_edge_ = (param->m_Param[param_index+1].openEdge)/10;
+	volumeTrendInfo->limit_sd_loss_close_edge_ = (param->m_Param[param_index+1].closeEdge)/10;
 
 
 	// ´Ë²¿·Ö´úÂëÖ÷ÒªÊÇÓÃÀ´±£´æ¼ÆËãcur_middle_value_ºÍsdµÄprice¡£
