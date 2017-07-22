@@ -1,9 +1,11 @@
 #include <iostream>
+#include <Windows.h>
 #include "band\BandAndTriggerSize.h"
 #include "basicfun\BasicFun.h"
 using namespace std;
 
 int main(){
+	long t1 =GetTickCount();
   int i;
   BandAndTriggerSize bt;
   string path = "rb1710_20170627.csv";
@@ -13,6 +15,8 @@ int main(){
 	  bt.getPrices(data[i]);
   }
   cout<<"end!!"<<endl;
+  long t2 = GetTickCount();
+  cout<<t2-t1<<endl;
   cin>>i;
   return 0;
 }

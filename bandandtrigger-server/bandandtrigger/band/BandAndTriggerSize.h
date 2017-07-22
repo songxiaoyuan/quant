@@ -6,6 +6,8 @@
 #include <string.h>
 #include <iostream>
 #include <unordered_map>
+#include <map>
+#include <queue>
 using namespace std;
 
 
@@ -21,6 +23,8 @@ private:
 
 private:
 	vector<double> vector_prices_;
+	queue<double> queue_prices_;
+	map<double,int> map_prices_;
 	double cur_lastprice_;
 	double pre_ema_val_;
 	int current_ema_tick_num_;

@@ -39,12 +39,16 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 	limit_sd_ = 4;
 	limit_sd_open_edge_ = 1;
 	limit_sd_loss_close_edge_ = 3;
-
+	/*
 	string path = "bandandtriggersizeconfig.txt";
 	vector<string> ret =  GetConfigInfo(path);
 	rsi_bar_period_ = atoi(ret[0].c_str());
 	rsi_period_ = atoi(ret[1].c_str());
-	limit_rsi_val_ = atoi(ret[2].c_str());
+	limit_rsi_val_ = atoi(ret[2].c_str());*/
+
+	rsi_bar_period_ = 100;
+	rsi_period_ = 10;
+	limit_rsi_val_ =80;
 
 	//cout<<rsi_bar_period_<<endl;
 	//cout<<rsi_period_<<endl;
@@ -55,7 +59,7 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 
 BandAndTriggerSize::~BandAndTriggerSize(void)
 {
-	vector<double>().swap(vector_prices_);
+	//vector<double>().swap(vector_prices_);
 }
 
 bool BandAndTriggerSize::IsTrendOpenTime(){
@@ -145,7 +149,8 @@ void BandAndTriggerSize::getPrices(vector<string> &line_data){
 		double tmpdiff = cur_lastprice_ - pre_rsi_lastprice_;
 		rsi_val_ = GetRSIData(tmpdiff,rsi_vector_,rsi_period_);
 	}
-
+	
+	/*
 	if (vector_prices_.size() < compXaveNum_)
 	{
 		vector_prices_.push_back(cur_lastprice_);
@@ -165,10 +170,55 @@ void BandAndTriggerSize::getPrices(vector<string> &line_data){
 		pre_ema_val_ = cur_middle_value_;
 	}
 	cur_sd_val_ = GetSDData(vector_prices_,compXaveNum_);
-
+	*/
+	
+	
+	if (queue_prices_.size() < compXaveNum_)
+	{
+		queue_prices_.push(cur_lastprice_);
+		pre_ema_val_ = GetEMAData(cur_lastprice_,pre_ema_val_,queue_prices_.size());
+		map<double,int>::iterator iter = map_prices_.find(cur_lastprice_);
+		if (iter == map_prices_.end())
+		{
+			map_prices_[cur_lastprice_] = 1;
+		}
+		else{
+			iter->second +=1;
+		}
+		pre_price_ = cur_price_;
+		return;
+	}
+	else{
+		queue_prices_.push(cur_lastprice_);
+		double front_prices_ = queue_prices_.front();
+		queue_prices_.pop();
+		if (cur_lastprice_ != front_prices_)
+		{
+			map<double,int>::iterator iter = map_prices_.find(cur_lastprice_);
+		    if (iter == map_prices_.end())
+			{
+				map_prices_[cur_lastprice_] = 1;
+			}
+			else{
+				iter->second +=1;
+			}
+			map_prices_[front_prices_] -=1;
+		}
+	}
+	if (movingTheo_ == "MA"){
+		//cur_middle_value_ = GetMAData(queue_prices_,compXaveNum_);
+	}
+	else
+	{
+		cur_middle_value_ = GetEMAData(cur_lastprice_,pre_ema_val_,compXaveNum_);
+		pre_ema_val_ = cur_middle_value_;
+	}
+	cur_sd_val_ = GetSDDataByMap(map_prices_,compXaveNum_);
+	
+	
 	//cout<<line_data[UpdateTime]<<endl;
-	string path=line_data[InstrumentID]+"_"+line_data[TradingDay];
-
+	string path=line_data[InstrumentID]+"_vec"+line_data[TradingDay];
+	
 	
 	string insert = line_data[UpdateTime]+ ","+to_string(cur_lastprice_)
 		+","+to_string(cur_middle_value_)+"," + to_string(cur_sd_val_)+","+ to_string(rsi_val_);

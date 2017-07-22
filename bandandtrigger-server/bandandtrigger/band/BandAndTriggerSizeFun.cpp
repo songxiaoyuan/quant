@@ -33,6 +33,33 @@ double GetSDData(vector<double> &vector_prices,int period){
 	return sqrt(sum/period);
 }
 
+double GetSDDataByMap(map<double,int> &map_prices,int period){
+	int size =0;
+	if (period ==0)
+	{
+		return 0;
+	}
+	double sum =0;
+	map<double,int>::iterator iter;
+	for (iter = map_prices.begin();iter != map_prices.end();++iter) 
+	{
+		sum = sum+(iter->first*iter->second);
+		size +=iter->second;
+	}
+	if (size != period)
+	{
+		cout<<"the size is not the period"<<size<<" : "<<period<<endl;
+		//exit(1);
+	}
+	double avg = sum/period;
+	sum=0;
+	for (iter = map_prices.begin();iter != map_prices.end();++iter) 
+	{
+		sum += (iter->first - avg)*(iter->first - avg)*iter->second;
+	}
+	return sqrt(sum/period);
+}
+
 double GetEMAData(double price,double pre_ema_val,int period){
 	if (period <=1)
 	{
@@ -250,7 +277,7 @@ vector<string> GetConfigInfo(string path){
 }
 
 void WriteMesgToFile(string path,string mesg){
-   return;
+  return;
   FILE *file_fd = fopen((char*)path.c_str(),"a");
   char tmp[1024] = {0};
   sprintf(tmp,"%s\n",mesg.c_str());
@@ -264,6 +291,20 @@ void WriteMesgToFileSO(string path,string mesg){
   sprintf(tmp,"%s\n",mesg.c_str());
   int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
   fclose(file_fd);
+}
+
+
+void double2str(const double &int_temp,string &string_temp)
+{
+        stringstream stream;
+        stream<<int_temp;
+        string_temp=stream.str();
+}
+ 
+void str2double(double &int_temp,const string &string_temp)
+{
+	stringstream stream(string_temp);
+	stream>>int_temp;
 }
 
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown){
