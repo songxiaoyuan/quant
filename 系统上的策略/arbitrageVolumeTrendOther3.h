@@ -3,6 +3,10 @@
 #include "hyArbitrage_Interface.h"
 #include "func.h"
 #include "band/BandAndTriggerSizeFun.h"
+#include <map>
+#include <queue>
+#include <string>
+#include <string.h>
 using namespace std;
 
 #define MaxPrice 100000
@@ -11,6 +15,8 @@ typedef struct
 	mdPrice new_Price;
 	mdPrice last_Price;
 	vector<double> vector_prices_;
+	queue<double> queue_prices_;
+	map<double,int> map_prices_;
 	double cur_lastprice_;
 	double pre_ema_val_;
 	double cur_middle_value_;

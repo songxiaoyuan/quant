@@ -258,23 +258,6 @@ bool IsUpTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo
 	return false;
 }
 
-vector<string> GetConfigInfo(string path){
-	vector<string> ret;
-	FILE *file_fd = fopen((char*)path.c_str(),"r");
-	if (NULL ==file_fd)
-	{
-		cout<<"cant find the config file"<<endl;
-		return ret;
-	}
-	char tmp[1024] = {0};
-	while(!feof(file_fd)){
-		memset(tmp, 0, sizeof(tmp));
-		fgets(tmp, sizeof(tmp) - 1, file_fd);
-		ret.push_back((string)tmp);
-	}
-	fclose(file_fd);
-	return ret;
-}
 
 void WriteMesgToFile(string path,string mesg){
   return;
@@ -293,18 +276,169 @@ void WriteMesgToFileSO(string path,string mesg){
   fclose(file_fd);
 }
 
+void printInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
+			   vector<double> &rsi_vector,double &pre_rsi,string config_file_path){
+    cout<<"the pre ema val is: "<<pre_ema_val<<endl;
+	cout<<"the size of queue prices is : " <<lastprice_queue.size()<<endl;
+	cout<<"the size of rsi_vector_ is : " <<rsi_vector.size()<<endl;
+	cout<<"the size of map_prices_ is : " <<lastprice_map.size()<<endl;
+	cout<<"the pre rsi last price is : "<<pre_rsi<<endl;
+	cout<<"the path is : " <<config_file_path<<endl;
+}
 
-void double2str(const double &int_temp,string &string_temp)
+
+string double2str(const double &int_temp)
 {
         stringstream stream;
         stream<<int_temp;
-        string_temp=stream.str();
+        return stream.str();
 }
  
-void str2double(double &int_temp,const string &string_temp)
+double str2double(const string &string_temp)
 {
 	stringstream stream(string_temp);
-	stream>>int_temp;
+	double double_temp;
+	stream>>double_temp;
+	return double_temp;
+}
+
+void split(std::string& s, std::string& delim,std::vector<double> &ret)  
+{  
+	//"INFO:: remove the first one and return the double"
+    size_t last = 0;  
+    size_t index=s.find_first_of(delim,last);  
+    while (index!=std::string::npos)  
+    {  
+		string tmp = (s.substr(last,index-last));
+		ret.push_back(str2double(tmp));  
+        last=index+1;  
+        index=s.find_first_of(delim,last);  
+    }  
+    if (index-last>0)  
+	{ 
+		string tmp = s.substr(last,index-last);
+        ret.push_back(str2double(tmp));  
+    }  
+} 
+
+void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
+				   vector<double> &rsi_vector,double &pre_rsi,string config_file_path){
+	config_file_path = "band_and_triggersize_config/"+config_file_path;
+	FILE *file_fd = fopen((char*)config_file_path.c_str(),"r");
+	if (NULL ==file_fd)
+	{
+		cout<<"cant find the config file"<<endl;
+		return;
+	}
+	char tmp[1024*100] = {0};
+	while(!feof(file_fd)){
+		memset(tmp, 0, sizeof(tmp));
+		fgets(tmp, sizeof(tmp) - 1, file_fd);
+		//cout<<tmp<<endl;
+		size_t index = ((string)tmp).find_first_of(",",0);
+		string front = ((string)tmp).substr(0,index);
+		string content = ((string)tmp).substr(index+1,((string)tmp).size());
+		vector<double> tmp_vector;
+		split(content,(string)",",tmp_vector);
+		cout<<front<<endl;
+		if (front.compare("pre_ema_val:")==0)
+		{
+			cout<<"in the pre_ema_val"<<endl;
+			//cout<<front<<endl;
+			if (tmp_vector.size() >0)
+			{
+				pre_ema_val = tmp_vector[0];
+			}
+			else{
+			  cout<<"the pre_ema_val is wrong"<<endl;
+			}
+		}
+		else if (front.compare("lastpricearray:")==0)
+		{
+			cout<<"in the lastpricearrray"<<endl;
+			//cout<<front<<endl;
+			cout<<"the size of lastprice arrray is: "<<tmp_vector.size()<<endl;
+			if (tmp_vector.size() >0)
+			{
+				for (int i = 0; i < tmp_vector.size(); i++)
+				{
+					lastprice_queue.push(tmp_vector[i]);
+					map<double,int>::iterator iter = lastprice_map.find(tmp_vector[i]);
+					if (iter == lastprice_map.end())
+					{
+						lastprice_map[tmp_vector[i]] = 1;
+					}
+					else{
+						iter->second +=1;
+					}
+				}
+			}
+			else{
+			  cout<<"the rsiarrray is wrong"<<endl;
+			}
+		}
+		else if (front.compare("rsiarray:")==0)
+		{
+			cout<<"in the rsiarrray"<<endl;
+			//cout<<front<<endl;
+			cout<<"the size of rsi array is: "<<tmp_vector.size()<<endl;
+			if (tmp_vector.size() >0)
+			{
+				for (int i = 0; i < tmp_vector.size(); i++)
+				{
+					rsi_vector.push_back(tmp_vector[i]);
+				}
+			}
+			else{
+			  cout<<"the rsiarrray is wrong"<<endl;
+			}
+		}
+		else if (front.compare("pre_rsi_val:")==0)
+		{
+			cout<<"in the pre_rsi_val"<<endl;
+			//cout<<front<<endl;
+			if (tmp_vector.size() >0)
+			{
+				pre_rsi = tmp_vector[0];
+			}
+			else{
+			  cout<<"the pre_rsi_val is wrong"<<endl;
+			}
+		}
+		else
+		{
+			cout<<"the line is no needed"<<endl;
+		}
+	}
+	fclose(file_fd);
+}
+
+
+void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<double> &rsi_vector,
+					 double rsi_period,double pre_rsi,string config_file_path){
+  config_file_path = "band_and_triggersize_config/"+config_file_path;
+  FILE *file_fd = fopen((char*)config_file_path.c_str(),"w");
+  char tmp[1024] = {0};
+  sprintf(tmp,"pre_ema_val:,%.2f\n",pre_ema_val);
+  int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
+  string queue_str = "lastpricearray:";
+  while(!lastprice_queue.empty()){
+	  queue_str = queue_str+"," + double2str(lastprice_queue.front());
+	  lastprice_queue.pop();
+  }
+  queue_str = queue_str+"\n";
+  write_len = fwrite(queue_str.c_str(),1,strlen(queue_str.c_str()),file_fd);
+  string rsi_str = "rsiarray:";
+  for (int i = rsi_vector.size() - rsi_period; i < rsi_vector.size(); i++)
+  {
+	  rsi_str = rsi_str + "," + double2str(rsi_vector[i]);
+  }
+  rsi_str = rsi_str+"\n";
+  write_len = fwrite(rsi_str.c_str(),1,strlen(rsi_str.c_str()),file_fd);
+  char rsi_tmp[1024] = {0};
+  sprintf(rsi_tmp,"pre_rsi_val:,%.2f",pre_rsi);
+  write_len = fwrite(rsi_tmp,1,strlen(rsi_tmp),file_fd);
+  fclose(file_fd);
 }
 
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown){

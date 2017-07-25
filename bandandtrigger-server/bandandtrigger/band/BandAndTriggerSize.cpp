@@ -11,7 +11,7 @@ int UpdateTime =20;
 
 BandAndTriggerSize::BandAndTriggerSize(void)
 {
-	compXaveNum_ =3600;
+	compXaveNum_ =7200;
 	movingTheo_ = "EMA";
 	band_open_edge_ = 0.5;
     band_loss_close_edge_= 1;
@@ -54,12 +54,17 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 	//cout<<rsi_period_<<endl;
 	//cout<<limit_rsi_val_<<endl;
 	time_ = "0";
+	GetConfigInfo(pre_ema_val_,queue_prices_,map_prices_,rsi_vector_,pre_rsi_lastprice_,"ru1709");
+	printInfo(pre_ema_val_,queue_prices_,map_prices_,rsi_vector_,pre_rsi_lastprice_,"ru1709");
+	
 }
 
 
 BandAndTriggerSize::~BandAndTriggerSize(void)
 {
 	//vector<double>().swap(vector_prices_);
+	cout<<"start to write the config "<<endl;
+	WriteConfigInfo(pre_ema_val_,queue_prices_,rsi_vector_,rsi_period_,pre_rsi_lastprice_,"ru1709");
 }
 
 bool BandAndTriggerSize::IsTrendOpenTime(){

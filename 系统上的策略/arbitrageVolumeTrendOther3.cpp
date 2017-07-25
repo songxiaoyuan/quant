@@ -11,10 +11,23 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 		memset(&info->pre_price_,0,sizeof(BandAndTriggerSizePriceInfo));
 		memset(&info->cur_price_,0,sizeof(BandAndTriggerSizePriceInfo));
 
+		string id = "522";
+		if (info->queue_prices_.empty())
+		{
+			GetConfigInfo(info->pre_ema_val_,info->queue_prices_,info->map_prices_,
+				info->rsi_vector_,info->pre_rsi_lastprice_,id);
+			printInfo(info->pre_ema_val_,info->queue_prices_,info->map_prices_,
+				info->rsi_vector_,info->pre_rsi_lastprice_,id);
+		}
+		else{
+			WriteConfigInfo(info->pre_ema_val_,info->queue_prices_,info->rsi_vector_,
+				info->rsi_period_,info->pre_rsi_lastprice_,id);
+		}
+
 		info->vector_prices_.clear();
-		info->rsi_vector_.clear();
+		//info->rsi_vector_.clear();
 		info->cur_lastprice_	==	0;
-		info->pre_ema_val_	==	0;
+		//info->pre_ema_val_	==	0;
 		info->band_open_edge_	==	0;
 		info->band_profit_close_edge_	==	0;
 		info->band_loss_close_edge_	==	0;
@@ -22,12 +35,13 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 		info->cur_sd_val_	==	0;
 		info->cur_spread_price_val_	==	0;
 		info->rsi_data_	==	0;
-		info->pre_rsi_lastprice_	==	0;
+		//info->pre_rsi_lastprice_	==	0;
 		info->now_rsi_bar_tick_	==	0;
 
 		info->max_profit_ ==0;
 		info->open_price_ ==0;
 		info->limit_max_draw_down_ ==0;
+
 
 		/*
 		string path = "bandandtriggersizeconfig.txt";
@@ -103,7 +117,7 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 	volumeTrendInfo->rsi_period_ = param->m_Param[param_index+1].AdjEmaFast;
 	volumeTrendInfo->limit_rsi_data_ = param->m_Param[param_index+1].AdjEmaSlow;
 
-	volumeTrendInfo->limit_sd_ = (double)param->m_Param[param_index+1].spread;
+	volumeTrendInfo->limit_sd_ = (double)param->m_Param[param_index+1].spread/10;
 	volumeTrendInfo->limit_sd_open_edge_ = (param->m_Param[param_index+1].openEdge)/10;
 	volumeTrendInfo->limit_sd_loss_close_edge_ = (param->m_Param[param_index+1].closeEdge)/10;
 
@@ -131,17 +145,44 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 
 	if (volumeTrendInfo->vector_prices_.size() < param->m_Param[param_index].compXave)
 	{
-		volumeTrendInfo->vector_prices_.push_back(volumeTrendInfo->cur_lastprice_);
+		//volumeTrendInfo->vector_prices_.push_back(volumeTrendInfo->cur_lastprice_);
 		//double tmp = GetEMAData(param_index,volumeTrendInfo->cur_lastprice_);
-		volumeTrendInfo->pre_ema_val_ = GetEMAData(volumeTrendInfo->cur_lastprice_,volumeTrendInfo->pre_ema_val_,volumeTrendInfo->vector_prices_.size());
+		volumeTrendInfo->queue_prices_.push(volumeTrendInfo->cur_lastprice_);
+		volumeTrendInfo->pre_ema_val_ = GetEMAData(volumeTrendInfo->cur_lastprice_,volumeTrendInfo->pre_ema_val_,
+			volumeTrendInfo->queue_prices_.size());
+		map<double,int>::iterator iter = volumeTrendInfo->map_prices_.find(volumeTrendInfo->cur_lastprice_);
+		if (iter == volumeTrendInfo->map_prices_.end())
+		{
+			volumeTrendInfo->map_prices_[volumeTrendInfo->cur_lastprice_] = 1;
+		}
+		else{
+			iter->second +=1;
+		}
 		return false;
 	}
 	else{
-		volumeTrendInfo->vector_prices_.push_back(volumeTrendInfo->cur_lastprice_);
-		volumeTrendInfo->cur_middle_value_ = GetEMAData(volumeTrendInfo->cur_lastprice_,volumeTrendInfo->pre_ema_val_,param->m_Param[param_index].compXave);
-		volumeTrendInfo->pre_ema_val_ = volumeTrendInfo->cur_middle_value_;
+		// volumeTrendInfo->vector_prices_.push_back(volumeTrendInfo->cur_lastprice_);
+		// volumeTrendInfo->cur_middle_value_ = GetEMAData(volumeTrendInfo->cur_lastprice_,volumeTrendInfo->pre_ema_val_,param->m_Param[param_index].compXave);
+		// volumeTrendInfo->pre_ema_val_ = volumeTrendInfo->cur_middle_value_;
 		// vector<double>::iterator it = vector_prices_.begin();
 		// it = vector_prices_.erase(it);
+		double front_prices_ = volumeTrendInfo->queue_prices_.front();
+		volumeTrendInfo->queue_prices_.pop();
+		if (volumeTrendInfo->cur_lastprice_ != front_prices_)
+		{
+			map<double,int>::iterator iter = volumeTrendInfo->map_prices_.find(volumeTrendInfo->cur_lastprice_);
+		    if (iter == volumeTrendInfo->map_prices_.end())
+			{
+				volumeTrendInfo->map_prices_[volumeTrendInfo->cur_lastprice_] = 1;
+			}
+			else{
+				iter->second +=1;
+			}
+			volumeTrendInfo->map_prices_[front_prices_] -=1;
+		}
+		volumeTrendInfo->cur_middle_value_ = GetEMAData(volumeTrendInfo->cur_lastprice_,
+			volumeTrendInfo->pre_ema_val_,param->m_Param[param_index].compXave);
+		volumeTrendInfo->pre_ema_val_ = volumeTrendInfo->cur_middle_value_;
 	}
 	//ÒÑ¾­´ïµ½ÁËÖÜÆÚ£¬¿ªÊ¼¼ÆËãmiddle dataºÍsdµÄdata
 	/*
@@ -154,8 +195,8 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 	}
 	*/
 	//volumeTrendInfo->cur_sd_val_ = GetSDData(param_index);
-	volumeTrendInfo->cur_sd_val_ = GetSDData(volumeTrendInfo->vector_prices_,param->m_Param[param_index].compXave);
-
+	// volumeTrendInfo->cur_sd_val_ = GetSDData(volumeTrendInfo->vector_prices_,param->m_Param[param_index].compXave);
+	volumeTrendInfo->cur_sd_val_ = GetSDDataByMap(volumeTrendInfo->map_prices_,param->m_Param[param_index].compXave);
 
 	STraderChannel *pTraderInfo_open=&g_arrTraderChannel[trader_open_index];
 	cancelNotMatchOrder(threadChannel,pTraderInfo_open);
