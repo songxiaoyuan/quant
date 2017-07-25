@@ -309,10 +309,115 @@ double str2double(const string &string_temp)
 	return double_temp;
 }
 
+void split(std::string& s, std::string& delim,std::vector<double> &ret)  
+{  
+	//"INFO:: remove the first one and return the double"
+    size_t last = 0;  
+    size_t index=s.find_first_of(delim,last);  
+    while (index!=std::string::npos)  
+    {  
+		string tmp = (s.substr(last,index-last));
+		ret.push_back(str2double(tmp));  
+        last=index+1;  
+        index=s.find_first_of(delim,last);  
+    }  
+    if (index-last>0)  
+	{ 
+		string tmp = s.substr(last,index-last);
+        ret.push_back(str2double(tmp));  
+    }  
+} 
 
 void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
 				   vector<double> &rsi_vector,double &pre_rsi,string config_file_path){
-
+	config_file_path = "band_and_triggersize_config/"+config_file_path;
+	FILE *file_fd = fopen((char*)config_file_path.c_str(),"r");
+	if (NULL ==file_fd)
+	{
+		cout<<"cant find the config file"<<endl;
+		return;
+	}
+	char tmp[1024*100] = {0};
+	while(!feof(file_fd)){
+		memset(tmp, 0, sizeof(tmp));
+		fgets(tmp, sizeof(tmp) - 1, file_fd);
+		//cout<<tmp<<endl;
+		size_t index = ((string)tmp).find_first_of(",",0);
+		string front = ((string)tmp).substr(0,index);
+		string content = ((string)tmp).substr(index+1,((string)tmp).size());
+		vector<double> tmp_vector;
+		split(content,(string)",",tmp_vector);
+		cout<<front<<endl;
+		if (front.compare("pre_ema_val:")==0)
+		{
+			cout<<"in the pre_ema_val"<<endl;
+			//cout<<front<<endl;
+			if (tmp_vector.size() >0)
+			{
+				pre_ema_val = tmp_vector[0];
+			}
+			else{
+			  cout<<"the pre_ema_val is wrong"<<endl;
+			}
+		}
+		else if (front.compare("lastpricearray:")==0)
+		{
+			cout<<"in the lastpricearrray"<<endl;
+			//cout<<front<<endl;
+			cout<<"the size of lastprice arrray is: "<<tmp_vector.size()<<endl;
+			if (tmp_vector.size() >0)
+			{
+				for (int i = 0; i < tmp_vector.size(); i++)
+				{
+					lastprice_queue.push(tmp_vector[i]);
+					map<double,int>::iterator iter = lastprice_map.find(tmp_vector[i]);
+					if (iter == lastprice_map.end())
+					{
+						lastprice_map[tmp_vector[i]] = 1;
+					}
+					else{
+						iter->second +=1;
+					}
+				}
+			}
+			else{
+			  cout<<"the rsiarrray is wrong"<<endl;
+			}
+		}
+		else if (front.compare("rsiarray:")==0)
+		{
+			cout<<"in the rsiarrray"<<endl;
+			//cout<<front<<endl;
+			cout<<"the size of rsi array is: "<<tmp_vector.size()<<endl;
+			if (tmp_vector.size() >0)
+			{
+				for (int i = 0; i < tmp_vector.size(); i++)
+				{
+					rsi_vector.push_back(tmp_vector[i]);
+				}
+			}
+			else{
+			  cout<<"the rsiarrray is wrong"<<endl;
+			}
+		}
+		else if (front.compare("pre_rsi_val:")==0)
+		{
+			cout<<"in the pre_rsi_val"<<endl;
+			//cout<<front<<endl;
+			if (tmp_vector.size() >0)
+			{
+				pre_rsi = tmp_vector[0];
+			}
+			else{
+			  cout<<"the pre_rsi_val is wrong"<<endl;
+			}
+		}
+		else
+		{
+			cout<<"the line is no needed"<<endl;
+		}
+	}
+	fclose(file_fd);
 }
 
 
@@ -323,14 +428,14 @@ void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<d
   char tmp[1024] = {0};
   sprintf(tmp,"pre_ema_val:,%.2f\n",pre_ema_val);
   int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
-  string queue_str = "lastpricearrray:";
+  string queue_str = "lastpricearray:";
   while(!lastprice_queue.empty()){
 	  queue_str = queue_str+"," + double2str(lastprice_queue.front());
 	  lastprice_queue.pop();
   }
   queue_str = queue_str+"\n";
   write_len = fwrite(queue_str.c_str(),1,strlen(queue_str.c_str()),file_fd);
-  string rsi_str = "rsiarrray:";
+  string rsi_str = "rsiarray:";
   for (int i = rsi_vector.size() - rsi_period; i < rsi_vector.size(); i++)
   {
 	  rsi_str = rsi_str + "," + double2str(rsi_vector[i]);
@@ -338,7 +443,7 @@ void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<d
   rsi_str = rsi_str+"\n";
   write_len = fwrite(rsi_str.c_str(),1,strlen(rsi_str.c_str()),file_fd);
   char rsi_tmp[1024] = {0};
-  sprintf(rsi_tmp,"pre_ema_val:,%.2f\n",pre_rsi);
+  sprintf(rsi_tmp,"pre_rsi_val:,%.2f",pre_rsi);
   write_len = fwrite(rsi_tmp,1,strlen(rsi_tmp),file_fd);
   fclose(file_fd);
 }
