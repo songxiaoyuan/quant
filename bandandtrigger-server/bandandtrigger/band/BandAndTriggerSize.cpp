@@ -54,12 +54,15 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 	//cout<<rsi_period_<<endl;
 	//cout<<limit_rsi_val_<<endl;
 	time_ = "0";
+	
 }
 
 
 BandAndTriggerSize::~BandAndTriggerSize(void)
 {
 	//vector<double>().swap(vector_prices_);
+	cout<<"start to write the config "<<endl;
+	WriteConfigInfo(pre_ema_val_,queue_prices_,rsi_vector_,rsi_period_,pre_rsi_lastprice_,"rb1710");
 }
 
 bool BandAndTriggerSize::IsTrendOpenTime(){

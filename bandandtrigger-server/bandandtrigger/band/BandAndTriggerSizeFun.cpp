@@ -294,17 +294,53 @@ void WriteMesgToFileSO(string path,string mesg){
 }
 
 
-void double2str(const double &int_temp,string &string_temp)
+string double2str(const double &int_temp)
 {
         stringstream stream;
         stream<<int_temp;
-        string_temp=stream.str();
+        return stream.str();
 }
  
-void str2double(double &int_temp,const string &string_temp)
+double str2double(const string &string_temp)
 {
 	stringstream stream(string_temp);
-	stream>>int_temp;
+	double double_temp;
+	stream>>double_temp;
+	return double_temp;
+}
+
+
+void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
+				   vector<double> &rsi_vector,double &pre_rsi,string config_file_path){
+
+}
+
+
+void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<double> &rsi_vector,
+					 double rsi_period,double pre_rsi,string config_file_path){
+  config_file_path = "band_and_triggersize_config/"+config_file_path;
+  FILE *file_fd = fopen((char*)config_file_path.c_str(),"w");
+  char tmp[1024] = {0};
+  sprintf(tmp,"pre_ema_val:,%.2f\n",pre_ema_val);
+  int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
+  string queue_str = "lastpricearrray:";
+  while(!lastprice_queue.empty()){
+	  queue_str = queue_str+"," + double2str(lastprice_queue.front());
+	  lastprice_queue.pop();
+  }
+  queue_str = queue_str+"\n";
+  write_len = fwrite(queue_str.c_str(),1,strlen(queue_str.c_str()),file_fd);
+  string rsi_str = "rsiarrray:";
+  for (int i = rsi_vector.size() - rsi_period; i < rsi_vector.size(); i++)
+  {
+	  rsi_str = rsi_str + "," + double2str(rsi_vector[i]);
+  }
+  rsi_str = rsi_str+"\n";
+  write_len = fwrite(rsi_str.c_str(),1,strlen(rsi_str.c_str()),file_fd);
+  char rsi_tmp[1024] = {0};
+  sprintf(rsi_tmp,"pre_ema_val:,%.2f\n",pre_rsi);
+  write_len = fwrite(rsi_tmp,1,strlen(rsi_tmp),file_fd);
+  fclose(file_fd);
 }
 
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown){
