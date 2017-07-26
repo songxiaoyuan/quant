@@ -277,13 +277,13 @@ void WriteMesgToFileSO(string path,string mesg){
 }
 
 void printInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
-			   vector<double> &rsi_vector,double &pre_rsi,string config_file_path){
+			   vector<double> &rsi_vector,double &pre_rsi,int config_file_path){
     cout<<"the pre ema val is: "<<pre_ema_val<<endl;
 	cout<<"the size of queue prices is : " <<lastprice_queue.size()<<endl;
 	cout<<"the size of rsi_vector_ is : " <<rsi_vector.size()<<endl;
 	cout<<"the size of map_prices_ is : " <<lastprice_map.size()<<endl;
 	cout<<"the pre rsi last price is : "<<pre_rsi<<endl;
-	cout<<"the path is : " <<config_file_path<<endl;
+	cout<<"the path is  : " <<config_file_path<<endl;
 }
 
 
@@ -322,9 +322,10 @@ void split(std::string& s, std::string& delim,std::vector<double> &ret)
 } 
 
 void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
-				   vector<double> &rsi_vector,double &pre_rsi,string config_file_path){
-	config_file_path = "band_and_triggersize_config/"+config_file_path;
-	FILE *file_fd = fopen((char*)config_file_path.c_str(),"r");
+				   vector<double> &rsi_vector,double &pre_rsi,int config_file_path){
+	char path[256]={0};
+	sprintf(path,"band_and_triggersize_config/%d",config_file_path);
+	FILE *file_fd = fopen(path,"r");
 	if (NULL ==file_fd)
 	{
 		cout<<"cant find the config file"<<endl;
@@ -339,7 +340,8 @@ void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double
 		string front = ((string)tmp).substr(0,index);
 		string content = ((string)tmp).substr(index+1,((string)tmp).size());
 		vector<double> tmp_vector;
-		split(content,(string)",",tmp_vector);
+		string tmp = ",";
+		split(content,tmp,tmp_vector);
 		cout<<front<<endl;
 		if (front.compare("pre_ema_val:")==0)
 		{
@@ -415,9 +417,10 @@ void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double
 
 
 void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<double> &rsi_vector,
-					 double rsi_period,double pre_rsi,string config_file_path){
-  config_file_path = "band_and_triggersize_config/"+config_file_path;
-  FILE *file_fd = fopen((char*)config_file_path.c_str(),"w");
+					 double rsi_period,double pre_rsi,int config_file_path){
+	char path[256]={0};
+	sprintf(path,"band_and_triggersize_config/%d",config_file_path);
+	FILE *file_fd = fopen(path,"r");
   char tmp[1024] = {0};
   sprintf(tmp,"pre_ema_val:,%.2f\n",pre_ema_val);
   int write_len = fwrite(tmp,1,strlen(tmp),file_fd);

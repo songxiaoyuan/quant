@@ -11,7 +11,8 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 		memset(&info->pre_price_,0,sizeof(BandAndTriggerSizePriceInfo));
 		memset(&info->cur_price_,0,sizeof(BandAndTriggerSizePriceInfo));
 
-		string id = "522";
+		//get the arbitrage type id
+		int  id = param->m_Param[0].arbitrageTypeID;
 		if (info->queue_prices_.empty())
 		{
 			GetConfigInfo(info->pre_ema_val_,info->queue_prices_,info->map_prices_,

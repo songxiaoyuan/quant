@@ -50,10 +50,10 @@ inline string double2str(const double &int_temp);
 inline double str2double(const string &string_temp);
 
 void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
-				   vector<double> &rsi_vector,double &pre_rsi,string config_file_path);
+				   vector<double> &rsi_vector,double &pre_rsi,int config_arbit_id);
 void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<double> &ris_vector,
-					 double rsi_period,double pre_rsi,string config_file_path);
+					 double rsi_period,double pre_rsi,int config_arbit_id);
 
 void printInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
-				   vector<double> &rsi_vector,double &pre_rsi,string config_file_path);
+			   vector<double> &rsi_vector,double &pre_rsi,int config_file_path);
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown);
