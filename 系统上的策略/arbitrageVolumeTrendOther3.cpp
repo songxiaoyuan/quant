@@ -167,6 +167,7 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 		// volumeTrendInfo->pre_ema_val_ = volumeTrendInfo->cur_middle_value_;
 		// vector<double>::iterator it = vector_prices_.begin();
 		// it = vector_prices_.erase(it);
+		volumeTrendInfo->queue_prices_.push(volumeTrendInfo->cur_lastprice_);
 		double front_prices_ = volumeTrendInfo->queue_prices_.front();
 		volumeTrendInfo->queue_prices_.pop();
 		if (volumeTrendInfo->cur_lastprice_ != front_prices_)

@@ -420,7 +420,7 @@ void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<d
 					 double rsi_period,double pre_rsi,int config_file_path){
 	char path[256]={0};
 	sprintf(path,"band_and_triggersize_config/%d",config_file_path);
-	FILE *file_fd = fopen(path,"r");
+	FILE *file_fd = fopen(path,"w");
   char tmp[1024] = {0};
   sprintf(tmp,"pre_ema_val:,%.2f\n",pre_ema_val);
   int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
