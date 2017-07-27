@@ -48,7 +48,7 @@ double GetSDDataByMap(map<double,int> &map_prices,int period){
 	}
 	if (size != period)
 	{
-		cout<<"the size is not the period"<<size<<" : "<<period<<endl;
+		cout<<"the size is not the period "<<size<<" : "<<period<<endl;
 		//exit(1);
 	}
 	double avg = sum/period;
