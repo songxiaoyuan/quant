@@ -144,7 +144,7 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 		volumeTrendInfo->rsi_data_ = GetRSIData(tmpdiff,volumeTrendInfo->rsi_vector_,volumeTrendInfo->rsi_period_);
 	}
 
-	if (volumeTrendInfo->vector_prices_.size() < param->m_Param[param_index].compXave)
+	if (volumeTrendInfo->queue_prices_.size() < param->m_Param[param_index].compXave)
 	{
 		//volumeTrendInfo->vector_prices_.push_back(volumeTrendInfo->cur_lastprice_);
 		//double tmp = GetEMAData(param_index,volumeTrendInfo->cur_lastprice_);

@@ -1,4 +1,4 @@
-﻿生成启动时间为 2017/7/26 12:25:30。
+﻿生成启动时间为 2017/7/27 10:37:41。
      1>项目“C:\Users\Administrator\Desktop\quant\bandandtrigger-server\bandandtrigger\bandandtrigger.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt band\BandAndTriggerSize.cpp
@@ -16,4 +16,4 @@
 
 生成成功。
 
-已用时间 00:00:01.27
+已用时间 00:00:01.68

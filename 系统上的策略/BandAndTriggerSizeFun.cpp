@@ -260,7 +260,7 @@ bool IsUpTime(BandAndTriggerSizePriceInfo *now_price,BandAndTriggerSizePriceInfo
 
 
 void WriteMesgToFile(string path,string mesg){
-  return;
+  //return;
   FILE *file_fd = fopen((char*)path.c_str(),"a");
   char tmp[1024] = {0};
   sprintf(tmp,"%s\n",mesg.c_str());
@@ -419,11 +419,16 @@ void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double
 void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<double> &rsi_vector,
 					 double rsi_period,double pre_rsi,int config_file_path){
 	cout<<"this is end start to write the log"<<endl;
-	    cout<<"the pre ema val is: "<<pre_ema_val<<endl;
-		cout<<"the size of queue prices is : " <<lastprice_queue.size()<<endl;
-		cout<<"the size of rsi_vector_ is : " <<rsi_vector.size()<<endl;
-		cout<<"the pre rsi last price is : "<<pre_rsi<<endl;
-		cout<<"the path is  : " <<config_file_path<<endl;
+	cout<<"the pre ema val is: "<<pre_ema_val<<endl;
+	cout<<"the size of queue prices is : " <<lastprice_queue.size()<<endl;
+	cout<<"the size of rsi_vector_ is : " <<rsi_vector.size()<<endl;
+	cout<<"the pre rsi last price is : "<<pre_rsi<<endl;
+	cout<<"the path is  : " <<config_file_path<<endl;
+	cout<<"the rsi_period is  : " <<rsi_period<<endl;
+	if (rsi_period >100 || rsi_period <0 || rsi_vector.size() < rsi_period) 
+	{
+		return;
+	}
 	char path[256]={0};
 	sprintf(path,"band_and_triggersize_config/%d",config_file_path);
 	FILE *file_fd = fopen(path,"w");

@@ -16,10 +16,10 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 	band_open_edge_ = 0.5;
     band_loss_close_edge_= 1;
 	band_profit_close_edge_ =3;
-	direction_ = "LONG";
+	direction_ = "SHORT";
 	position_ =0;
 	price_spread_edge_ = 100;
-	volume_edge_ =900 ;
+	volume_edge_ =500 ;
 	openinterest_edge_ = 0;
 
 	open_price_ = 0;
@@ -54,8 +54,8 @@ BandAndTriggerSize::BandAndTriggerSize(void)
 	//cout<<rsi_period_<<endl;
 	//cout<<limit_rsi_val_<<endl;
 	time_ = "0";
-	GetConfigInfo(pre_ema_val_,queue_prices_,map_prices_,rsi_vector_,pre_rsi_lastprice_,310);
-	printInfo(pre_ema_val_,queue_prices_,map_prices_,rsi_vector_,pre_rsi_lastprice_,310);
+	GetConfigInfo(pre_ema_val_,queue_prices_,map_prices_,rsi_vector_,pre_rsi_lastprice_,320);
+	printInfo(pre_ema_val_,queue_prices_,map_prices_,rsi_vector_,pre_rsi_lastprice_,320);
 	
 }
 
@@ -64,7 +64,7 @@ BandAndTriggerSize::~BandAndTriggerSize(void)
 {
 	//vector<double>().swap(vector_prices_);
 	cout<<"start to write the config "<<endl;
-	WriteConfigInfo(pre_ema_val_,queue_prices_,rsi_vector_,rsi_period_,pre_rsi_lastprice_,310);
+	//WriteConfigInfo(pre_ema_val_,queue_prices_,rsi_vector_,rsi_period_,pre_rsi_lastprice_,310);
 }
 
 bool BandAndTriggerSize::IsTrendOpenTime(){

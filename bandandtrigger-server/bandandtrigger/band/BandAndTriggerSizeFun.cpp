@@ -418,6 +418,12 @@ void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double
 
 void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<double> &rsi_vector,
 					 double rsi_period,double pre_rsi,int config_file_path){
+	cout<<"this is end start to write the log"<<endl;
+	    cout<<"the pre ema val is: "<<pre_ema_val<<endl;
+		cout<<"the size of queue prices is : " <<lastprice_queue.size()<<endl;
+		cout<<"the size of rsi_vector_ is : " <<rsi_vector.size()<<endl;
+		cout<<"the pre rsi last price is : "<<pre_rsi<<endl;
+		cout<<"the path is  : " <<config_file_path<<endl;
 	char path[256]={0};
 	sprintf(path,"band_and_triggersize_config/%d",config_file_path);
 	FILE *file_fd = fopen(path,"w");
