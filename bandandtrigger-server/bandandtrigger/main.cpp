@@ -18,5 +18,7 @@ int main(){
   long t2 = GetTickCount();
   cout<<t2-t1<<endl;
   cin>>i;
+  delete &bt;
+  cin>>i;
   return 0;
 }

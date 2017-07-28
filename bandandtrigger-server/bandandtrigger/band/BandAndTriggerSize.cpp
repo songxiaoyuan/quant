@@ -11,238 +11,92 @@ int UpdateTime =20;
 
 BandAndTriggerSize::BandAndTriggerSize(void)
 {
-	compXaveNum_ =7200;
-	movingTheo_ = "EMA";
-	band_open_edge_ = 0.5;
-    band_loss_close_edge_= 1;
-	band_profit_close_edge_ =3;
-	direction_ = "SHORT";
-	position_ =0;
-	price_spread_edge_ = 100;
-	volume_edge_ =500 ;
-	openinterest_edge_ = 0;
-
-	open_price_ = 0;
-	max_profit_ = 0;
-	limit_max_draw_down_ = 0;
-
-	now_interest_ =0;
+	now_interest_ = 0;
 	limit_interest_ =1;
-	multiple_val_ =10;
-
-	now_rsi_bar_tick_ = 0;
-	pre_rsi_lastprice_ = 0;
-	rsi_val_ = 0;
-	limit_rsi_val_ =80;
-	pre_ema_val_=0;
-
-	limit_sd_ = 4;
-	limit_sd_open_edge_ = 1;
-	limit_sd_loss_close_edge_ = 3;
-	/*
-	string path = "bandandtriggersizeconfig.txt";
-	vector<string> ret =  GetConfigInfo(path);
-	rsi_bar_period_ = atoi(ret[0].c_str());
-	rsi_period_ = atoi(ret[1].c_str());
-	limit_rsi_val_ = atoi(ret[2].c_str());*/
-
-	rsi_bar_period_ = 100;
-	rsi_period_ = 10;
-	limit_rsi_val_ =80;
-
-	//cout<<rsi_bar_period_<<endl;
-	//cout<<rsi_period_<<endl;
-	//cout<<limit_rsi_val_<<endl;
-	time_ = "0";
-	GetConfigInfo(pre_ema_val_,queue_prices_,map_prices_,rsi_vector_,pre_rsi_lastprice_,320);
-	printInfo(pre_ema_val_,queue_prices_,map_prices_,rsi_vector_,pre_rsi_lastprice_,320);
-	
+	clearVector();
 }
 
 
 BandAndTriggerSize::~BandAndTriggerSize(void)
 {
-	//vector<double>().swap(vector_prices_);
-	cout<<"start to write the config "<<endl;
-	//WriteConfigInfo(pre_ema_val_,queue_prices_,rsi_vector_,rsi_period_,pre_rsi_lastprice_,310);
+	clearVector();
 }
 
-bool BandAndTriggerSize::IsTrendOpenTime(){
-	if (direction_ =="LONG")
-	{
-		bool is_band_open = IsBandOpenTime('l',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_open_edge_,limit_sd_,limit_sd_open_edge_);
-		if(is_band_open == false){
-		  return false;
-		}
-		bool is_trigger_open = IsTriggerSizeOpenTime('l',&cur_price_,&pre_price_,volume_edge_,openinterest_edge_,price_spread_edge_);
-		return is_trigger_open;
-	}
-	else if (direction_ =="SHORT")
-	{
-		bool is_band_open = IsBandOpenTime('s',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_open_edge_,limit_sd_,limit_sd_open_edge_);
-		if(is_band_open ==false){
-		  return false;
-		}
-		bool is_trigger_open = IsTriggerSizeOpenTime('s',&cur_price_,&pre_price_,volume_edge_,openinterest_edge_,price_spread_edge_);
-		return is_trigger_open;
-	}
-	else{
-	  return false;
-	}
+void BandAndTriggerSize::clearVector(){
+	Parameter *param = &interface_param_;
+	VolumeTrendOther3Info *info = &TriggerSize3_info_;
+
+	memset(&info->pre_price,0,sizeof(mdPrice));
+	memset(&info->cur_price,0,sizeof(mdPrice));
+
+	//init the param 
+	int param_index =0;
+	//spread
+	param->m_Param[param_index].spread = 100;
+	//diff_volume
+	param->m_Param[param_index].openEdge = 100;
+	//open interest
+	param->m_Param[param_index].index = 0;
+	//period
+	param->m_Param[param_index].compXave = 7200;
+
+	//band_open_noraml
+	param->m_Param[param_index].PositionAdj = 5;
+	//band_loss_close_edge
+	param->m_Param[param_index].AdjEmaFast = 10;
+	//band_profit_close_edge
+	param->m_Param[param_index].AdjEmaSlow = 50;
+
+	//rsi_bar_period
+	param->m_Param[param_index+1].PositionAdj = 100;
+	//rsi_period
+	param->m_Param[param_index+1].AdjEmaFast = 10;
+	//limit_rsi_data
+	param->m_Param[param_index+1].AdjEmaSlow =80;
+
+	//limit_sd
+	param->m_Param[param_index+1].spread =4;
+	//limit_sd_open_edge
+	param->m_Param[param_index+1].openEdge=10;
+	//limit_sd_loss_close_edge
+	param->m_Param[param_index+1].closeEdge=20;
+
+	//limit_max_draw_down
+	param->m_Param[param_index+1].maxDrawDown = 100;
+
+	param->m_Param[param_index].arbitrageTypeID = 320;
+
+	//init the info 
+	info->multiple = 10;
+	info->direction = 'l';
+
+	StartAndStopFun(param,info,param_index);
 }
 
-bool BandAndTriggerSize::IsTrendCloseTime(){
-	if (now_interest_ <=0)
-	{
-		return false;
-	}
-	if(direction_ =="LONG"){
-		bool tmp_draw_down = IsMaxDrawDown('l',cur_lastprice_,open_price_,multiple_val_,max_profit_,limit_max_draw_down_);
-		//cout<<max_profit_<<endl;
-		if (tmp_draw_down ==true)
-		{
-			return true;
-		}
-	  return IsBandCloseTime('l',cur_lastprice_,cur_middle_value_,cur_sd_val_
-		  ,band_loss_close_edge_,band_profit_close_edge_,rsi_val_,limit_rsi_val_,limit_sd_,limit_sd_loss_close_edge_);
-	}
-	else if (direction_ =="SHORT"){
-		bool tmp_draw_down = IsMaxDrawDown('s',cur_lastprice_,open_price_,multiple_val_,max_profit_,limit_max_draw_down_);
-		if (tmp_draw_down ==true)
-		{
-			return true;
-		}
-	  return IsBandCloseTime('s',cur_lastprice_,cur_middle_value_,cur_sd_val_,band_loss_close_edge_
-		  ,band_profit_close_edge_,rsi_val_,limit_rsi_val_,limit_sd_,limit_sd_loss_close_edge_);
-	}
-	return false;
-	
-}
 
 void BandAndTriggerSize::getPrices(vector<string> &line_data){
-	cur_lastprice_ = atof(line_data[LASTPRICE].c_str());
-	cur_price_.Volume = atof(line_data[VOLUME].c_str());
-	cur_price_.LastPrice = atof(line_data[LASTPRICE].c_str());
-	cur_price_.OpenInterest =atof(line_data[OPENINTEREST].c_str());
-	cur_price_.AskPrice1 =atof(line_data[ASKPRICE1].c_str());
-	cur_price_.BidPrice1 = atof(line_data[BIDPRICE1].c_str());
-	cur_price_.multiple = multiple_val_;
-	cur_price_.Turnover = atof(line_data[TURNONER].c_str());
-	//cout<<cur_price_.BidPrice1<<endl;
-	//cout<<pre_price_.LastPrice<<endl;
-	time_ = line_data[UpdateTime];
-	if (pre_price_.LastPrice ==0)
+
+	Parameter *param = &interface_param_;
+	VolumeTrendOther3Info *info = &TriggerSize3_info_;
+
+	//init the pre price and cur price
+	info->cur_price.LastPrice = atof(line_data[LASTPRICE].c_str());
+	info->cur_price.Volume = atof(line_data[VOLUME].c_str());
+	info->cur_price.OpenInterest = atof(line_data[OPENINTEREST].c_str());
+	info->cur_price.AskPrice1 = atof(line_data[ASKPRICE1].c_str());
+	info->cur_price.BidPrice1 = atof(line_data[BIDPRICE1].c_str());
+	info->cur_price.Turnover = atof(line_data[TURNONER].c_str());
+	sprintf(info->cur_price.updateTime,"%s",line_data[UpdateTime]);
+	info->multiple = 10;
+
+	//is the first data in the server this is not needed
+	if (info->pre_price.LastPrice ==0)
 	{
-		pre_price_ = cur_price_;
-		pre_rsi_lastprice_ = pre_price_.LastPrice;
+		info->pre_price = info->cur_price;
+		info->pre_rsi_lastprice = info->cur_price.LastPrice;
 		return;
 	}
-	if (pre_rsi_lastprice_ ==0)
-	{
-		pre_rsi_lastprice_ = cur_lastprice_;
-	}
-	if (now_rsi_bar_tick_ >= rsi_bar_period_)
-	{
-		double tmpdiff = cur_lastprice_ - pre_rsi_lastprice_;
-		pre_rsi_lastprice_ = cur_lastprice_;
-		now_rsi_bar_tick_ =1;
-		rsi_val_ = GetRSIData(tmpdiff,rsi_vector_,rsi_period_);
-		rsi_vector_.push_back(tmpdiff);
-	}
-	else{
-		now_rsi_bar_tick_ +=1;
-		double tmpdiff = cur_lastprice_ - pre_rsi_lastprice_;
-		rsi_val_ = GetRSIData(tmpdiff,rsi_vector_,rsi_period_);
-	}
-	
-	/*
-	if (vector_prices_.size() < compXaveNum_)
-	{
-		vector_prices_.push_back(cur_lastprice_);
-		pre_ema_val_ = GetEMAData(cur_lastprice_,pre_ema_val_,vector_prices_.size());
-		pre_price_ = cur_price_;
-		return;
-	}
-	else{
-		vector_prices_.push_back(cur_lastprice_);
-	}
-	if (movingTheo_ == "MA"){
-		cur_middle_value_ = GetMAData(vector_prices_,compXaveNum_);
-	}
-	else
-	{
-		cur_middle_value_ = GetEMAData(cur_lastprice_,pre_ema_val_,compXaveNum_);
-		pre_ema_val_ = cur_middle_value_;
-	}
-	cur_sd_val_ = GetSDData(vector_prices_,compXaveNum_);
-	*/
-	
-	
-	if (queue_prices_.size() < compXaveNum_)
-	{
-		queue_prices_.push(cur_lastprice_);
-		pre_ema_val_ = GetEMAData(cur_lastprice_,pre_ema_val_,queue_prices_.size());
-		map<double,int>::iterator iter = map_prices_.find(cur_lastprice_);
-		if (iter == map_prices_.end())
-		{
-			map_prices_[cur_lastprice_] = 1;
-		}
-		else{
-			iter->second +=1;
-		}
-		pre_price_ = cur_price_;
-		return;
-	}
-	else{
-		queue_prices_.push(cur_lastprice_);
-		double front_prices_ = queue_prices_.front();
-		queue_prices_.pop();
-		if (cur_lastprice_ != front_prices_)
-		{
-			map<double,int>::iterator iter = map_prices_.find(cur_lastprice_);
-		    if (iter == map_prices_.end())
-			{
-				map_prices_[cur_lastprice_] = 1;
-			}
-			else{
-				iter->second +=1;
-			}
-			map_prices_[front_prices_] -=1;
-		}
-	}
-	if (movingTheo_ == "MA"){
-		//cur_middle_value_ = GetMAData(queue_prices_,compXaveNum_);
-	}
-	else
-	{
-		cur_middle_value_ = GetEMAData(cur_lastprice_,pre_ema_val_,compXaveNum_);
-		pre_ema_val_ = cur_middle_value_;
-	}
-	cur_sd_val_ = GetSDDataByMap(map_prices_,compXaveNum_);
-	
-	
-	//cout<<line_data[UpdateTime]<<endl;
-	string path=line_data[InstrumentID]+"_vec"+line_data[TradingDay];
-	
-	
-	string insert = line_data[UpdateTime]+ ","+to_string(cur_lastprice_)
-		+","+to_string(cur_middle_value_)+"," + to_string(cur_sd_val_)+","+ to_string(rsi_val_);
 
-	//WriteMesgToFile(path,insert);
-	bool band_open_signal = IsTrendOpenTime();
-	bool band_close_signal =  IsTrendCloseTime();
-
-
-	if (band_open_signal && now_interest_ < limit_interest_){
-		cout<<"this is band open signal "<<line_data[UpdateTime] <<" the price "<<line_data[LASTPRICE]<<endl;
-		now_interest_ +=1;
-		open_price_ = atof(line_data[LASTPRICE].c_str());
-	}
-	else if(band_close_signal && now_interest_ >0){
-		cout<<"this is band close signal "<<line_data[UpdateTime]<<" the price "<<line_data[LASTPRICE]<<endl;
-		now_interest_ -=1;
-		open_price_ =0;
-		max_profit_ = 0;
-	}
-	pre_price_ = cur_price_;
+	int param_index = 0;
+	BandAndTriggerSizeRetStatus ret_status = GetMdData(param,info,param_index);
 }
