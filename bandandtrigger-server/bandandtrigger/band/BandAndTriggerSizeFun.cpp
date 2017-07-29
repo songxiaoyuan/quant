@@ -129,10 +129,8 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double sd
 
 bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
 					 ,double loss_band,double profit_band,double rsival,double limit_rsi
-					 ,double limit_sd,double limit_sd_loss_band)
-{
-	 if (sd < limit_sd)
-	{
+					 ,double limit_sd,double limit_sd_loss_band){
+	 if (sd < limit_sd){
 		loss_band = limit_sd_loss_band;
 	}
 	if (direction	==	'l')
@@ -215,8 +213,7 @@ bool IsTriggerSizeCloseTime(char direction,mdPrice *now_price,mdPrice *pre_price
 	return false;
 }
 
-bool IsDownTime(mdPrice *now_price,mdPrice *pre_price,int spread,int multiple)
-{
+bool IsDownTime(mdPrice *now_price,mdPrice *pre_price,int spread,int multiple){
 	int diffVolume	=	now_price->Volume	-	pre_price->Volume;   
 	double diffTurnover	=	now_price->Turnover	-	pre_price->Turnover;  
 	if (diffVolume	==	0	||	diffTurnover	==	0	||	multiple	==	0)
@@ -232,7 +229,6 @@ bool IsDownTime(mdPrice *now_price,mdPrice *pre_price,int spread,int multiple)
 		return true;
 	}
 	return false;
-
 }
 
 bool IsUpTime(mdPrice *now_price,mdPrice *pre_price,int spread,int multiple)
@@ -247,6 +243,13 @@ bool IsUpTime(mdPrice *now_price,mdPrice *pre_price,int spread,int multiple)
 	double avePrice	=	diffTurnover/diffVolume/multiple;
 
 	double temp	=	100*(avePrice	-	pre_price->BidPrice1)/(pre_price->AskPrice1 - pre_price->BidPrice1);
+
+	/*
+	string path = "test.txt";
+	char tempchar[1024]={0};
+	sprintf(tempchar,"%s,%d,%.2f,%.2f,%.2f",now_price->updateTime,diffVolume,diffTurnover,temp);
+	WriteMesgToFile((string)path,(string)tempchar);
+	*/
 
 	if (temp >=	spread)
 	{
@@ -266,15 +269,7 @@ void WriteMesgToFile(string path,string mesg){
   fclose(file_fd);
 }
 
-void WriteMesgToFileSO(string path,string mesg){
-  FILE *file_fd = fopen((char*)path.c_str(),"a");
-  char tmp[1024] = {0};
-  sprintf(tmp,"%s\n",mesg.c_str());
-  int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
-  fclose(file_fd);
-}
-
-void printInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
+void PrintInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
 			   vector<double> &rsi_vector,double &pre_rsi,int config_file_path){
     cout<<"the pre ema val is: "<<pre_ema_val<<endl;
 	cout<<"the size of queue prices is : " <<lastprice_queue.size()<<endl;
@@ -420,12 +415,11 @@ void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double
 
 
 void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<double> &rsi_vector,
-					 double rsi_period,double pre_rsi,int config_file_path){
+					 double rsi_period,int config_file_path){
 	cout<<"this is end start to write the log"<<endl;
 	cout<<"the pre ema val is: "<<pre_ema_val<<endl;
 	cout<<"the size of queue prices is : " <<lastprice_queue.size()<<endl;
 	cout<<"the size of rsi_vector_ is : " <<rsi_vector.size()<<endl;
-	cout<<"the pre rsi last price is : "<<pre_rsi<<endl;
 	cout<<"the path is  : " <<config_file_path<<endl;
 	cout<<"the rsi_period is  : " <<rsi_period<<endl;
 	if (rsi_period >100 || rsi_period <0 || rsi_vector.size() < rsi_period) 
@@ -439,8 +433,10 @@ void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<d
   sprintf(tmp,"pre_ema_val:,%.2f\n",pre_ema_val);
   int write_len = fwrite(tmp,1,strlen(tmp),file_fd);
   string queue_str = "lastpricearray:";
+  double queue_last=0;
   while(!lastprice_queue.empty()){
-	  queue_str = queue_str+"," + double2str(lastprice_queue.front());
+	  queue_last = lastprice_queue.front();
+	  queue_str = queue_str+"," + double2str(queue_last);
 	  lastprice_queue.pop();
   }
   queue_str = queue_str+"\n";
@@ -453,9 +449,10 @@ void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<d
   rsi_str = rsi_str+"\n";
   write_len = fwrite(rsi_str.c_str(),1,strlen(rsi_str.c_str()),file_fd);
   char rsi_tmp[1024] = {0};
-  sprintf(rsi_tmp,"pre_rsi_val:,%.2f",pre_rsi);
+  sprintf(rsi_tmp,"pre_rsi_val:,%.2f",queue_last);
   write_len = fwrite(rsi_tmp,1,strlen(rsi_tmp),file_fd);
   fclose(file_fd);
+  cout<<"we have write the status in :"<<config_file_path<<endl;
 }
 
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown){
@@ -495,13 +492,13 @@ void StartAndStopFun(Parameter *param,VolumeTrendOther3Info *info,int param_inde
 		cout<<"the queue is empty and is init function"<<endl;
 		GetConfigInfo(info->pre_ema_val,info->prices_queue,info->prices_map,
 			info->rsi_vector,info->pre_rsi_lastprice,param->m_Param[param_index].arbitrageTypeID);
-		printInfo(info->pre_ema_val,info->prices_queue,info->prices_map,
+		PrintInfo(info->pre_ema_val,info->prices_queue,info->prices_map,
 			info->rsi_vector,info->pre_rsi_lastprice,param->m_Param[param_index].arbitrageTypeID);
 	}
 	else{
 		cout<<"the queue is not empty and is the stop function"<<endl;
 		WriteConfigInfo(info->pre_ema_val,info->prices_queue,info->rsi_vector,
-			param->m_Param[param_index+1].AdjEmaFast,info->pre_rsi_lastprice,param->m_Param[param_index].arbitrageTypeID);
+			param->m_Param[param_index+1].AdjEmaFast,param->m_Param[param_index].arbitrageTypeID);
 	}
 }
 
@@ -514,20 +511,21 @@ BandAndTriggerSizeRetStatus GetMdData(Parameter *param,VolumeTrendOther3Info *in
 	double sd_val;
 
 	double lastprice = info->cur_price.LastPrice;
-	double compXave = param->m_Param[param_index].compXave;
-	double rsi_period = param->m_Param[param_index+1].AdjEmaFast;
-	double rsi_bar_limit_tick = param->m_Param[param_index+1].PositionAdj;
+	int compXave = param->m_Param[param_index].compXave;
+	int rsi_period = param->m_Param[param_index+1].AdjEmaFast;
+	int rsi_bar_limit_tick = param->m_Param[param_index+1].PositionAdj;
 
 	if (info->pre_rsi_lastprice ==0)
 	{
 		info->pre_rsi_lastprice = lastprice;
 	}
 	if(info->now_rsi_bar_tick >= rsi_bar_limit_tick){
-		//the bar tick is enough
+		//cout<<"the bar tick is enough"<<endl;
 		double tmpdiff = lastprice - info->pre_rsi_lastprice;
 		info->pre_rsi_lastprice = lastprice;
 		info->now_rsi_bar_tick = 1;
 		rsi_data = GetRSIData(tmpdiff,info->rsi_vector,rsi_period);
+		info->rsi_vector.push_back(tmpdiff);
 	}
 	else{
 		info->now_rsi_bar_tick +=1;
@@ -571,13 +569,13 @@ BandAndTriggerSizeRetStatus GetMdData(Parameter *param,VolumeTrendOther3Info *in
 	info->pre_ema_val = middle_val;
 	sd_val = GetSDDataByMap(info->prices_map,compXave);
 
-	ret.isTrendOpenTime = isOpenTime(middle_val,sd_val,param,info,param_index);
-	ret.isTrendCloseTime = isCloseTime(middle_val,sd_val,rsi_data,param,info,param_index);
+	ret.isTrendOpenTime = IsOpenTime(middle_val,sd_val,param,info,param_index);
+	ret.isTrendCloseTime = IsCloseTime(middle_val,sd_val,rsi_data,param,info,param_index);
 
 	return ret;
 }
 
-bool isOpenTime(double middle_val,double sd_val,Parameter *param,VolumeTrendOther3Info *info,int param_index){
+bool IsOpenTime(double middle_val,double sd_val,Parameter *param,VolumeTrendOther3Info *info,int param_index){
 	//band_open_noraml
 	double band_open_edge =  ((double)param->m_Param[param_index].PositionAdj)/10;
 
@@ -608,7 +606,7 @@ bool isOpenTime(double middle_val,double sd_val,Parameter *param,VolumeTrendOthe
 	return is_trigger_open;
 }
 
-bool isCloseTime(double middle_val,double sd_val,double rsi_val,Parameter *param,VolumeTrendOther3Info *info,int param_index){
+bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter *param,VolumeTrendOther3Info *info,int param_index){
 	//band_loss_close_edge
 	double band_loss_close_edge = ((double)param->m_Param[param_index].AdjEmaFast)/10;
 	//band_profit_close_edge
@@ -633,7 +631,16 @@ bool isCloseTime(double middle_val,double sd_val,double rsi_val,Parameter *param
 	{
 		return true;
 	}
-
 	return IsBandCloseTime(info->direction,lastprice,middle_val,sd_val,
 		band_loss_close_edge,band_profit_close_edge,rsi_val,limit_rsi,limit_sd,limit_sd_close_edge);
+}
+
+
+void GetOpenSignal(VolumeTrendOther3Info *info){
+	info->open_price = info->cur_price.LastPrice;
+	info->max_profit = 0;
+}
+void GetCloseSignal(VolumeTrendOther3Info *info){
+	info->open_price = 0;
+	info->max_profit = 0;
 }

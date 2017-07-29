@@ -8,7 +8,7 @@ int main(){
 	long t1 =GetTickCount();
   int i;
   BandAndTriggerSize bt;
-  string path = "rb1710_20170727.csv";
+  string path = "zn1709_20170728.csv";
   vector<vector<string>> data = GetCSVFileData(path);
   for (int i = 0; i < data.size(); i++)
   {
@@ -18,7 +18,6 @@ int main(){
   long t2 = GetTickCount();
   cout<<t2-t1<<endl;
   cin>>i;
-  delete &bt;
-  cin>>i;
+  cout<<"the exe is stop"<<endl;
   return 0;
 }

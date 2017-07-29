@@ -170,7 +170,6 @@ double GetEMAData(double price,double pre_ema_val,int period);
 //根据传入的当前的差值和保存差值的数据，以及rsi的周期，来求返回的rsi的值。
 double GetRSIData(double tmpdiff,vector<double> &rsi_vector,int period);
 void WriteMesgToFile(string path,string mesg);
-void WriteMesgToFileSO(string path,string mesg);
 
 inline string double2str(const double &int_temp);
 inline double str2double(const string &string_temp);
@@ -178,9 +177,9 @@ inline double str2double(const string &string_temp);
 void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
 				   vector<double> &rsi_vector,double &pre_rsi,int config_arbit_id);
 void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<double> &ris_vector,
-					 double rsi_period,double pre_rsi,int config_arbit_id);
+					 double rsi_period,int config_arbit_id);
 
-void printInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
+void PrintInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
 			   vector<double> &rsi_vector,double &pre_rsi,int config_file_path);
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,
 				   double &max_profit,double limit_max_drawdown);
@@ -188,5 +187,9 @@ bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int mul
 void StartAndStopFun(Parameter *param,VolumeTrendOther3Info *info,int param_index);
 BandAndTriggerSizeRetStatus GetMdData(Parameter *param,VolumeTrendOther3Info *info,int param_index);
 
-bool isOpenTime(double middle_val,double sd_val,Parameter *param,VolumeTrendOther3Info *info,int param_index);
-bool isCloseTime(double middle_val,double sd_val,double rsi_val,Parameter *param,VolumeTrendOther3Info *info,int param_index);
+bool IsOpenTime(double middle_val,double sd_val,Parameter *param,VolumeTrendOther3Info *info,int param_index);
+bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter *param,
+				 VolumeTrendOther3Info *info,int param_index);
+
+void GetOpenSignal(VolumeTrendOther3Info *info);
+void GetCloseSignal(VolumeTrendOther3Info *info);

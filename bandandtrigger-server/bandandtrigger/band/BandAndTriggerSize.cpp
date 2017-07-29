@@ -29,6 +29,13 @@ void BandAndTriggerSize::clearVector(){
 	memset(&info->pre_price,0,sizeof(mdPrice));
 	memset(&info->cur_price,0,sizeof(mdPrice));
 
+	//init the info 
+	info->multiple = 5;
+	info->direction = 'l';
+	info->now_rsi_bar_tick =0;
+	info->max_profit =0;
+	info->open_price = 0;
+
 	//init the param 
 	int param_index =0;
 	//spread
@@ -38,14 +45,14 @@ void BandAndTriggerSize::clearVector(){
 	//open interest
 	param->m_Param[param_index].index = 0;
 	//period
-	param->m_Param[param_index].compXave = 7200;
+	param->m_Param[param_index].compXave = 3600;
 
 	//band_open_noraml
 	param->m_Param[param_index].PositionAdj = 5;
 	//band_loss_close_edge
 	param->m_Param[param_index].AdjEmaFast = 10;
 	//band_profit_close_edge
-	param->m_Param[param_index].AdjEmaSlow = 50;
+	param->m_Param[param_index].AdjEmaSlow = 30;
 
 	//rsi_bar_period
 	param->m_Param[param_index+1].PositionAdj = 100;
@@ -55,20 +62,18 @@ void BandAndTriggerSize::clearVector(){
 	param->m_Param[param_index+1].AdjEmaSlow =80;
 
 	//limit_sd
-	param->m_Param[param_index+1].spread =4;
+	param->m_Param[param_index+1].spread =200;
 	//limit_sd_open_edge
 	param->m_Param[param_index+1].openEdge=10;
 	//limit_sd_loss_close_edge
-	param->m_Param[param_index+1].closeEdge=20;
+	param->m_Param[param_index+1].closeEdge=30;
 
 	//limit_max_draw_down
-	param->m_Param[param_index+1].maxDrawDown = 100;
+	param->m_Param[param_index+1].maxDrawDown = 0;
 
 	param->m_Param[param_index].arbitrageTypeID = 320;
 
-	//init the info 
-	info->multiple = 10;
-	info->direction = 'l';
+
 
 	StartAndStopFun(param,info,param_index);
 }
@@ -86,8 +91,8 @@ void BandAndTriggerSize::getPrices(vector<string> &line_data){
 	info->cur_price.AskPrice1 = atof(line_data[ASKPRICE1].c_str());
 	info->cur_price.BidPrice1 = atof(line_data[BIDPRICE1].c_str());
 	info->cur_price.Turnover = atof(line_data[TURNONER].c_str());
-	sprintf(info->cur_price.updateTime,"%s",line_data[UpdateTime]);
-	info->multiple = 10;
+	sprintf(info->cur_price.updateTime,"%s",line_data[UpdateTime].c_str());
+	
 
 	//is the first data in the server this is not needed
 	if (info->pre_price.LastPrice ==0)
@@ -99,4 +104,18 @@ void BandAndTriggerSize::getPrices(vector<string> &line_data){
 
 	int param_index = 0;
 	BandAndTriggerSizeRetStatus ret_status = GetMdData(param,info,param_index);
+
+	if (ret_status.isTrendOpenTime && now_interest_ < limit_interest_)
+	{
+		cout<<info->cur_price.updateTime<<" open the once"<<endl;
+		now_interest_ +=1;
+		GetOpenSignal(info);
+	}
+	if (ret_status.isTrendCloseTime && now_interest_ >0 )
+	{
+		cout<<info->cur_price.updateTime<<" close once"<<endl;
+		now_interest_ -=1;
+		GetCloseSignal(info);
+	}
+	info->pre_price = info->cur_price;
 }
