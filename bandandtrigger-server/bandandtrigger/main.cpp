@@ -5,7 +5,7 @@
 using namespace std;
 
 int main(){
-	long t1 =GetTickCount();
+  long t1 =GetTickCount();
   int i;
   BandAndTriggerSize bt;
   string path = "zn1709_20170728.csv";

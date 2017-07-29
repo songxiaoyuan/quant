@@ -20,6 +20,7 @@ public:
 
 private:
 	VolumeTrendOther3Info TriggerSize3_info_;
+
 	Parameter interface_param_;
 
 	//this is the myself test the server is not needed
