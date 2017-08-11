@@ -130,7 +130,7 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double sd
 bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
 					 ,double loss_band,double profit_band,double rsival,double limit_rsi
 					 ,double limit_sd,double limit_sd_loss_band){
-	 if (sd < limit_sd){
+	if (sd < limit_sd){
 		loss_band = limit_sd_loss_band;
 	}
 	if (direction	==	'l')

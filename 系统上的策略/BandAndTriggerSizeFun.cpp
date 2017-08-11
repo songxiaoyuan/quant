@@ -177,7 +177,7 @@ bool IsTriggerSizeOpenTime(char direction,BandAndTriggerSizePriceInfo *now_price
 		 //cout<<now_price->Volume<<endl;
 		return false;
 	}
-	if (now_price->OpenInterest - pre_price->OpenInterest <= openinterest_edge)
+	if (openinterest_edge != 0 && now_price->OpenInterest - pre_price->OpenInterest <= openinterest_edge)
 	{
 		return false;
 	}
@@ -199,7 +199,7 @@ bool IsTriggerSizeCloseTime(char direction,BandAndTriggerSizePriceInfo *now_pric
 	 {
 		return false;
 	}
-	if (now_price->OpenInterest - pre_price->OpenInterest >= - openinterest_edge)
+	if (openinterest_edge != 0 && now_price->OpenInterest - pre_price->OpenInterest >= - openinterest_edge)
 	{
 		return false;
 	}
@@ -329,6 +329,10 @@ void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double
 	if (NULL ==file_fd)
 	{
 		cout<<"cant find the config file"<<endl;
+		pre_ema_val = 0;
+		lastprice_map.clear();
+		rsi_vector.clear();
+		pre_rsi = 0;
 		return;
 	}
 	char tmp[1024*100] = {0};
