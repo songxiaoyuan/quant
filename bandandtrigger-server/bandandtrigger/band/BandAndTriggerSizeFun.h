@@ -139,6 +139,10 @@ typedef struct
 	int now_rsi_bar_tick;
 	vector<double> rsi_vector;
 
+	vector<int> diff_volume_vector;
+	vector<double> diff_openinterest_vector;
+	vector<double> spread_vector;
+
 }VolumeTrendOther3Info;
 
 typedef struct
@@ -148,13 +152,14 @@ typedef struct
 }BandAndTriggerSizeRetStatus;
 
 	// 判断是不是达到了布林带的开仓和平仓条件
-bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double openval,double limit_sd,double limit_sd_open_edge);
+bool IsBandOpenTime(char direction,double lastprice,double middle,double sd
+					,double openval1,double openval2,double limit_sd,double limit_sd_open_edge);
 bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
 					 ,double loss_band,double profit_band,double rsival,double limit_rsi
 					 ,double limit_sd,double limit_sd_loss_close_edge);
 
-bool IsTriggerSizeOpenTime(char direction,mdPrice *now_price,mdPrice *pre_price,int multiple
-				,double volume_edge,double openinterest_edge,double spread );
+bool IsTriggerSizeOpenTime(char direction,vector<int> &diff_volume_vector,vector<double> &diff_openinterest_vector,vector<double> &spread_vector
+				,double volume_edge,double openinterest_edge,double spread,int ticknum);
 bool IsTriggerSizeCloseTime(char direction,mdPrice *now_price,mdPrice *pre_price,int multiple
 				,double volume_edge,double openinterest_edge,int spread);
 

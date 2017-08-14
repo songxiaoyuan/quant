@@ -8,7 +8,7 @@ int main(){
   long t1 =GetTickCount();
   int i;
   BandAndTriggerSize bt;
-  string path = "zn1709_20170728.csv";
+  string path = "ru1801_20170810.csv";
   vector<vector<string>> data = GetCSVFileData(path);
   for (int i = 0; i < data.size(); i++)
   {

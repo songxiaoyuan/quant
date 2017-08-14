@@ -30,8 +30,8 @@ void BandAndTriggerSize::clearVector(){
 	memset(&info->cur_price,0,sizeof(mdPrice));
 
 	//init the info 
-	info->multiple = 5;
-	info->direction = 'l';
+	info->multiple = 10;
+	info->direction = 's';
 	info->now_rsi_bar_tick =0;
 	info->max_profit =0;
 	info->open_price = 0;
@@ -39,41 +39,44 @@ void BandAndTriggerSize::clearVector(){
 	//init the param 
 	int param_index =0;
 	//spread
-	param->m_Param[param_index].spread = 100;
+	param->m_Param[param_index].spread = 85;
 	//diff_volume
-	param->m_Param[param_index].openEdge = 100;
+	param->m_Param[param_index].openEdge = 500;
 	//open interest
 	param->m_Param[param_index].index = 0;
 	//period
-	param->m_Param[param_index].compXave = 3600;
-
-	//band_open_noraml
-	param->m_Param[param_index].PositionAdj = 5;
-	//band_loss_close_edge
-	param->m_Param[param_index].AdjEmaFast = 10;
-	//band_profit_close_edge
-	param->m_Param[param_index].AdjEmaSlow = 30;
-
+	param->m_Param[param_index].compXave = 7200;
+	
 	//rsi_bar_period
-	param->m_Param[param_index+1].PositionAdj = 100;
+	param->m_Param[param_index].PositionAdj = 120;
 	//rsi_period
-	param->m_Param[param_index+1].AdjEmaFast = 10;
+	param->m_Param[param_index].AdjEmaFast = 14;
 	//limit_rsi_data
-	param->m_Param[param_index+1].AdjEmaSlow =80;
+	param->m_Param[param_index].AdjEmaSlow =80;
 
-	//limit_sd
-	param->m_Param[param_index+1].spread =200;
-	//limit_sd_open_edge
-	param->m_Param[param_index+1].openEdge=10;
-	//limit_sd_loss_close_edge
-	param->m_Param[param_index+1].closeEdge=30;
+	//tick num
+	param->m_Param[param_index+1].spread =10;
+	//band open edge start
+	param->m_Param[param_index+1].openEdge=5;
+	//band open edge close
+	param->m_Param[param_index+1].closeEdge=10;
+	//band loss close edge close
+	param->m_Param[param_index+1].EdgeAdj=0;
+	//band profit close edge
+	param->m_Param[param_index+1].cancelEdge = 30;
+
+	//small the limit sd
+	param->m_Param[param_index+1].edgebWork = 40;
+	//band_open bigger edge
+	param->m_Param[param_index+1].orderDelay = 15;
+	//band_close bigger edge
+	param->m_Param[param_index+1].edgePrice = 5;
+
 
 	//limit_max_draw_down
 	param->m_Param[param_index+1].maxDrawDown = 0;
 
 	param->m_Param[param_index].arbitrageTypeID = 320;
-
-
 
 	StartAndStopFun(param,info,param_index);
 }
