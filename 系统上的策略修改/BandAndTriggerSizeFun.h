@@ -38,13 +38,13 @@ typedef struct
 	int	AskVolume5;
 	double Turnover;
 	double OpenInterest;
-}mdPrice;
+}mdPrice_triggersize3;
 
 typedef struct
 {
 	char instrumentID[31];
 	double ratio;
-}HedgeInfo;
+}HedgeInfo_triggersize3;
 
 typedef struct  
 {
@@ -110,21 +110,21 @@ typedef struct
 	int midStopTime;
 
 	int hedgeInfoSize;
-	HedgeInfo hedgeInfo[6];
+	HedgeInfo_triggersize3 hedgeInfo[6];
 
-}Param;
+}Param_triggersize3;
 
 typedef struct 
 {
 	int tradingSize;
 	int hedgeSize;
-	Param m_Param[6];
-}Parameter;
+	Param_triggersize3 m_Param[6];
+}Parameter_triggersize3;
 
 typedef struct
 {
-	mdPrice pre_price;
-	mdPrice cur_price;
+	mdPrice_triggersize3 pre_price;
+	mdPrice_triggersize3 cur_price;
 	queue<double> prices_queue;
 	map<double,int> prices_map;
 
@@ -139,6 +139,10 @@ typedef struct
 	int now_rsi_bar_tick;
 	vector<double> rsi_vector;
 
+	vector<int> diff_volume_vector;
+	vector<double> diff_openinterest_vector;
+	vector<double> spread_vector;
+
 }VolumeTrendOther3Info;
 
 typedef struct
@@ -148,18 +152,19 @@ typedef struct
 }BandAndTriggerSizeRetStatus;
 
 	// 判断是不是达到了布林带的开仓和平仓条件
-bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double openval,double limit_sd,double limit_sd_open_edge);
+bool IsBandOpenTime(char direction,double lastprice,double middle,double sd
+					,double openval1,double openval2,double limit_sd,double limit_sd_open_edge);
 bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
 					 ,double loss_band,double profit_band,double rsival,double limit_rsi
 					 ,double limit_sd,double limit_sd_loss_close_edge);
 
-bool IsTriggerSizeOpenTime(char direction,mdPrice *now_price,mdPrice *pre_price,int multiple
-				,double volume_edge,double openinterest_edge,double spread );
-bool IsTriggerSizeCloseTime(char direction,mdPrice *now_price,mdPrice *pre_price,int multiple
+bool IsTriggerSizeOpenTime(char direction,vector<int> &diff_volume_vector,vector<double> &diff_openinterest_vector,vector<double> &spread_vector
+				,double volume_edge,double openinterest_edge,double spread,int ticknum);
+bool IsTriggerSizeCloseTime(char direction,mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int multiple
 				,double volume_edge,double openinterest_edge,int spread);
 
-bool IsDownTime(mdPrice *now_price,mdPrice *pre_price,int spread,int multiple);
-bool IsUpTime(mdPrice *now_price,mdPrice *pre_price,int spread,int multiple);
+bool IsDownTime(mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int spread,int multiple);
+bool IsUpTime(mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int spread,int multiple);
 //根据现在的price的一个列表，计算列表里面的ma数据。
 double GetMAData(vector<double> &vector_prices,int period);
 // 根据现在的price的一个列表，计算列表里面的标准差
@@ -184,11 +189,11 @@ void PrintInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,
 				   double &max_profit,double limit_max_drawdown);
 
-void StartAndStopFun(Parameter *param,VolumeTrendOther3Info *info,int param_index);
-BandAndTriggerSizeRetStatus GetMdData(Parameter *param,VolumeTrendOther3Info *info,int param_index);
+void StartAndStopFun(Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index);
+BandAndTriggerSizeRetStatus GetMdData(Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index);
 
-bool IsOpenTime(double middle_val,double sd_val,Parameter *param,VolumeTrendOther3Info *info,int param_index);
-bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter *param,
+bool IsOpenTime(double middle_val,double sd_val,Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index);
+bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_triggersize3 *param,
 				 VolumeTrendOther3Info *info,int param_index);
 
 void GetOpenSignal(VolumeTrendOther3Info *info);
