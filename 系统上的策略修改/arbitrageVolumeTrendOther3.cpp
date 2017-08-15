@@ -5,8 +5,8 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 	for (int i=0;i<MAX_PARAM_LENGTH;i++)
 	{
 		VolumeTrendOther3Info * info	=	&m_volumeTrendOther3Info[i];
-		memset(&info->new_Price,0,sizeof(mdPrice));
-		memset(&info->last_Price,0,sizeof(mdPrice));
+		memset(&info->pre_price,0,sizeof(mdPrice_triggersize3));
+		memset(&info->cur_price,0,sizeof(mdPrice_triggersize3));
 
 		info->pre_ema_val	=	0;
 
@@ -20,7 +20,9 @@ void CHyArbitrageVolumeTrendOther3::clearVector()
 	}
 
 	VolumeTrendOther3Info * info	=	&m_volumeTrendOther3Info[0];
-	StartAndStopFun(param,info,0);
+	Parameter_triggersize3 param_trigger;
+	memcpy(&param_trigger,param,sizeof(Parameter_triggersize3));
+	StartAndStopFun(&param_trigger,info,0);
 }
 
 double CHyArbitrageVolumeTrendOther3::calculateLessPrice(SThreadChannel *threadChannel,char OffsetFlag,char Direction,double fv,int perside)
@@ -46,9 +48,16 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 
 	VolumeTrendOther3Info *volumeTrendInfo	=	&m_volumeTrendOther3Info[param_index];
 
+    mdPrice cur_price;
+    mdPrice pre_price;
+	getNewPrice(g_arrChannel,md_index,cur_price);
+	getLastPrice(g_arrChannel,md_index,pre_price);
 
-	getNewPrice(g_arrChannel,md_index,volumeTrendInfo->cur_price);
-	getLastPrice(g_arrChannel,md_index,volumeTrendInfo->pre_price);
+	memcpy(&volumeTrendInfo->cur_price,&cur_price,sizeof(mdPrice_triggersize3));
+	memcpy(&volumeTrendInfo->pre_price,&pre_price,sizeof(mdPrice_triggersize3));
+
+	Parameter_triggersize3 param_trigger;
+	memcpy(&param_trigger,param,sizeof(Parameter_triggersize3));
 
 	if (volumeTrendInfo->cur_price.Volume	==0	||	volumeTrendInfo->cur_price.OpenInterest	==0	
 		||	volumeTrendInfo->cur_price.Turnover	==0||	volumeTrendInfo->cur_price.LastPrice	==	0
@@ -85,7 +94,7 @@ bool CHyArbitrageVolumeTrendOther3::get_fv(SThreadChannel *threadChannel,double 
 	  return false;
 	}
 
-	BandAndTriggerSizeRetStatus ret_status = GetMdData(param,volumeTrendInfo,param_index);
+	BandAndTriggerSizeRetStatus ret_status = GetMdData(&param_trigger,volumeTrendInfo,param_index);
 
 	threadChannel->isTrendOpenTime	=	ret_status.isTrendOpenTime;
 	threadChannel->isTrendCloseTime	=	ret_status.isTrendCloseTime;
