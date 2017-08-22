@@ -78,14 +78,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="band\BandAndTriggerSizeFeed.cpp" />
-    <ClCompile Include="band\BandAndTriggerSizeFeedFun.cpp" />
+    <ClCompile Include="band\BandAndTriggerSizeFade.cpp" />
+    <ClCompile Include="band\BandAndTriggerSizeFadeFun.cpp" />
     <ClCompile Include="basicfun\BasicFun.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="band\BandAndTriggerSizeFeed.h" />
-    <ClInclude Include="band\BandAndTriggerSizeFeedFun.h" />
+    <ClInclude Include="band\BandAndTriggerSizeFade.h" />
+    <ClInclude Include="band\BandAndTriggerSizeFadeFun.h" />
     <ClInclude Include="basicfun\BasicFun.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

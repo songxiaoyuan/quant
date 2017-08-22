@@ -1,14 +1,14 @@
 #include <iostream>
 #include <Windows.h>
-#include "band\BandAndTriggerSizeFeed.h"
+#include "band\BandAndTriggerSizeFade.h"
 #include "basicfun\BasicFun.h"
 using namespace std;
 
 int main(){
   long t1 =GetTickCount();
   int i;
-  BandAndTriggerSize bt;
-  string path = "ru1801_20170810.csv";
+  BandAndTriggerSizeFade bt;
+  string path = "rb1801_20170815.csv";
   vector<vector<string>> data = GetCSVFileData(path);
   for (int i = 0; i < data.size(); i++)
   {

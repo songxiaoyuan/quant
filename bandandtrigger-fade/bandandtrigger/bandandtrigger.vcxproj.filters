@@ -21,21 +21,21 @@
     <ClCompile Include="basicfun\BasicFun.cpp">
       <Filter>资源文件</Filter>
     </ClCompile>
-    <ClCompile Include="band\BandAndTriggerSizeFeed.cpp">
-      <Filter>资源文件</Filter>
+    <ClCompile Include="band\BandAndTriggerSizeFade.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="band\BandAndTriggerSizeFeedFun.cpp">
-      <Filter>资源文件</Filter>
+    <ClCompile Include="band\BandAndTriggerSizeFadeFun.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basicfun\BasicFun.h">
       <Filter>源文件\头文件</Filter>
     </ClInclude>
-    <ClInclude Include="band\BandAndTriggerSizeFeed.h">
+    <ClInclude Include="band\BandAndTriggerSizeFade.h">
       <Filter>源文件\头文件</Filter>
     </ClInclude>
-    <ClInclude Include="band\BandAndTriggerSizeFeedFun.h">
+    <ClInclude Include="band\BandAndTriggerSizeFadeFun.h">
       <Filter>源文件\头文件</Filter>
     </ClInclude>
   </ItemGroup>
