@@ -706,6 +706,8 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_trigge
 	//limit_sd_loss_close_edge
 	double limit_sd_close_edge =  ((double)param->m_Param[param_index+1].edgePrice)/10;
 
+	cout<<"the limit_sd_close_edge is "<<limit_sd_close_edge<<endl;
+
 	//limit_max_draw_down
 	double limit_max_drawn = param->m_Param[param_index+1].maxDrawDown;
 
