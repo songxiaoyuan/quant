@@ -12,7 +12,7 @@ int UpdateTime =20;
 BandAndTriggerSizeFade::BandAndTriggerSizeFade(void)
 {
 	now_interest_ = 0;
-	limit_interest_ =1;
+	limit_interest_ =3;
 	clearVector();
 }
 
@@ -31,19 +31,20 @@ void BandAndTriggerSizeFade::clearVector(){
 
 	//init the info 
 	info->multiple = 10;
-	info->direction = 'l';
+	info->direction = 's';
 	info->now_rsi_bar_tick =0;
 	info->max_profit =0;
 	info->open_price = 0;
+	info->now_interest = 0;
 
 	//init the param 
 	int param_index =0;
 	//spread
 	param->m_Param[param_index].spread = 30;
 	//diff_volume
-	//param->m_Param[param_index].openEdge = 0;
+	param->m_Param[param_index].openEdge = 1;
 	//open interest
-	// param->m_Param[param_index].index = 0;
+	param->m_Param[param_index].closeEdge = 2;
 	//period
 	param->m_Param[param_index].compXave = 7200;
 	
@@ -56,7 +57,7 @@ void BandAndTriggerSizeFade::clearVector(){
 
 
 	//limit_max_draw_down
-	param->m_Param[param_index+1].maxDrawDown = 50;
+	param->m_Param[param_index+1].maxDrawDown = 200;
 
 	param->m_Param[param_index].arbitrageTypeID = 320;
 
@@ -99,7 +100,7 @@ void BandAndTriggerSizeFade::getPrices(vector<string> &line_data){
 	if (ret_status.isTrendCloseTime && now_interest_ >0 )
 	{
 		cout<<info->cur_price.updateTime<<" close once"<<endl;
-		now_interest_ -=1;
+		now_interest_ =0;
 		GetCloseSignal(info);
 	}
 	info->pre_price = info->cur_price;
