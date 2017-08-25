@@ -92,7 +92,23 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,doub
 	return false;
 }
 
-bool IsBandCloseTime(char direction,double lastprice,double middle,double sd){
+bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double close_edge){
+	if (direction =='l')
+	{
+		double upval = middle - sd*close_edge;
+		if (lastprice > upval)
+		{
+			return true;
+		}
+	}
+	else if (direction	==	's')
+	{
+		double downval = middle + sd*close_edge;
+		if (lastprice < downval)
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -159,7 +175,7 @@ void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double
 	{
 		cout<<"cant find the config file"<<endl;
 		pre_ema_val = 0;
-		//queue<double>().swap(lastprice_queue);
+		queue<double>().swap(lastprice_queue);
 		lastprice_map.clear();
 		rsi_vector.clear();
 		pre_rsi = 0;
@@ -416,28 +432,16 @@ bool IsOpenTime(double middle_val,double sd_val,double rsival,Parameter_Fade *pa
 	double band_open_edge =  ((double)param->m_Param[param_index].spread)/10;
 	//limit_rsi
 	double limit_rsi = param->m_Param[param_index].AdjEmaSlow;
-	
+	double band_add = param->m_Param[param_index].openEdge;
 
 	double lastprice = info->cur_price.LastPrice;
+	band_open_edge = band_open_edge + (band_add * info->now_interest);
 	bool is_band_open = IsBandOpenTime(info->direction,lastprice,middle_val,
 		sd_val,rsival,limit_rsi,band_open_edge);
 	return is_band_open;
 }
 
 bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_Fade *param,VolumeTrendOtherFadeInfo *info,int param_index){
-	//band_loss_close_edge
-	double band_loss_close_edge = ((double)param->m_Param[param_index+1].EdgeAdj)/10;
-	//band_profit_close_edge
-	double band_profit_close_edge =((double) param->m_Param[param_index+1].cancelEdge)/10;
-
-	//limit_rsi
-	double limit_rsi = param->m_Param[param_index].AdjEmaSlow;
-
-	//limit_sd
-	double limit_sd = ((double)param->m_Param[param_index+1].edgebWork)/10;
-	//limit_sd_loss_close_edge
-	double limit_sd_close_edge =  ((double)param->m_Param[param_index+1].edgePrice)/10;
-
 	//limit_max_draw_down
 	double limit_max_drawn = param->m_Param[param_index+1].maxDrawDown;
 
@@ -449,15 +453,20 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_Fade *
 	{
 		return true;
 	}
-	return IsBandCloseTime(info->direction,lastprice,middle_val,sd_val);
+	double start_edge =((double)param->m_Param[param_index].spread)/10;
+	double close_band_num = param->m_Param[param_index].closeEdge;
+	double close_band = start_edge + info->now_interest - close_band_num -1;
+	return IsBandCloseTime(info->direction,lastprice,middle_val,sd_val,close_band);
 }
 
 
 void GetOpenSignal(VolumeTrendOtherFadeInfo *info){
 	info->open_price = info->cur_price.LastPrice;
 	info->max_profit = 0;
+	info->now_interest +=1;
 }
 void GetCloseSignal(VolumeTrendOtherFadeInfo *info){
 	info->open_price = 0;
 	info->max_profit = 0;
+	info->now_interest =0;
 }

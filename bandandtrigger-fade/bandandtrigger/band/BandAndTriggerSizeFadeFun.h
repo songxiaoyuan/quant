@@ -134,6 +134,7 @@ typedef struct
 	char direction;
 	double max_profit;
 	double open_price;
+	int now_interest;
 
 	double pre_rsi_lastprice;
 	int now_rsi_bar_tick;
@@ -150,7 +151,7 @@ typedef struct
 	// 判断是不是达到了布林带的开仓和平仓条件
 bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double rsival,
 					double limit_rsi,double open_edge);
-bool IsBandCloseTime(char direction,double lastprice,double middle,double sd);
+bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double close_band);
 
 double GetSDDataByMap(map<double,int> &map_prices,int period);
 // 根据传入的这个lastprice，计算返回的ema的值。
