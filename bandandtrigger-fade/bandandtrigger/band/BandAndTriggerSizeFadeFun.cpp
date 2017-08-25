@@ -175,7 +175,7 @@ void GetConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double
 	{
 		cout<<"cant find the config file"<<endl;
 		pre_ema_val = 0;
-		queue<double>().swap(lastprice_queue);
+		//queue<double>().swap(lastprice_queue);
 		lastprice_map.clear();
 		rsi_vector.clear();
 		pre_rsi = 0;
