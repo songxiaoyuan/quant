@@ -35,16 +35,16 @@ void BandAndTriggerSizeFade::clearVector(){
 	info->now_rsi_bar_tick =0;
 	info->max_profit =0;
 	info->open_price = 0;
-	info->now_interest = 0;
+	info->now_band_status = 0;
 
 	//init the param 
 	int param_index =0;
 	//spread
-	param->m_Param[param_index].spread = 30;
+	param->m_Param[param_index].spread = 20;
 	//diff_volume
-	param->m_Param[param_index].openEdge = 1;
+	param->m_Param[param_index].openEdge = 20;
 	//open interest
-	param->m_Param[param_index].closeEdge = 2;
+	param->m_Param[param_index].closeEdge = 30;
 	//period
 	param->m_Param[param_index].compXave = 7200;
 	
@@ -59,7 +59,7 @@ void BandAndTriggerSizeFade::clearVector(){
 	//limit_max_draw_down
 	param->m_Param[param_index+1].maxDrawDown = 200;
 
-	param->m_Param[param_index].arbitrageTypeID = 320;
+	param->m_Param[param_index].arbitrageTypeID = 399;
 
 	StartAndStopFun(param,info,param_index);
 }

@@ -81,7 +81,6 @@ bool CHyArbitrageVolumeTrendOtherFade::get_fv(SThreadChannel *threadChannel,doub
 		return false;
 	}
 
-
 	if (arbitrageDirection	==	Direction_long)
 	{
 		volumeTrendInfo->direction = 'l';
@@ -144,6 +143,7 @@ void CHyArbitrageVolumeTrendOtherFade::tradingOpenTraded(char *instrumentID)
 	VolumeTrendOtherFadeInfo *volumeTrendInfo	=	&m_volumeTrendOtherFadeInfo[param_index];
 	
 	GetOpenSignal(volumeTrendInfo);
+	threadChannel->isTrendOpenTime	=	false;
 }
 
 void CHyArbitrageVolumeTrendOtherFade::tradingCloseTraded(char *instrumentID)

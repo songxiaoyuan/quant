@@ -1,0 +1,29 @@
+struct mdPrice
+{
+	char updateTime[9];
+	double	LastPrice;
+	int  Volume;
+	int  TotalVolume;
+	double	BidPrice1;
+	int	BidVolume1;
+	double	AskPrice1;
+	int	AskVolume1;
+	double	BidPrice2;
+	int	BidVolume2;
+	double	AskPrice2;
+	int	AskVolume2;
+	double	BidPrice3;
+	int	BidVolume3;
+	double	AskPrice3;
+	int	AskVolume3;
+	double	BidPrice4;
+	int	BidVolume4;
+	double	AskPrice4;
+	int	AskVolume4;
+	double	BidPrice5;
+	int	BidVolume5;
+	double	AskPrice5;
+	int	AskVolume5;
+	double Turnover;
+	double OpenInterest;
+};

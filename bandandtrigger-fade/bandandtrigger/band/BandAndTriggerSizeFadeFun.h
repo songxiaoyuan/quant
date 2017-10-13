@@ -134,7 +134,7 @@ typedef struct
 	char direction;
 	double max_profit;
 	double open_price;
-	int now_interest;
+	int now_band_status;
 
 	double pre_rsi_lastprice;
 	int now_rsi_bar_tick;
@@ -149,9 +149,8 @@ typedef struct
 }BandAndTriggerSizeFadeRetStatus;
 
 	// 判断是不是达到了布林带的开仓和平仓条件
-bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double rsival,
-					double limit_rsi,double open_edge);
-bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double close_band);
+bool IsBandOpenTime(char direction,double lastprice,double middle,double sd,double open_edge,double band_bigger,VolumeTrendOtherFadeInfo *info);
+bool IsBandCloseTime(char direction,double lastprice,double middle,double sd,double loss_edge,double profit_edge);
 
 double GetSDDataByMap(map<double,int> &map_prices,int period);
 // 根据传入的这个lastprice，计算返回的ema的值。
@@ -176,9 +175,8 @@ bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int mul
 void StartAndStopFun(Parameter_Fade *param,VolumeTrendOtherFadeInfo *info,int param_index);
 BandAndTriggerSizeFadeRetStatus GetMdData(Parameter_Fade *param,VolumeTrendOtherFadeInfo *info,int param_index);
 
-bool IsOpenTime(double middle_val,double sd_val,double rsi_val,Parameter_Fade *param,VolumeTrendOtherFadeInfo *info,int param_index);
-bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_Fade *param,
-				 VolumeTrendOtherFadeInfo *info,int param_index);
+bool IsOpenTime(double middle_val,double sd_val,Parameter_Fade *param,VolumeTrendOtherFadeInfo *info,int param_index);
+bool IsCloseTime(double middle_val,double sd_val,Parameter_Fade *param,VolumeTrendOtherFadeInfo *info,int param_index);
 
 void GetOpenSignal(VolumeTrendOtherFadeInfo *info);
 void GetCloseSignal(VolumeTrendOtherFadeInfo *info);
