@@ -39,7 +39,7 @@ void BandAndTriggerSize::clearVector(){
 	//init the param 
 	int param_index =0;
 	//spread
-	param->m_Param[param_index].spread = 85;
+	param->m_Param[param_index].spread = 100;
 	//diff_volume
 	param->m_Param[param_index].openEdge = 500;
 	//open interest
@@ -55,22 +55,22 @@ void BandAndTriggerSize::clearVector(){
 	param->m_Param[param_index].AdjEmaSlow =80;
 
 	//tick num
-	param->m_Param[param_index+1].spread =10;
+	param->m_Param[param_index+1].spread =1;
 	//band open edge start
-	param->m_Param[param_index+1].openEdge=5;
+	param->m_Param[param_index+1].openEdge=0;
 	//band open edge close
-	param->m_Param[param_index+1].closeEdge=10;
+	param->m_Param[param_index+1].closeEdge=5;
 	//band loss close edge close
-	param->m_Param[param_index+1].EdgeAdj=0;
+	param->m_Param[param_index+1].EdgeAdj=5;
 	//band profit close edge
-	param->m_Param[param_index+1].cancelEdge = 30;
+	param->m_Param[param_index+1].cancelEdge = 50;
 
 	//small the limit sd
-	param->m_Param[param_index+1].edgebWork = 40;
+	param->m_Param[param_index+1].edgebWork = 100;
 	//band_open bigger edge
-	param->m_Param[param_index+1].orderDelay = 15;
+	param->m_Param[param_index+1].orderDelay = 10;
 	//band_close bigger edge
-	param->m_Param[param_index+1].edgePrice = 5;
+	param->m_Param[param_index+1].edgePrice = 10;
 
 
 	//limit_max_draw_down
