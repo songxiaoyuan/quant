@@ -591,7 +591,7 @@ bool IsLimitTimeOpenTime(Parameter_limittime *param,VolumeTrendLimitTimeInfo *in
 			info->has_open = 0;
 		}
 	}
-	return true;
+	return false;
 };
 
 bool IsOpenTime(double middle_val,double sd_val,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){

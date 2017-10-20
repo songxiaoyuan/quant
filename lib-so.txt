@@ -1,0 +1,6 @@
+g++ -shared -fpic -lm -ldl -o libBandAndTriggerSizeFun.so BandAndTriggerSizeFun.cpp 
+
+
+g++ -shared -fpic -lm -ldl -o libBandAndTriggerSizeFadeFun.so BandAndTriggerSizeFadeFun.cpp 
+
+g++ -shared -fpic -lm -ldl -o libBandAndTriggerSizeLimitTimeFun.so BandAndTriggerSizeLimitTimeFun.cpp 
