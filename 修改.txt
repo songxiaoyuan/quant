@@ -1,0 +1,5 @@
+1、类的名字
+2、结构体的名字
+3、返回的ret结构体的名字。
+4\#ifndef ARBITRAGEVOLUMETRENDSERIES_H
+#define ARBITRAGEVOLUMETRENDSERIES_H 头文件的名字

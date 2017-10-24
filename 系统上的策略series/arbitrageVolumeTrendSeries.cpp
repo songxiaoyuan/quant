@@ -1,6 +1,6 @@
 #include "arbitrageVolumeTrendSeries.h"
 
-void CHyArbitrageVolumeTrendLimitTime::clearVector()
+void CHyArbitrageVolumeTrendSeries::clearVector()
 {
 	for (int i=0;i<MAX_PARAM_LENGTH;i++)
 	{
@@ -28,7 +28,7 @@ void CHyArbitrageVolumeTrendLimitTime::clearVector()
 	StartAndStopFun(&param_series,info,0);
 }
 
-double CHyArbitrageVolumeTrendLimitTime::calculateLessPrice(SThreadChannel *threadChannel,char OffsetFlag,char Direction,double fv,int perside)
+double CHyArbitrageVolumeTrendSeries::calculateLessPrice(SThreadChannel *threadChannel,char OffsetFlag,char Direction,double fv,int perside)
 {
 	double price=0;
 	if (Direction	==	THOST_FTDC_D_Buy)				//Âò
@@ -42,7 +42,7 @@ double CHyArbitrageVolumeTrendLimitTime::calculateLessPrice(SThreadChannel *thre
 	return price;
 }
 
-bool CHyArbitrageVolumeTrendLimitTime::get_fv(SThreadChannel *threadChannel,double &fv)
+bool CHyArbitrageVolumeTrendSeries::get_fv(SThreadChannel *threadChannel,double &fv)
 {
 	int md_index	=	threadChannel->md_index;
 	int param_index	=	threadChannel->param_index;
@@ -97,7 +97,7 @@ bool CHyArbitrageVolumeTrendLimitTime::get_fv(SThreadChannel *threadChannel,doub
 	  return false;
 	}
 
-	BandAndTriggerSizeLimitTimeRetStatus ret_status = GetMdData(&param_series,volumeTrendInfo,param_index);
+	BandAndSeriesRetStatus ret_status = GetMdData(&param_series,volumeTrendInfo,param_index);
 
 	threadChannel->isTrendOpenTime	=	ret_status.isTrendOpenTime;
 	threadChannel->isTrendCloseTime	=	ret_status.isTrendCloseTime;
@@ -117,7 +117,7 @@ bool CHyArbitrageVolumeTrendLimitTime::get_fv(SThreadChannel *threadChannel,doub
 }
 
 
-void CHyArbitrageVolumeTrendLimitTime::cancelNotMatchOrder(SThreadChannel *threadChannel,STraderChannel* pTraderInfo)
+void CHyArbitrageVolumeTrendSeries::cancelNotMatchOrder(SThreadChannel *threadChannel,STraderChannel* pTraderInfo)
 {
 	pthread_rwlock_wrlock(&pTraderInfo->cs_trader_order);
 	for (unsigned int i=0;i<pTraderInfo->trader_order.size();i++)
@@ -135,7 +135,7 @@ void CHyArbitrageVolumeTrendLimitTime::cancelNotMatchOrder(SThreadChannel *threa
 	pthread_rwlock_unlock(&pTraderInfo->cs_trader_order);
 }
 
-void CHyArbitrageVolumeTrendLimitTime::tradingOpenTraded(char *instrumentID)
+void CHyArbitrageVolumeTrendSeries::tradingOpenTraded(char *instrumentID)
 {
 	int thread_index	=	getThreadChannelIndex_trading(instrumentID);
 	if (thread_index	==	-1)
@@ -149,7 +149,7 @@ void CHyArbitrageVolumeTrendLimitTime::tradingOpenTraded(char *instrumentID)
 	GetOpenSignal(volumeTrendInfo);
 }
 
-void CHyArbitrageVolumeTrendLimitTime::tradingCloseTraded(char *instrumentID)
+void CHyArbitrageVolumeTrendSeries::tradingCloseTraded(char *instrumentID)
 {
 	int thread_index	=	getThreadChannelIndex_trading(instrumentID);
 	if (thread_index	==	-1)

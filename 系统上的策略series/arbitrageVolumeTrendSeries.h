@@ -1,5 +1,5 @@
-#ifndef ARBITRAGEVOLUMETRENDOTHER3_H
-#define ARBITRAGEVOLUMETRENDOTHER3_H
+#ifndef ARBITRAGEVOLUMETRENDSERIES_H
+#define ARBITRAGEVOLUMETRENDSERIES_H
 #include "hyArbitrage_Interface.h"
 #include "func.h"
 #include "band/BandAndSeriesFun.h"
@@ -7,11 +7,11 @@ using namespace std;
 
 #define MaxPrice 100000
 
-class CHyArbitrageVolumeTrendLimitTime:public CHyArbitrageBase
+class CHyArbitrageVolumeTrendSeries:public CHyArbitrageBase
 {
 public:
-	CHyArbitrageVolumeTrendLimitTime(Parameter* Param):CHyArbitrageBase(Param){}
-	~CHyArbitrageVolumeTrendLimitTime(){};
+	CHyArbitrageVolumeTrendSeries(Parameter* Param):CHyArbitrageBase(Param){}
+	~CHyArbitrageVolumeTrendSeries(){};
 public:
 	virtual bool get_fv(SThreadChannel *threadChannel,double &fv);
 	virtual void clearVector();
