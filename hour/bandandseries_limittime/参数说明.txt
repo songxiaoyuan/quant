@@ -1,0 +1,20 @@
+右边 主要是 series volume 参数
+固定价差：100  bar的tick数目，就是10，
+开仓边界： 5 就是连续的bar的成交量大于个数。
+平仓边界： 2 倍数，就是连续的成交量量大于的倍数。
+
+
+positionadj ：20 表示所有的周期middle60 middle 5 middle 1按照20来算。
+shortCompXave：14 表示rsi的限制周期按照14个小时的来。
+longcompxave ：70 表示rsi的显示是70退出。
+
+左边主要是限制时间策略和band参数。
+固定价差： 1  一小时开单次数。
+开仓边界： open_edge_1   注意，是乘以了10，防止有小数的double产生。
+平仓边界： open_edge_2
+边界调整： loss_edge
+撤单边界： profit edge.就是2倍的band
+
+edgeBwork : 600 表示5分钟的middle线
+ordedelay：120 表示1分钟的middle线。
+滑价上线： lastprice 至少盈利的价位。
