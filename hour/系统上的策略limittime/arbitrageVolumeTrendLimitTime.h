@@ -1,5 +1,5 @@
-#ifndef ARBITRAGEVOLUMETRENDOTHER3_H
-#define ARBITRAGEVOLUMETRENDOTHER3_H
+#ifndef ARBITRAGEVOLUMETRENDLIMITTIME_H
+#define ARBITRAGEVOLUMETRENDLIMITTIME_H
 #include "hyArbitrage_Interface.h"
 #include "func.h"
 #include "band/BandAndTriggerSizeLimitTimeFun.h"
