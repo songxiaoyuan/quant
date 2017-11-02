@@ -141,7 +141,7 @@ typedef struct
 
 	vector<double> lastprice_vector_hour;
 	vector<int> diff_volume_vector;
-	vector<double> lastprice_vector;
+	vector<double> lastprice_vector_series;
 
 	int tmp_sum_diff_volume;
 	int lastprice_bar_tick;
@@ -161,26 +161,28 @@ typedef struct
 	// 判断是不是达到了布林带的开仓和平仓条件
 bool IsDiffVolumeOpenTime(int tmp_sum_diff_volume,vector<int> &diff_volume_vector,int limit_multiple,int limit_large_period);
 bool IsLastpriceOpenTime(char direction,double lastprice,vector<double> &lastprice_vector,int limit_large_period);
-bool IsBandOpenTime(char direction,double lastprice,double middle,double open_edge1,double open_edge2);
-bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
+bool IsBandOpenTimeSeries(char direction,double lastprice,double middle,double open_edge1,double open_edge2);
+bool IsBandCloseTimeSeries(char direction,double lastprice,double middle,double sd
 					 ,double loss_band,double profit_band,double rsi_data,double limit_rsi_data);
 
-double GetSDData(double lastprice,vector<double> &vector_prices,int period);
+bool IsMiddleCrossCloseTimeSeries(char direction,double lastprice,double middle_val_1,double middle_val_5);
+bool IsLimitTimeOpenTimeSeries(Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);
+double GetSDDataSeries(double lastprice,vector<double> &vector_prices,int period);
 // 根据传入的这个lastprice，计算返回的ema的值。
-double GetEMAData(double price,double pre_ema_val,int period);
+double GetEMADataSeries(double price,double pre_ema_val,int period);
 //根据传入的当前的差值和保存差值的数据，以及rsi的周期，来求返回的rsi的值。
-double GetRSIData(double lastprice,vector<double> &lastprice_vector,int period);
+double GetRSIDataSeries(double lastprice,vector<double> &lastprice_vector,int period);
 void WriteMesgToFile(string path,string mesg);
 
 inline string double2str(const double &int_temp);
 inline double str2double(const string &string_temp);
 
-void GetConfigInfo(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_val_1,
+void GetConfigInfoSeries(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_val_1,
 				   vector<double> &lastprice_vector,int config_file_path);
 
 void PrintInfo(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_val_1,
 			   vector<double> &lastprice_vector,int config_file_path);
-bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,
+bool IsMaxDrawDownSeries(char direction,double cur_lastprice,double open_price,int multiple,
 				   double &max_profit,double limit_max_drawdown);
 
 void StartAndStopFun(Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);

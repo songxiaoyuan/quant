@@ -187,7 +187,7 @@ void WriteConfigInfo(double &pre_ema_val,queue<double> &lastprice_queue,vector<d
 
 void PrintInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int> &lastprice_map,
 			   vector<double> &rsi_vector,double &pre_rsi,int config_file_path);
-bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,
+bool IsMaxDrawDownFun(char direction,double cur_lastprice,double open_price,int multiple,
 				   double &max_profit,double limit_max_drawdown);
 
 void StartAndStopFun(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);

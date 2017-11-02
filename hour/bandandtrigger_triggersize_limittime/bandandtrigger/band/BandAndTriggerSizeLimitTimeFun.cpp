@@ -393,7 +393,7 @@ void GetConfigInfo(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_
 }
 
 
-bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown){
+bool IsMaxDrawDownFun(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown){
 	if (open_price ==0 )
 	{
 		return false;
@@ -603,8 +603,8 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 	double limit_max_drawn = param->m_Param[param_index+1].maxDrawDown;
 
 	double lastprice = info->cur_price.LastPrice;
-
-	bool max_draw_down = IsMaxDrawDown(info->direction,lastprice,info->open_price,info->multiple,
+    
+	bool max_draw_down = IsMaxDrawDownFun(info->direction,lastprice,info->open_price,info->multiple,
 		info->max_profit,limit_max_drawn);
 	if (max_draw_down)
 	{
@@ -631,6 +631,7 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 
 void GetOpenSignal(VolumeTrendLimitTimeInfo *info){
 	info->open_price = info->cur_price.LastPrice;
+	cout<<"the info open price is "<<info->open_price<<endl;
 	info->max_profit = 0;
 	info->has_open +=1;
 }

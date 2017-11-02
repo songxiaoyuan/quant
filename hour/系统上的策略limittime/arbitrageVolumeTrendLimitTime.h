@@ -2,7 +2,7 @@
 #define ARBITRAGEVOLUMETRENDLIMITTIME_H
 #include "hyArbitrage_Interface.h"
 #include "func.h"
-#include "band/BandAndTriggerSizeLimitTimeFun.h"
+#include "band/bandAndTriggerSizeLimitTimeFun.h"
 using namespace std;
 
 #define MaxPrice 100000

@@ -1,7 +1,7 @@
 #include "BandAndSeriesFun.h"
 
 
-double GetSDData(double lastprice,vector<double> &vector_prices,int period){
+double GetSDDataSeries(double lastprice,vector<double> &vector_prices,int period){
 	int size = vector_prices.size();
 	if (size ==0 || period ==0)
 	{
@@ -27,7 +27,7 @@ double GetSDData(double lastprice,vector<double> &vector_prices,int period){
 	return sqrt(sum/(period-1));
 }
 
-double GetEMAData(double price,double pre_ema_val,int period){
+double GetEMADataSeries(double price,double pre_ema_val,int period){
 	if (period <=1)
 	{
 		return price;
@@ -36,7 +36,7 @@ double GetEMAData(double price,double pre_ema_val,int period){
 	return ret;
 }
 
-double GetRSIData(double lastprice,vector<double> &lastprice_vector,int period){
+double GetRSIDataSeries(double lastprice,vector<double> &lastprice_vector,int period){
 	if (period == 0 || lastprice_vector.size() ==0){
 		return 50;
 	}
@@ -69,7 +69,7 @@ double GetRSIData(double lastprice,vector<double> &lastprice_vector,int period){
 	return 100*rise/total;
 }
 
-bool IsBandOpenTime(char direction,double lastprice,double middle,double open_edge1,double open_edge2){
+bool IsBandOpenTimeSeries(char direction,double lastprice,double middle,double open_edge1,double open_edge2){
 	if (direction =='l')
 	{
 		double startval = middle + open_edge1;
@@ -91,7 +91,7 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double open_ed
 	return false;
 }
 
-bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
+bool IsBandCloseTimeSeries(char direction,double lastprice,double middle,double sd
 					 ,double loss_band,double profit_band,double rsi_data,double limit_rsi_data){
 	/*cout<<"the limit sd is"<<limit_sd<<endl;
 	cout<<"the loss band is :"<<loss_band<<endl;
@@ -127,7 +127,7 @@ bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
 	return false;
 }
 
-bool IsMiddleCrossCloseTime(char direction,double lastprice,double middle_val_1,double middle_val_5){
+bool IsMiddleCrossCloseTimeSeries(char direction,double lastprice,double middle_val_1,double middle_val_5){
 	if (direction	==	'l')
 	{
 		if ( lastprice <  middle_val_1 && middle_val_1 < middle_val_5)
@@ -198,7 +198,7 @@ void split(std::string& s, std::string& delim,std::vector<double> &ret)
     }  
 } 
 
-void GetConfigInfo(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_val_1,
+void GetConfigInfoSeries(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_val_1,
 				   vector<double> &lastprice_vector,int config_file_path){
 	char path[256]={0};
 	sprintf(path,"band_and_triggersize_config/%d",config_file_path);
@@ -284,7 +284,7 @@ void GetConfigInfo(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_
 	fclose(file_fd);
 }
 
-bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown){
+bool IsMaxDrawDownSeries(char direction,double cur_lastprice,double open_price,int multiple,double &max_profit,double limit_max_drawdown){
 	if (open_price ==0 )
 	{
 		return false;
@@ -315,7 +315,7 @@ bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int mul
 }
 
 void StartAndStopFun(Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index){
-	int size = info->lastprice_vector.size();
+	int size = info->lastprice_vector_hour.size();
 	info->pre_ema_val_1 = 0;
 	info->pre_ema_val_5 = 0;
 	info->pre_ema_val_60 = 0;
@@ -331,12 +331,12 @@ void StartAndStopFun(Parameter_series *param,VolumeTrendSeriesInfo *info,int par
 	info->current_hour_open = 0;
 	info->has_open = 0;
 
-	if (info->lastprice_vector.empty())
+	if (info->lastprice_vector_hour.empty())
 	{
 		cout<<"the queue is empty and is init function"<<endl;
-		GetConfigInfo(info->pre_ema_val_60,info->pre_ema_val_5,info->pre_ema_val_1,info->lastprice_vector,param->m_Param[param_index].arbitrageTypeID);
+		GetConfigInfoSeries(info->pre_ema_val_60,info->pre_ema_val_5,info->pre_ema_val_1,info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
 		PrintInfo(info->pre_ema_val_60,info->pre_ema_val_5,info->pre_ema_val_1,
-			info->lastprice_vector,param->m_Param[param_index].arbitrageTypeID);
+			info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
 	}
 	else{
 		cout<<"the queue is not empty and is the stop function"<<endl;
@@ -367,12 +367,12 @@ BandAndSeriesRetStatus GetMdData(Parameter_series *param,VolumeTrendSeriesInfo *
 	int limit_ema_tick_5 = param->m_Param[param_index+1].edgebWork;
 	int limit_ema_tick_1 = param->m_Param[param_index+1].orderDelay;
 
-	middle_val_60 = GetEMAData(lastprice,info->pre_ema_val_60,ema_period);
-	middle_val_5 = GetEMAData(lastprice,info->pre_ema_val_5,ema_period);
-	middle_val_1 = GetEMAData(lastprice,info->pre_ema_val_1,ema_period);
+	middle_val_60 = GetEMADataSeries(lastprice,info->pre_ema_val_60,ema_period);
+	middle_val_5 = GetEMADataSeries(lastprice,info->pre_ema_val_5,ema_period);
+	middle_val_1 = GetEMADataSeries(lastprice,info->pre_ema_val_1,ema_period);
 
-	sd_val = GetSDData(lastprice,info->lastprice_vector_hour,ema_period);
-	rsi_data = GetRSIData(lastprice,info->lastprice_vector_hour,rsi_period);
+	sd_val = GetSDDataSeries(lastprice,info->lastprice_vector_hour,ema_period);
+	rsi_data = GetRSIDataSeries(lastprice,info->lastprice_vector_hour,rsi_period);
 
 	try{
 		string time = info->cur_price.updateTime;
@@ -418,7 +418,7 @@ BandAndSeriesRetStatus GetMdData(Parameter_series *param,VolumeTrendSeriesInfo *
 	if (info->lastprice_bar_tick >= limit_bar_tick)
 	{
 		info->diff_volume_vector.push_back(info->tmp_sum_diff_volume);
-		info->lastprice_vector.push_back(info->cur_price.LastPrice);
+		info->lastprice_vector_series.push_back(info->cur_price.LastPrice);
 		info->tmp_sum_diff_volume = 0;
 		info->lastprice_bar_tick = 0;
 	}
@@ -428,7 +428,7 @@ BandAndSeriesRetStatus GetMdData(Parameter_series *param,VolumeTrendSeriesInfo *
 	return ret;
 }
 
-bool IsLimitTimeOpenTime(Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index){
+bool IsLimitTimeOpenTimeSeries(Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index){
 	int now_hour = 9;
 	try{
 		string time = info->cur_price.updateTime;
@@ -541,12 +541,12 @@ bool IsOpenTime(double middle_val,Parameter_series *param,VolumeTrendSeriesInfo 
 
 	double lastprice = info->cur_price.LastPrice;
 
-	bool is_time_open = IsLimitTimeOpenTime(param,info,param_index);
+	bool is_time_open = IsLimitTimeOpenTimeSeries(param,info,param_index);
 	if (is_time_open == false)
 	{
 		return false;
 	}
-	bool is_band_open = IsBandOpenTime(info->direction,lastprice,middle_val,band_open_edge1,band_open_edge2);
+	bool is_band_open = IsBandOpenTimeSeries(info->direction,lastprice,middle_val,band_open_edge1,band_open_edge2);
 	if (is_band_open ==false)
 	{
 		return false;
@@ -563,7 +563,7 @@ bool IsOpenTime(double middle_val,Parameter_series *param,VolumeTrendSeriesInfo 
 		return false;
 	}
 
-	bool is_lastprice_open = IsLastpriceOpenTime(info->direction,lastprice,info->lastprice_vector,limit_large_period);
+	bool is_lastprice_open = IsLastpriceOpenTime(info->direction,lastprice,info->lastprice_vector_series,limit_large_period);
 	return is_lastprice_open;
 }
 
@@ -583,20 +583,20 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 
 	double lastprice = info->cur_price.LastPrice;
 
-	bool max_draw_down = IsMaxDrawDown(info->direction,lastprice,info->open_price,info->multiple,
+	bool max_draw_down = IsMaxDrawDownSeries(info->direction,lastprice,info->open_price,info->multiple,
 		info->max_profit,limit_max_drawn);
 	if (max_draw_down)
 	{
 		return true;
 	}
 
-	bool is_band_close = IsBandCloseTime(info->direction,lastprice,middle_val,sd_val,band_loss_edge,band_profit_edge,rsi_val,limit_rsi);
+	bool is_band_close = IsBandCloseTimeSeries(info->direction,lastprice,middle_val,sd_val,band_loss_edge,band_profit_edge,rsi_val,limit_rsi);
 	if (is_band_close)
 	{
 		return true;
 	}
 
-	bool is_middle_cross_close = IsMiddleCrossCloseTime(info->direction,lastprice,middle_val_1,middle_val_5);
+	bool is_middle_cross_close = IsMiddleCrossCloseTimeSeries(info->direction,lastprice,middle_val_1,middle_val_5);
 	if (info->max_profit != 0 &&  info->max_profit > limit_max_profit )
 	{
 		if (is_middle_cross_close)
