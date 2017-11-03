@@ -631,7 +631,6 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 
 void GetOpenSignal(VolumeTrendLimitTimeInfo *info){
 	info->open_price = info->cur_price.LastPrice;
-	cout<<"the info open price is "<<info->open_price<<endl;
 	info->max_profit = 0;
 	info->has_open +=1;
 }
