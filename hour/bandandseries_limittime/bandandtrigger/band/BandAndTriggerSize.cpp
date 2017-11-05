@@ -31,9 +31,7 @@ void BandAndTriggerSize::clearVector(){
 
 	//init the info 
 	info->multiple = 10;
-	info->direction = 's';
-	info->max_profit =0;
-	info->open_price = 0;
+	info->direction = 'l';
 	info->tmp_sum_diff_volume = 0;
 	info->lastprice_bar_tick = 0;
 
@@ -66,7 +64,7 @@ void BandAndTriggerSize::clearVector(){
 	//small the limit sd
 	param->m_Param[param_index+1].edgebWork = 600;
 	//small the limit profit close edge
-	param->m_Param[param_index+1].orderDelay = 120;
+	param->m_Param[param_index+1].orderDelay = 20;
 	//small the limit profit close edge
 	param->m_Param[param_index+1].edgePrice = 300;
 

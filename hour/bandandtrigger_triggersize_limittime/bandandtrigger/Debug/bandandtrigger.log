@@ -1,22 +1,30 @@
-﻿生成启动时间为 2017/10/29 20:11:06。
-     1>项目“C:\Users\DELL\Desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\bandandtrigger.vcxproj”在节点 2 上(Build 个目标)。
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt band\BandAndTriggerSizeLimitTimeFun.cpp
-         BandAndTriggerSizeLimitTimeFun.cpp
-     1>c:\users\dell\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(22): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\dell\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(179): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-     1>c:\users\dell\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(183): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-     1>c:\users\dell\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(200): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-     1>c:\users\dell\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(204): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-     1>c:\users\dell\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(378): warning C4018: “<”: 有符号/无符号不匹配
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DELL\Desktop\quant\hour\bandandtrigger_triggersize_limittime\Debug\bandandtrigger.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\DELL\Desktop\quant\hour\bandandtrigger_triggersize_limittime\Debug\bandandtrigger.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\DELL\Desktop\quant\hour\bandandtrigger_triggersize_limittime\Debug\bandandtrigger.lib" /MACHINE:X86 Debug\BandAndTriggerSize.obj
-         Debug\BandAndTriggerSizeLimitTimeFun.obj
-         Debug\BasicFun.obj
-         Debug\main.obj
-         bandandtrigger.vcxproj -> C:\Users\DELL\Desktop\quant\hour\bandandtrigger_triggersize_limittime\Debug\bandandtrigger.exe
-     1>已完成生成项目“C:\Users\DELL\Desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\bandandtrigger.vcxproj”(Build 个目标)的操作。
+﻿生成启动时间为 2017/11/5 11:32:42。
+项目“C:\Users\sxy\Desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\bandandtrigger.vcxproj”在节点 2 上(Build 个目标)。
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt band\BandAndTriggerSize.cpp band\BandAndTriggerSizeLimitTimeFun.cpp main.cpp
+  BandAndTriggerSizeLimitTimeFun.cpp
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(22): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(176): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(180): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(197): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(201): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(361): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersizelimittimefun.cpp(406): warning C4101: “middle_val_1”: 未引用的局部变量
+  正在生成代码...
+  正在编译...
+  main.cpp
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\main.cpp(13): warning C4018: “<”: 有符号/无符号不匹配
+  BandAndTriggerSize.cpp
+c:\users\sxy\desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\band\bandandtriggersize.cpp(91): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  正在生成代码...
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\sxy\Desktop\quant\hour\bandandtrigger_triggersize_limittime\Debug\bandandtrigger.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\sxy\Desktop\quant\hour\bandandtrigger_triggersize_limittime\Debug\bandandtrigger.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\sxy\Desktop\quant\hour\bandandtrigger_triggersize_limittime\Debug\bandandtrigger.lib" /MACHINE:X86 Debug\BandAndTriggerSize.obj
+  Debug\BandAndTriggerSizeLimitTimeFun.obj
+  Debug\BasicFun.obj
+  Debug\main.obj
+  bandandtrigger.vcxproj -> C:\Users\sxy\Desktop\quant\hour\bandandtrigger_triggersize_limittime\Debug\bandandtrigger.exe
+已完成生成项目“C:\Users\sxy\Desktop\quant\hour\bandandtrigger_triggersize_limittime\bandandtrigger\bandandtrigger.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:00.87
+已用时间 00:00:03.97

@@ -10,8 +10,6 @@ void CHyArbitrageVolumeTrendSeries::clearVector()
 
 		info->multiple	=	0;
 		info->direction	=	'n';
-		info->max_profit = 0;
-		info->open_price = 0;
 
 		info->tmp_sum_diff_volume = 0;
 		info->lastprice_bar_tick = 0;

@@ -129,15 +129,11 @@ typedef struct
 
 	double pre_ema_val_60;
 	double pre_ema_val_5;
-	double pre_ema_val_1;
 
 	int now_middle5_bar_tick;
-	int now_middle1_bar_tick;
 
 	int multiple;
 	char direction;
-	double max_profit;
-	double open_price;
 
 	vector<double> lastprice_vector_hour;
 	vector<int> diff_volume_vector;
@@ -146,6 +142,7 @@ typedef struct
 	int tmp_sum_diff_volume;
 	int lastprice_bar_tick;
 
+	int open_status;
 	int has_open;
 	int current_hour_open;
 	int current_hour_line;
@@ -165,7 +162,7 @@ bool IsBandOpenTimeSeries(char direction,double lastprice,double middle,double o
 bool IsBandCloseTimeSeries(char direction,double lastprice,double middle,double sd
 					 ,double loss_band,double profit_band,double rsi_data,double limit_rsi_data);
 
-bool IsMiddleCrossCloseTimeSeries(char direction,double lastprice,double middle_val_1,double middle_val_5);
+bool IsMiddleCrossCloseTime(VolumeTrendSeriesInfo *info,double lastprice,double middle_val_5,double cross_middle_edge);
 bool IsLimitTimeOpenTimeSeries(Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);
 double GetSDDataSeries(double lastprice,vector<double> &vector_prices,int period);
 // 根据传入的这个lastprice，计算返回的ema的值。
@@ -177,19 +174,17 @@ void WriteMesgToFile(string path,string mesg);
 inline string double2str(const double &int_temp);
 inline double str2double(const string &string_temp);
 
-void GetConfigInfoSeries(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_val_1,
+void GetConfigInfoSeries(double &pre_ema_val_60,double &pre_ema_val_5,
 				   vector<double> &lastprice_vector,int config_file_path);
 
-void PrintInfo(double &pre_ema_val_60,double &pre_ema_val_5,double &pre_ema_val_1,
+void PrintInfo(double &pre_ema_val_60,double &pre_ema_val_5,
 			   vector<double> &lastprice_vector,int config_file_path);
-bool IsMaxDrawDownSeries(char direction,double cur_lastprice,double open_price,int multiple,
-				   double &max_profit,double limit_max_drawdown);
 
 void StartAndStopFun(Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);
 BandAndSeriesRetStatus GetMdData(Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);
 
-bool IsOpenTime(double middle_val,Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);
-bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_val_5,double middle_val_1,Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);
+bool IsOpenTime(double middle_val5_60,double middle_val_5,Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);
+bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_val_5,Parameter_series *param,VolumeTrendSeriesInfo *info,int param_index);
 
 void GetOpenSignal(VolumeTrendSeriesInfo *info);
 void GetCloseSignal(VolumeTrendSeriesInfo *info);

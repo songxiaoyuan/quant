@@ -8,11 +8,8 @@ void CHyArbitrageVolumeTrendLimitTime::clearVector()
 		memset(&info->pre_price,0,sizeof(mdPrice_limittime));
 		memset(&info->cur_price,0,sizeof(mdPrice_limittime));
 
-
 		info->multiple	=	0;
 		info->direction	=	'n';
-		info->max_profit = 0;
-		info->open_price = 0;
 	}
 
 	VolumeTrendLimitTimeInfo * info	=	&m_VolumeTrendLimitTimeInfo[0];
