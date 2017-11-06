@@ -1,4 +1,4 @@
-#include "bandAndTriggerSizeLimitTimeFun.h"
+#include "BandAndTriggerSizeLimitTimeFun.h"
 
 double GetSDData(double lastprice,vector<double> &vector_prices,int period){
 	int size = vector_prices.size();
