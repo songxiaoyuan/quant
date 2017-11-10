@@ -1,62 +1,4 @@
-#include "BandAndTriggerSizeFun.h"
-
-double GetMAData(vector<double> &vector_prices,int period){
-	double sum =0;
-	if (vector_prices.size()==0 || period ==0)
-	{
-		return 0;
-	}
-	for (int i = vector_prices.size()-1; i >=0 && i >= vector_prices.size() - period; i--)
-	{
-		sum +=vector_prices[i];
-	}
-	return sum/period;
-}
-
-int GetSumDataInt(vector<int> &diff_volume,int period){
-	int sum=0;
-    if (diff_volume.size()==0 || period ==0)
-	{
-		return 0;
-	}
-	for (int i = diff_volume.size()-1; i >=0 && i >= diff_volume.size() - period; i--)
-	{
-		sum +=diff_volume[i];
-	}
-	return sum;
-}
-
-double GetSumDataDouble(vector<double> &diff_openinterest,int period){
-	double sum=0;
-    if (diff_openinterest.size()==0 || period ==0)
-	{
-		return 0;
-	}
-	for (int i = diff_openinterest.size()-1; i >=0 && i >= diff_openinterest.size() - period; i--)
-	{
-		sum +=diff_openinterest[i];
-	}
-	return sum;
-}
-
-double GetWeightNum(vector<int> &diff_volume,vector<double> &spread,int period){
-	double ret = 0;
-	int sum = 0;
-	if (diff_volume.size() != spread.size())
-	{
-		cout<<"the vector is not the same length"<<endl;
-	}
-	for (int i = diff_volume.size()-1; i >=0 && i >= diff_volume.size() - period; i--)
-	{
-		ret +=(diff_volume[i]*spread[i]);
-		sum += diff_volume[i];
-	}
-	if (sum ==0)
-	{
-		return 0;
-	}
-	return ret/sum;
-}
+ï»¿#include "BandAndTriggerSizeLimitTimeFun.h"
 
 double GetSDData(vector<double> &vector_prices,int period){
 	int size = vector_prices.size();
@@ -148,15 +90,11 @@ double GetRSIData(double tmpdiff,vector<double> &rsi_vector,int period){
 }
 
 bool IsBandOpenTime(char direction,double lastprice,double middle,double sd
-					,double open_edge1,double open_edge2 ,double limit_sd,double limit_sd_open_edge){
-	if (sd < limit_sd)
-	{
-		open_edge2 = limit_sd_open_edge;
-	}
+					,double open_edge1,double open_edge2){
 	if (direction =='l')
 	{
-		double startval = middle + sd*open_edge1;
-		double upval = middle + sd * open_edge2;
+		double startval = middle + open_edge1;
+		double upval = middle + open_edge2;
 		if (lastprice > startval && lastprice < upval)
 		{
 			return true;
@@ -164,8 +102,8 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double sd
 	}
 	else if (direction	==	's')
 	{
-		double startval = middle - sd*open_edge1;
-		double downval = middle - sd * open_edge2;
+		double startval = middle - open_edge1;
+		double downval = middle - open_edge2;
 		if (lastprice > downval && lastprice < startval)
 		{
 			return true;
@@ -175,19 +113,15 @@ bool IsBandOpenTime(char direction,double lastprice,double middle,double sd
 }
 
 bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
-					 ,double loss_band,double profit_band,double rsival,double limit_rsi
-					 ,double limit_sd,double limit_sd_loss_band){
+					 ,double loss_band,double profit_band,double rsival,double limit_rsi){
 	/*cout<<"the limit sd is"<<limit_sd<<endl;
 	cout<<"the loss band is :"<<loss_band<<endl;
 	cout<<"the profit_band band is :"<<profit_band<<endl;
 	cout<<"the limit_sd_loss_band band is :"<<limit_sd_loss_band<<endl;*/
-	 if (sd < limit_sd){
-		loss_band = limit_sd_loss_band;
-	}
 	if (direction	==	'l')
 	{
 		double profitval = middle + sd * profit_band;
-		double lossval = middle - sd * loss_band;
+		double lossval = middle - loss_band;
 		if ( lastprice < lossval)
 		{
 			return true;
@@ -203,7 +137,7 @@ bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
 	else if (direction	==	's')
 	{
 		double profitval = middle - sd * profit_band;
-		double lossval = middle + sd * loss_band;
+		double lossval = middle + loss_band;
 		if (lastprice > lossval)
 		{
 			return true;
@@ -220,41 +154,29 @@ bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
 	return false;
 }
 
-bool IsTriggerSizeOpenTime(char direction,vector<int> &diff_volume_vector,vector<double> &diff_openinterest_vector,vector<double> &spread_vector
-				,double volume_edge,double openinterest_edge,double spread,int ticknum){
+bool IsTriggerSizeOpenTime(char direction,mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int multiple
+				,double volume_edge,double openinterest_edge,double spread){
 
-	int diff_volume_sum = GetSumDataInt(diff_volume_vector,ticknum);
-	if (diff_volume_sum < volume_edge )
+	if (now_price->Volume - pre_price->Volume < volume_edge )
 	 {
-		 //cout<<now_price->Volume<<endl;
 		return false;
 	}
-	double diff_openinterest_sum = GetSumDataDouble(diff_openinterest_vector,ticknum);
-	if (openinterest_edge !=0 && diff_openinterest_sum <= openinterest_edge)
+	if ((openinterest_edge != 0) && (now_price->OpenInterest - pre_price->OpenInterest <  openinterest_edge))
 	{
 		return false;
 	}
-	double spread_weight = GetWeightNum(diff_volume_vector,spread_vector,ticknum);
 	if (direction =='l')
 	{
-		if (spread_weight >= spread)
-		{
-			return true;
-		}
-		
+		return IsUpTime(now_price,pre_price,spread,multiple);
 	}
 	else if (direction =='s')
 	{
-		spread_weight = 100 - spread_weight;
-		if (spread_weight >= spread)
-		{
-			return true;
-		}
+		return IsDownTime(now_price,pre_price,spread,multiple);
 	}
 	return false;
 }
 
-bool IsTriggerSizeCloseTime(char direction,mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int multiple
+bool IsTriggerSizeCloseTime(char direction,mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int multiple
 				,double volume_edge,double openinterest_edge,double spread){
 	if (now_price->Volume - pre_price->Volume < volume_edge )
 	 {
@@ -275,7 +197,7 @@ bool IsTriggerSizeCloseTime(char direction,mdPrice_triggersize3 *now_price,mdPri
 	return false;
 }
 
-bool IsDownTime(mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int spread,int multiple){
+bool IsDownTime(mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int spread,int multiple){
 	int diffVolume	=	now_price->Volume	-	pre_price->Volume;   
 	double diffTurnover	=	now_price->Turnover	-	pre_price->Turnover;  
 	if (diffVolume	==	0	||	diffTurnover	==	0	||	multiple	==	0)
@@ -293,10 +215,10 @@ bool IsDownTime(mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,
 	return false;
 }
 
-bool IsUpTime(mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int spread,int multiple)
+bool IsUpTime(mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int spread,int multiple)
 {
-	int diffVolume	=	now_price->Volume	-	pre_price->Volume;  //·µ»Ø³Ö²ÖÁ¿µÄ±ä»¯
-	double diffTurnover	=	now_price->Turnover	-	pre_price->Turnover;  //·µ»Ø³É½»½ð¶îµÄ±ä»¯
+	int diffVolume	=	now_price->Volume	-	pre_price->Volume;  //Â·ÂµÂ»Ã˜Â³Ã–Â²Ã–ÃÂ¿ÂµÃ„Â±Ã¤Â»Â¯
+	double diffTurnover	=	now_price->Turnover	-	pre_price->Turnover;  //Â·ÂµÂ»Ã˜Â³Ã‰Â½Â»Â½Ã°Â¶Ã®ÂµÃ„Â±Ã¤Â»Â¯
 
 	if (diffVolume	==	0	||	diffTurnover	==	0	||	multiple	==	0)
 	{
@@ -547,8 +469,10 @@ bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int mul
 	}
 }
 
-void StartAndStopFun(Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index){
+void StartAndStopFun(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
 	int size = info->prices_queue.size();
+	info->current_hour = 0;
+	info->has_open = 0;
 	if (info->prices_queue.empty())
 	{
 		cout<<"the queue is empty and is init function"<<endl;
@@ -564,8 +488,8 @@ void StartAndStopFun(Parameter_triggersize3 *param,VolumeTrendOther3Info *info,i
 	}
 }
 
-BandAndTriggerSizeRetStatus GetMdData(Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index){
-	BandAndTriggerSizeRetStatus ret;
+BandAndTriggerSizeLimitTimeRetStatus GetMdData(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
+	BandAndTriggerSizeLimitTimeRetStatus ret;
 	ret.isTrendCloseTime = false;
 	ret.isTrendOpenTime = false;
 	double rsi_data;
@@ -593,24 +517,6 @@ BandAndTriggerSizeRetStatus GetMdData(Parameter_triggersize3 *param,VolumeTrendO
 		info->now_rsi_bar_tick +=1;
 		double tmpdiff = lastprice - info->pre_rsi_lastprice;
 		rsi_data = GetRSIData(tmpdiff,info->rsi_vector,rsi_period);
-	}
-
-	int diffVolume	=	info->cur_price.Volume - info->pre_price.Volume;  //·µ»Ø³Ö²ÖÁ¿µÄ±ä»¯
-	double diffTurnover	=	info->cur_price.Turnover - info->pre_price.Turnover;  //·µ»Ø³É½»½ð¶îµÄ±ä»¯
-	double diffopeninterest	=	info->cur_price.OpenInterest - info->pre_price.OpenInterest;
-
-	info->diff_volume_vector.push_back(info->cur_price.Volume - info->pre_price.Volume);
-	info->diff_openinterest_vector.push_back(info->cur_price.OpenInterest - info->pre_price.OpenInterest);
-		
-	if (diffVolume	==	0	||	diffTurnover	==	0	||	info->multiple	==	0)
-	{
-		info->spread_vector.push_back(0);
-	}
-	else
-	{
-		double avePrice	=	diffTurnover/diffVolume/info->multiple;
-		double temp	=	100*(avePrice	-	info->pre_price.BidPrice1)/(info->pre_price.AskPrice1 - info->pre_price.BidPrice1);
-		info->spread_vector.push_back(temp);
 	}
 
 	if (info->prices_queue.size() < compXave )
@@ -655,18 +561,44 @@ BandAndTriggerSizeRetStatus GetMdData(Parameter_triggersize3 *param,VolumeTrendO
 	return ret;
 }
 
-bool IsOpenTime(double middle_val,double sd_val,Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index){
-	//the trigger size tick num
-	int ticknum =param->m_Param[param_index+1].spread;
+bool IsLimitTimeOpenTime(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
+	int now_hour = 9;
+	try{
+		string time = info->cur_price.updateTime;
+	    string tmp = (time.substr(0,2));
+		now_hour = atoi(tmp.c_str());
+	}
+	catch(exception e){
+		cout<<"the time convert to int is wrong"<<endl;
+		return false;
+	}
+	int limit_open_time = param->m_Param[param_index+1].spread;
+	if (info->current_hour == now_hour)
+	{
+		if (info->has_open >= limit_open_time)
+		{
+			return false;
+		}
+		else{
+			info->has_open +=1;
+			return true;
+		}
+	}
+	else{
+		info->current_hour = now_hour;
+		if (now_hour != 13)
+		{
+			info->has_open = 0;
+		}
+	}
+	return true;
+};
+
+bool IsOpenTime(double middle_val,double sd_val,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
+	
 	//band_open_noraml
 	double band_open_edge1 =  ((double)param->m_Param[param_index+1].openEdge)/10;
 	double band_open_edge2 =  ((double)param->m_Param[param_index+1].closeEdge)/10;
-
-	//limit_sd
-	double limit_sd = ((double)param->m_Param[param_index+1].edgebWork)/10;
-	//limit_sd_open_edge
-	double limit_sd_open_edge = ((double)param->m_Param[param_index+1].orderDelay)/10;
-
 
 	double spread = param->m_Param[param_index].spread;
 	//diff_volume
@@ -674,28 +606,33 @@ bool IsOpenTime(double middle_val,double sd_val,Parameter_triggersize3 *param,Vo
 	//open interest
 	double diff_openinterest = param->m_Param[param_index].index;
 	//tick num
-	
 
 	double lastprice = info->cur_price.LastPrice;
 
 	bool is_band_open = IsBandOpenTime(info->direction,lastprice,middle_val,sd_val,
-		band_open_edge1,band_open_edge2,limit_sd,limit_sd_open_edge);
+		band_open_edge1,band_open_edge2);
 	if (is_band_open ==false)
 	{
 		return false;
 	}
 
-	bool is_trigger_open = IsTriggerSizeOpenTime(info->direction,info->diff_volume_vector,info->diff_openinterest_vector,info->spread_vector,
-		diff_volume,diff_openinterest,spread,ticknum);
+	bool is_trigger_open = IsTriggerSizeOpenTime(info->direction,&info->cur_price,&info->pre_price,info->multiple,
+		diff_volume,diff_openinterest,spread);
 
-	return is_trigger_open;
+	if (is_trigger_open ==false)
+	{
+		return false;
+	}
+
+	bool is_time_open = IsLimitTimeOpenTime(param,info,param_index);
+	return is_time_open;
 }
 
-bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index){
+bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
 	//band_loss_close_edge
-	double band_loss_close_edge = ((double)param->m_Param[param_index+1].EdgeAdj)/10;
+	double band_loss_edge = ((double)param->m_Param[param_index+1].EdgeAdj)/10;
 	//band_profit_close_edge
-	double band_profit_close_edge =((double) param->m_Param[param_index+1].cancelEdge)/10;
+	double band_profit_edge =((double) param->m_Param[param_index+1].cancelEdge)/10;
 
 	//limit_rsi
 	double limit_rsi = param->m_Param[param_index].AdjEmaSlow;
@@ -703,7 +640,9 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_trigge
 	//limit_sd
 	double limit_sd = ((double)param->m_Param[param_index+1].edgebWork)/10;
 	//limit_sd_loss_close_edge
-	double limit_sd_close_edge =  ((double)param->m_Param[param_index+1].edgePrice)/10;
+	double limit_sd_loss_edge =  ((double)param->m_Param[param_index+1].orderDelay)/10;
+	//limit_sd_profit_close_edge
+	double limit_sd_profit_edge =  ((double)param->m_Param[param_index+1].edgePrice)/10;
 
 	//limit_max_draw_down
 	double limit_max_drawn = param->m_Param[param_index+1].maxDrawDown;
@@ -716,16 +655,21 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_trigge
 	{
 		return true;
 	}
+	if (sd_val < limit_sd)
+	{
+		band_loss_edge = limit_sd_loss_edge;
+		band_profit_edge = limit_sd_profit_edge;
+	}
 	return IsBandCloseTime(info->direction,lastprice,middle_val,sd_val,
-		band_loss_close_edge,band_profit_close_edge,rsi_val,limit_rsi,limit_sd,limit_sd_close_edge);
+		band_loss_edge,band_profit_edge,rsi_val,limit_rsi);
 }
 
 
-void GetOpenSignal(VolumeTrendOther3Info *info){
+void GetOpenSignal(VolumeTrendLimitTimeInfo *info){
 	info->open_price = info->cur_price.LastPrice;
 	info->max_profit = 0;
 }
-void GetCloseSignal(VolumeTrendOther3Info *info){
+void GetCloseSignal(VolumeTrendLimitTimeInfo *info){
 	info->open_price = 0;
 	info->max_profit = 0;
 }

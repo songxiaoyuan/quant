@@ -8,11 +8,7 @@ int main(){
   long t1 =GetTickCount();
   int i;
   BandAndTriggerSize bt;
-<<<<<<< HEAD:bandandtrigger-server/bandandtrigger/main.cpp
   string path = "rb1801_20170815.csv";
-=======
-  string path = "ru1801_20170911.csv";
->>>>>>> 6ba9f0859c94c8c4b9061e48232cf17c4c136680:bandandtrigger-server-triggersize/bandandtrigger/main.cpp
   vector<vector<string>> data = GetCSVFileData(path);
   for (int i = 0; i < data.size(); i++)
   {

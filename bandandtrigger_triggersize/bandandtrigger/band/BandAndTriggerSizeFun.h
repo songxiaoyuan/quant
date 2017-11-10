@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <vector>
 #include <iostream>
 #include <string>
@@ -8,6 +8,7 @@
 #include <fstream>
 #include <queue>
 #include <map>
+#include <stdlib.h>
 using namespace std;
 
 typedef struct
@@ -38,13 +39,13 @@ typedef struct
 	int	AskVolume5;
 	double Turnover;
 	double OpenInterest;
-}mdPrice_triggersize3;
+}mdPrice_limittime;
 
 typedef struct
 {
 	char instrumentID[31];
 	double ratio;
-}HedgeInfo_triggersize3;
+}HedgeInfo_limittime;
 
 typedef struct  
 {
@@ -110,21 +111,21 @@ typedef struct
 	int midStopTime;
 
 	int hedgeInfoSize;
-	HedgeInfo_triggersize3 hedgeInfo[6];
+	HedgeInfo_limittime hedgeInfo[6];
 
-}Param_triggersize3;
+}Param_limittime;
 
 typedef struct 
 {
 	int tradingSize;
 	int hedgeSize;
-	Param_triggersize3 m_Param[6];
-}Parameter_triggersize3;
+	Param_limittime m_Param[6];
+}Parameter_limittime;
 
 typedef struct
 {
-	mdPrice_triggersize3 pre_price;
-	mdPrice_triggersize3 cur_price;
+	mdPrice_limittime pre_price;
+	mdPrice_limittime cur_price;
 	queue<double> prices_queue;
 	map<double,int> prices_map;
 
@@ -139,40 +140,37 @@ typedef struct
 	int now_rsi_bar_tick;
 	vector<double> rsi_vector;
 
-	vector<int> diff_volume_vector;
-	vector<double> diff_openinterest_vector;
-	vector<double> spread_vector;
+	int has_open;
+	int current_hour;
 
-}VolumeTrendOther3Info;
+}VolumeTrendLimitTimeInfo;
 
 typedef struct
 {
 	bool isTrendOpenTime;
 	bool isTrendCloseTime;
-}BandAndTriggerSizeRetStatus;
+}BandAndTriggerSizeLimitTimeRetStatus;
 
-	// ÅĞ¶ÏÊÇ²»ÊÇ´ïµ½ÁË²¼ÁÖ´øµÄ¿ª²ÖºÍÆ½²ÖÌõ¼ş
+	// Ã…ÃÂ¶ÃÃŠÃ‡Â²Â»ÃŠÃ‡Â´Ã¯ÂµÂ½ÃÃ‹Â²Â¼ÃÃ–Â´Ã¸ÂµÃ„Â¿ÂªÂ²Ã–ÂºÃÃ†Â½Â²Ã–ÃŒÃµÂ¼Ã¾
+bool IsLimitTimeOpenTime(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int parm_index);
 bool IsBandOpenTime(char direction,double lastprice,double middle,double sd
-					,double openval1,double openval2,double limit_sd,double limit_sd_open_edge);
+					,double openval1,double openval2);
 bool IsBandCloseTime(char direction,double lastprice,double middle,double sd
-					 ,double loss_band,double profit_band,double rsival,double limit_rsi
-					 ,double limit_sd,double limit_sd_loss_close_edge);
+					 ,double loss_band,double profit_band,double rsival,double limit_rsi);
 
-bool IsTriggerSizeOpenTime(char direction,vector<int> &diff_volume_vector,vector<double> &diff_openinterest_vector,vector<double> &spread_vector
-				,double volume_edge,double openinterest_edge,double spread,int ticknum);
-bool IsTriggerSizeCloseTime(char direction,mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int multiple
+bool IsTriggerSizeOpenTime(char direction,mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int multiple
+				,double volume_edge,double openinterest_edge,double spread);
+bool IsTriggerSizeCloseTime(char direction,mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int multiple
 				,double volume_edge,double openinterest_edge,int spread);
 
-bool IsDownTime(mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int spread,int multiple);
-bool IsUpTime(mdPrice_triggersize3 *now_price,mdPrice_triggersize3 *pre_price,int spread,int multiple);
-//¸ù¾İÏÖÔÚµÄpriceµÄÒ»¸öÁĞ±í£¬¼ÆËãÁĞ±íÀïÃæµÄmaÊı¾İ¡£
-double GetMAData(vector<double> &vector_prices,int period);
-// ¸ù¾İÏÖÔÚµÄpriceµÄÒ»¸öÁĞ±í£¬¼ÆËãÁĞ±íÀïÃæµÄ±ê×¼²î
+bool IsDownTime(mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int spread,int multiple);
+bool IsUpTime(mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int spread,int multiple);
+// Â¸Ã¹Â¾ÃÃÃ–Ã”ÃšÂµÃ„priceÂµÃ„Ã’Â»Â¸Ã¶ÃÃÂ±Ã­Â£Â¬Â¼Ã†Ã‹Ã£ÃÃÂ±Ã­Ã€Ã¯ÃƒÃ¦ÂµÃ„Â±ÃªÃ—Â¼Â²Ã®
 double GetSDData(vector<double> &vector_prices,int period);
 double GetSDDataByMap(map<double,int> &map_prices,int period);
-// ¸ù¾İ´«ÈëµÄÕâ¸ölastprice£¬¼ÆËã·µ»ØµÄemaµÄÖµ¡£
+// Â¸Ã¹Â¾ÃÂ´Â«ÃˆÃ«ÂµÃ„Ã•Ã¢Â¸Ã¶lastpriceÂ£Â¬Â¼Ã†Ã‹Ã£Â·ÂµÂ»Ã˜ÂµÃ„emaÂµÃ„Ã–ÂµÂ¡Â£
 double GetEMAData(double price,double pre_ema_val,int period);
-//¸ù¾İ´«ÈëµÄµ±Ç°µÄ²îÖµºÍ±£´æ²îÖµµÄÊı¾İ£¬ÒÔ¼°rsiµÄÖÜÆÚ£¬À´Çó·µ»ØµÄrsiµÄÖµ¡£
+//Â¸Ã¹Â¾ÃÂ´Â«ÃˆÃ«ÂµÃ„ÂµÂ±Ã‡Â°ÂµÃ„Â²Ã®Ã–ÂµÂºÃÂ±Â£Â´Ã¦Â²Ã®Ã–ÂµÂµÃ„ÃŠÃ½Â¾ÃÂ£Â¬Ã’Ã”Â¼Â°rsiÂµÃ„Ã–ÃœÃ†ÃšÂ£Â¬Ã€Â´Ã‡Ã³Â·ÂµÂ»Ã˜ÂµÃ„rsiÂµÃ„Ã–ÂµÂ¡Â£
 double GetRSIData(double tmpdiff,vector<double> &rsi_vector,int period);
 void WriteMesgToFile(string path,string mesg);
 
@@ -189,12 +187,12 @@ void PrintInfo(double &pre_ema_val,queue<double> &lastprice_queue,map<double,int
 bool IsMaxDrawDown(char direction,double cur_lastprice,double open_price,int multiple,
 				   double &max_profit,double limit_max_drawdown);
 
-void StartAndStopFun(Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index);
-BandAndTriggerSizeRetStatus GetMdData(Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index);
+void StartAndStopFun(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);
+BandAndTriggerSizeLimitTimeRetStatus GetMdData(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);
 
-bool IsOpenTime(double middle_val,double sd_val,Parameter_triggersize3 *param,VolumeTrendOther3Info *info,int param_index);
-bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_triggersize3 *param,
-				 VolumeTrendOther3Info *info,int param_index);
+bool IsOpenTime(double middle_val,double sd_val,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);
+bool IsCloseTime(double middle_val,double sd_val,double rsi_val,Parameter_limittime *param,
+				 VolumeTrendLimitTimeInfo *info,int param_index);
 
-void GetOpenSignal(VolumeTrendOther3Info *info);
-void GetCloseSignal(VolumeTrendOther3Info *info);
+void GetOpenSignal(VolumeTrendLimitTimeInfo *info);
+void GetCloseSignal(VolumeTrendLimitTimeInfo *info);
