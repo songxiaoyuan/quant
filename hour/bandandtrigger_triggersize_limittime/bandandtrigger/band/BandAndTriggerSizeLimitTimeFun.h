@@ -137,10 +137,14 @@ typedef struct
 	int open_status;
 
 	vector<double> lastprice_vector;
+	queue<double> lastprice_queue;
 
 	int has_open;
 	int current_hour_open;
 	int current_hour_line;
+
+	double open_price;
+	double max_profit;
 
 }VolumeTrendLimitTimeInfo;
 

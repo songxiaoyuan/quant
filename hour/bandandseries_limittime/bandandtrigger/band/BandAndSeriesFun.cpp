@@ -303,6 +303,9 @@ void StartAndStopFun(Parameter_series *param,VolumeTrendSeriesInfo *info,int par
 	info->current_hour_open = 0;
 	info->has_open = 0;
 
+	info->open_price = 0;
+	info->max_profit = 0;
+
 	if (info->lastprice_vector_hour.empty())
 	{
 		cout<<"the queue is empty and is init function"<<endl;
@@ -560,6 +563,8 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 
 	double cross_middle_edge  =((double) param->m_Param[param_index+1].orderDelay)/10;
 
+	double limit_max_profit  =(double) param->m_Param[param_index+1].edgePrice;
+
 
 	double lastprice = info->cur_price.LastPrice;
 
@@ -570,12 +575,38 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 	}
 
 	bool is_middle_cross_close = IsMiddleCrossCloseTime(info,lastprice,middle_val_5,cross_middle_edge);
-	return is_middle_cross_close;
+	double tmp_profit;
+	if (info->direction == 'l' && info->open_price != 0)
+	{
+		tmp_profit = lastprice - info->open_price;
+	}
+	else if (info->direction == 's' && info->open_price != 0)
+	{
+		tmp_profit = info->open_price - lastprice;
+	}
+	else
+	{
+		return false;
+	}
+	tmp_profit = tmp_profit*info->multiple;
+	if (info->max_profit < tmp_profit)
+	{
+		info->max_profit = tmp_profit;
+	}
+	if (is_middle_cross_close == true)
+	{
+		if (info->max_profit > limit_max_profit)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 
 void GetOpenSignal(VolumeTrendSeriesInfo *info){
 	info->has_open +=1;
+	info->open_price = info->cur_price.LastPrice;
 }
 void GetCloseSignal(VolumeTrendSeriesInfo *info){
 }

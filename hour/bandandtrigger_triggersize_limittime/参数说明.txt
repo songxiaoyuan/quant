@@ -13,6 +13,7 @@ longcompxave ：70 表示rsi的显示是70退出。
 平仓边界： open_edge_2
 边界调整： loss_edge
 撤单边界： profit edge.
+compXave ： 就是代表一分钟120个tick，收盘价如果比开盘价还低，就不开空，就是急跌不抄底。
 
 edgeBwork : 600 表示5分钟的middle线
 ordedelay：120 表示1分钟的middle线。

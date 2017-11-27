@@ -1,4 +1,4 @@
-#include "bandAndTriggerSizeLimitTimeFun.h"
+#include "BandAndTriggerSizeLimitTimeFun.h"
 
 double GetSDData(double lastprice,vector<double> &vector_prices,int period){
 	int size = vector_prices.size();
@@ -385,6 +385,8 @@ void StartAndStopFun(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,i
     info->current_hour_line = 9;
 	info->current_hour_open = 0;
 	info->has_open = 0;
+	info->open_price = 0;
+	info->open_status = 0;
 	if (info->lastprice_vector.empty())
 	{
 		cout<<"the queue is empty and is init function"<<endl;
@@ -451,7 +453,12 @@ BandAndTriggerSizeLimitTimeRetStatus GetMdData(Parameter_limittime *param,Volume
 		info->now_middle5_bar_tick +=1;
 	}
 
-
+	int queuetick_num = param->m_Param[param_index+1].compXave;
+	info->lastprice_queue.push(lastprice);
+	if (info->lastprice_queue.size() > queuetick_num)
+	{
+		info->lastprice_queue.pop();
+	}
 	ret.isTrendOpenTime = IsOpenTime(middle_val_60,middle_val_5,param,info,param_index);
 	ret.isTrendCloseTime = IsCloseTime(middle_val_60,sd_val,rsi_data,middle_val_5,param,info,param_index);
 
@@ -506,6 +513,30 @@ bool IsOpenTime(double middle_val_60,double middle_val_5,Parameter_limittime *pa
 
 	double lastprice = info->cur_price.LastPrice;
 
+	//判断是不是急涨急跌的情况，急涨是不抄底的。
+	if (info->direction =='l')
+	{
+		if(info->lastprice_queue.size() != 0){
+			double pre_lastprice = info->lastprice_queue.front();
+			if (lastprice < pre_lastprice)
+			{
+				return false;
+			}
+		}
+	}
+	else if (info->direction == 's')
+	{
+		if(info->lastprice_queue.size() != 0){
+			double pre_lastprice = info->lastprice_queue.front();
+			if (lastprice > pre_lastprice)
+			{
+				return false;
+			}
+		}
+	}
+	else{
+		  return false;
+	}
 	bool is_time_open = IsLimitTimeOpenTime(param,info,param_index);
 	if (is_time_open == false)
 	{
@@ -557,6 +588,7 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 	double limit_rsi = param->m_Param[param_index].AdjEmaSlow;
 
 	double cross_middle_edge  =((double) param->m_Param[param_index+1].orderDelay)/10;
+	double limit_max_profit  =(double) param->m_Param[param_index+1].edgePrice;
 
 	double lastprice = info->cur_price.LastPrice;
     
@@ -568,12 +600,38 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 	}
 
 	bool is_middle_cross_close = IsMiddleCrossCloseTime(info,lastprice,middle_val_5,cross_middle_edge);
-	return is_middle_cross_close;
+	double tmp_profit;
+	if (info->direction == 'l'  && info->open_price != 0 )
+	{
+		tmp_profit = lastprice - info->open_price;
+	}
+	else if (info->direction == 's'  && info->open_price != 0)
+	{
+		tmp_profit = info->open_price - lastprice;
+	}
+	else
+	{
+		return false;
+	}
+	tmp_profit = tmp_profit*(info->multiple);
+	if (info->max_profit < tmp_profit)
+	{
+		info->max_profit = tmp_profit;
+	}
+	if (is_middle_cross_close == true)
+	{
+		if (info->max_profit > limit_max_profit)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 
 void GetOpenSignal(VolumeTrendLimitTimeInfo *info){
 	info->has_open +=1;
+	info->open_price = info->cur_price.LastPrice;
 }
 void GetCloseSignal(VolumeTrendLimitTimeInfo *info){
 }
