@@ -1,0 +1,19 @@
+
+positionadj ：20 表示所有的周期middle60 middle 5 middle 1按照20来算。
+shortCompXave：14 表示rsi的限制周期按照14个小时的来。
+longcompxave ：70 表示rsi的显示是70退出。
+
+
+左边主要是限制时间策略和band参数。
+固定价差： 2  一小时开单次数。
+开仓边界： open_edge_1  从第几个tick开始，一般设置为3，
+平仓边界： open_edge_2  就是最多追几个tick，一般设置为2，就是最多追5个。
+边界调整： loss_edge    就是止损的位置在哪，一般设置为0，就是在middle线止损。
+撤单边界： profit edge. 就是止盈的tick位置在哪，一般设置多少个tick数，就是30个tick。
+edgeBwork: 就是设置到底是哪一根线，根据的是tick数来算。
+
+positonadj：就是限制的bar的大小，就是60分钟是一个bar。
+
+edgeBwork : 600 表示5分钟的middle线
+ordedelay：120 表示1分钟的middle线。
+滑价上线： lastprice 至少盈利的价位。

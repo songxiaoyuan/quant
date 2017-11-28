@@ -623,4 +623,5 @@ void GetOpenSignal(VolumeTrendSeriesInfo *info){
 	info->open_price = info->cur_price.LastPrice;
 }
 void GetCloseSignal(VolumeTrendSeriesInfo *info){
+	info->max_profit = 0;
 }

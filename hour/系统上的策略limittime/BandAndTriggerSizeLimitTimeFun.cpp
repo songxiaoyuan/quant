@@ -223,8 +223,8 @@ bool IsDownTime(mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int sp
 
 bool IsUpTime(mdPrice_limittime *now_price,mdPrice_limittime *pre_price,int spread,int multiple)
 {
-	int diffVolume	=	now_price->Volume	-	pre_price->Volume;  //���سֲ����ı仯
-	double diffTurnover	=	now_price->Turnover	-	pre_price->Turnover;  //���سɽ����ı仯
+	int diffVolume	=	now_price->Volume	-	pre_price->Volume;  //·µ»Ø³Ö²ÖÁ¿µÄ±ä»¯
+	double diffTurnover	=	now_price->Turnover	-	pre_price->Turnover;  //·µ»Ø³É½»½ð¶îµÄ±ä»¯
 
 	if (diffVolume	==	0	||	diffTurnover	==	0	||	multiple	==	0)
 	{
@@ -524,7 +524,7 @@ bool IsOpenTime(double middle_val_60,double middle_val_5,Parameter_limittime *pa
 
 	double lastprice = info->cur_price.LastPrice;
 
-	//�ж��ǲ��Ǽ��Ǽ���������������ǲ����׵ġ�
+	//ÅÐ¶ÏÊÇ²»ÊÇ¼±ÕÇ¼±µøµÄÇé¿ö£¬¼±ÕÇÊÇ²»³­µ×µÄ¡£
 	if (info->direction =='l')
 	{
 		if(info->lastprice_queue.size() != 0){
@@ -645,4 +645,5 @@ void GetOpenSignal(VolumeTrendLimitTimeInfo *info){
 	info->open_price = info->cur_price.LastPrice;
 }
 void GetCloseSignal(VolumeTrendLimitTimeInfo *info){
+	info->max_profit = 0;
 }
