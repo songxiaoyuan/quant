@@ -6,3 +6,5 @@ g++ -shared -fpic -lm -ldl -o libBandAndTriggerSizeFadeFun.so BandAndTriggerSize
 g++ -shared -fpic -lm -ldl -o libBandAndTriggerSizeLimitTimeFun.so BandAndTriggerSizeLimitTimeFun.cpp 
 
 g++ -shared -fpic -lm -ldl -o libBandAndSeriesFun.so BandAndSeriesFun.cpp 
+
+g++ -shared -fpic -lm -ldl -o libBandAndRangeFun.so BandAndRangeFun.cpp 

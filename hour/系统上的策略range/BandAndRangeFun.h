@@ -146,6 +146,8 @@ typedef struct
 	int current_minute;
 	int current_minute_num;
 
+	int open_tick_num;
+
 	double open_price;
 	double max_profit;
 

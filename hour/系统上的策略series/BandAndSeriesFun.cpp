@@ -308,13 +308,13 @@ void StartAndStopFun(Parameter_series *param,VolumeTrendSeriesInfo *info,int par
 
 	if (info->lastprice_vector_hour.empty())
 	{
-		cout<<"the queue is empty and is init function"<<endl;
+		cout<<"the queue is empty and is init function series"<<endl;
 		GetConfigInfoSeries(info->pre_ema_val_60,info->pre_ema_val_5,info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
 		PrintInfo(info->pre_ema_val_60,info->pre_ema_val_5,
 			info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
 	}
 	else{
-		cout<<"the queue is not empty and is the stop function"<<endl;
+		cout<<"the queue is not empty and is the stop function series"<<endl;
 		info->lastprice_vector_hour.clear();
 		info->pre_ema_val_5 = 0;
 		info->pre_ema_val_60 = 0;
@@ -581,7 +581,6 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 
 
 	double lastprice = info->cur_price.LastPrice;
-
 	bool is_band_close = IsBandCloseTimeSeries(info->direction,lastprice,middle_val,sd_val,band_loss_edge,band_profit_edge,rsi_val,limit_rsi);
 	if (is_band_close)
 	{
@@ -624,4 +623,5 @@ void GetOpenSignal(VolumeTrendSeriesInfo *info){
 }
 void GetCloseSignal(VolumeTrendSeriesInfo *info){
 	info->max_profit = 0;
+	info->open_price = 0;
 }

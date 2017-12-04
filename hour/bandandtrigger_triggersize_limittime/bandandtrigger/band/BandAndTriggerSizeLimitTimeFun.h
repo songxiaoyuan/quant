@@ -191,8 +191,8 @@ void PrintInfo(double &pre_ema_val_60,double &pre_ema_val_5,
 void StartAndStopFun(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);
 BandAndTriggerSizeLimitTimeRetStatus GetMdData(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);
 
-bool IsOpenTime(double middle_val_60,double middle_val_5,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);
-bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_val_5,
+bool IsOpenTimeLimitTime(double middle_val_60,double middle_val_5,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);
+bool IsCloseTimeLimitTime(double middle_val,double sd_val,double rsi_val,double middle_val_5,
 				 Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index);
 
 void GetOpenSignal(VolumeTrendLimitTimeInfo *info);

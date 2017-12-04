@@ -183,16 +183,17 @@ void StartAndStopFun(Parameter_range *param,VolumeTrendRangeInfo *info,int param
 	info->pre_open_status = 0;
 	info->current_minute = -1;
 	info->current_minute_num = 0;
+	info->open_tick_num = -1;
 
 	if (info->lastprice_vector_hour.empty())
 	{
-		cout<<"the queue is empty and is init function"<<endl;
+		cout<<"the queue is empty and is init function range"<<endl;
 		GetConfigInfoSeries(info->pre_ema_val_60,info->pre_ema_val_5,info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
 		PrintInfo(info->pre_ema_val_60,info->pre_ema_val_5,
 			info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
 	}
 	else{
-		cout<<"the queue is not empty and is the stop function"<<endl;
+		cout<<"the queue is not empty and is the stop function range"<<endl;
 		info->lastprice_vector_hour.clear();
 		info->pre_ema_val_5 = 0;
 		info->pre_ema_val_60 = 0;
@@ -267,6 +268,11 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 	{
 		info->now_middle5_bar_tick +=1;
 	}
+
+	if (info->open_tick_num >0)
+	{
+		info->open_tick_num +=1;
+	}
 	
 	ret.isTrendOpenTime = IsOpenTime(middle_val_60,middle_val_5,param,info,param_index);
 	ret.isTrendCloseTime = IsCloseTime(middle_val_60,middle_val_5,param,info,param_index);
@@ -321,7 +327,7 @@ bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mid
 			{
 				if (info->open_price ==0)
 				{
-					cout<<"the middle is: "<<middle<<" the lastprice is :"<<lastprice<<endl;
+					cout<<"open time the middle is: "<<middle<<" the lastprice is :"<<lastprice<<endl;
 				}
 				return true;
 			}
@@ -359,7 +365,7 @@ bool IsBandCloseTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mi
 		double lossval = middle + loss_band*(info->price_tick);
 		if (lastprice > lossval)
 		{
-			cout<<"the middle is: "<<info->pre_ema_val_60<<" the lastprice is :"<<lastprice<<endl;
+			cout<<"close time  the middle is: "<<info->pre_ema_val_60<<" the lastprice is :"<<lastprice<<endl;
 			return true;
 		}
 		if (lastprice < profitval)
@@ -375,7 +381,6 @@ bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double m
 	{
 		if ( lastprice <  middle_val_5 && info->open_status ==1)
 		{
-			
 			return true;
 		}
 	}
@@ -383,7 +388,6 @@ bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double m
 	{
 		if ( lastprice >  middle_val_5  && info->open_status ==1)
 		{
-			cout<<"the middle is: "<<info->pre_ema_val_60<<" the lastprice is :"<<lastprice<<endl;
 			return true;
 		}
 	}
@@ -395,8 +399,8 @@ bool IsLimitTimeOpenTimeSeries(Parameter_range *param,VolumeTrendRangeInfo *info
 	int limit_open_time = param->m_Param[param_index+1].spread;
 	if (info->has_open >= limit_open_time)
 	{
-			return false;
-		}
+		return false;
+	}
 	else{
 		return true;
 	}
@@ -411,13 +415,31 @@ bool IsOpenTime(double middle_val,double middle_val_5,Parameter_range *param,Vol
 
 	double lastprice = info->cur_price.LastPrice;
 
+	int limit_tick_num =  param->m_Param[param_index+1].compXave;
+
 	bool is_time_open = IsLimitTimeOpenTimeSeries(param,info,param_index);
 	if (is_time_open == false)
 	{
 		return false;
 	}
 	bool is_band_open = IsBandOpenTimeSeries(info,lastprice,middle_val,band_open_edge,band_open_increase);
-	return is_band_open;
+	if (is_band_open == false)
+	{
+		return false;
+	}
+	if (info->open_tick_num ==-1)
+	{
+		return true;
+	}
+	else if (info->open_tick_num >0 && info->open_tick_num < limit_tick_num)
+	{
+		return false;
+	}
+	else
+	{
+
+		return true;
+	}
 }
 
 bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,VolumeTrendRangeInfo *info,int param_index){
@@ -445,10 +467,12 @@ bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,Vo
 
 void GetOpenSignal(VolumeTrendRangeInfo *info){
 	info->has_open +=1;
+	info->open_tick_num = -1;
 	info->open_price = info->cur_price.LastPrice;
 }
 void GetCloseSignal(VolumeTrendRangeInfo *info){
 	info->max_profit = 0;
 	info->open_status = 0;
 	info->open_price = 0;
+	info->open_tick_num = 1;
 }

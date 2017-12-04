@@ -1,5 +1,5 @@
-#ifndef ARBITRAGEVOLUMETRENDSERIES_H
-#define ARBITRAGEVOLUMETRENDSERIES_H
+#ifndef ARBITRAGEVOLUMETRENDRANGE_H
+#define ARBITRAGEVOLUMETRENDRANGE_H
 #include "hyArbitrage_Interface.h"
 #include "func.h"
 #include "band/BandAndRangeFun.h"

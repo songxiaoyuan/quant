@@ -387,15 +387,16 @@ void StartAndStopFun(Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,i
 	info->has_open = 0;
 	info->open_price = 0;
 	info->open_status = 0;
+	info->max_profit = 0;
 	if (info->lastprice_vector.empty())
 	{
-		cout<<"the queue is empty and is init function"<<endl;
+		cout<<"the queue is empty and is init function limit time"<<endl;
 		GetConfigInfo(info->pre_ema_val_60,info->pre_ema_val_5,info->lastprice_vector,param->m_Param[param_index].arbitrageTypeID);
 		PrintInfo(info->pre_ema_val_60,info->pre_ema_val_5,
 			info->lastprice_vector,param->m_Param[param_index].arbitrageTypeID);
 	}
 	else{
-		cout<<"the queue is not empty and is the stop function"<<endl;
+		cout<<"the queue is not empty and is the stop function limit time"<<endl;
 		info->lastprice_vector.clear();
 		info->lastprice_queue = queue<double>();
 		info->pre_ema_val_60 = 0;
@@ -470,8 +471,8 @@ BandAndTriggerSizeLimitTimeRetStatus GetMdData(Parameter_limittime *param,Volume
 	{
 		info->lastprice_queue.pop();
 	}
-	ret.isTrendOpenTime = IsOpenTime(middle_val_60,middle_val_5,param,info,param_index);
-	ret.isTrendCloseTime = IsCloseTime(middle_val_60,sd_val,rsi_data,middle_val_5,param,info,param_index);
+	ret.isTrendOpenTime = IsOpenTimeLimitTime(middle_val_60,middle_val_5,param,info,param_index);
+	ret.isTrendCloseTime = IsCloseTimeLimitTime(middle_val_60,sd_val,rsi_data,middle_val_5,param,info,param_index);
 
 	return ret;
 }
@@ -511,7 +512,7 @@ bool IsLimitTimeOpenTime(Parameter_limittime *param,VolumeTrendLimitTimeInfo *in
 	return true;
 };
 
-bool IsOpenTime(double middle_val_60,double middle_val_5,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
+bool IsOpenTimeLimitTime(double middle_val_60,double middle_val_5,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
 	
 	//band_open_noraml
 	double band_open_edge1 =  ((double)param->m_Param[param_index+1].openEdge)/10;
@@ -589,7 +590,7 @@ bool IsOpenTime(double middle_val_60,double middle_val_5,Parameter_limittime *pa
 
 }
 
-bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_val_5,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
+bool IsCloseTimeLimitTime(double middle_val,double sd_val,double rsi_val,double middle_val_5,Parameter_limittime *param,VolumeTrendLimitTimeInfo *info,int param_index){
 	//band_loss_close_edge
 	double band_loss_edge = ((double)param->m_Param[param_index+1].EdgeAdj)/10;
 	//band_profit_close_edge
@@ -603,7 +604,6 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 
 	double lastprice = info->cur_price.LastPrice;
     
-
 	bool is_band_close = IsBandCloseTime(info->direction,lastprice,middle_val,sd_val,band_loss_edge,band_profit_edge,rsi_val,limit_rsi);
 	if (is_band_close)
 	{
@@ -633,6 +633,7 @@ bool IsCloseTime(double middle_val,double sd_val,double rsi_val,double middle_va
 	{
 		if (info->max_profit > limit_max_profit)
 		{
+			cout<<"the limit time max profit is "<<info->max_profit<<endl;
 			return true;
 		}
 	}
@@ -646,4 +647,5 @@ void GetOpenSignal(VolumeTrendLimitTimeInfo *info){
 }
 void GetCloseSignal(VolumeTrendLimitTimeInfo *info){
 	info->max_profit = 0;
+	info->open_price = 0;
 }
