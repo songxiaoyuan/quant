@@ -68,9 +68,7 @@ void BandAndTriggerSize::clearVector(){
 
 	param->m_Param[param_index+1].PositionAdj = 60;
 
-
-	//limit_max_draw_down
-	param->m_Param[param_index+1].maxDrawDown = 0;
+	param->m_Param[param_index+1].maxDrawDown = 1870;
 
 	param->m_Param[param_index].arbitrageTypeID = 320;
 

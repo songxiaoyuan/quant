@@ -18,3 +18,5 @@ compxave : 就是限制两个开仓的时间间隔，不能刚平完一个，马
 edgeBwork : 600 表示5分钟的middle线
 ordedelay：120 表示1分钟的middle线。
 滑价上线： lastprice 至少盈利的价位。
+
+左边的maxdrawdown是临时的middle值，注意是除以了10 ，同时要是0的话，就无效

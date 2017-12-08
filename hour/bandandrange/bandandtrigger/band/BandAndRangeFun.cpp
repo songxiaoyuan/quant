@@ -235,6 +235,12 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 
 	double rsi_data = GetRSIDataSeries(lastprice,info->lastprice_vector_hour,rsi_period);
 
+	double tmp_middle_60 = ((double)param->m_Param[param_index+1].maxDrawDown)/10;
+	if (tmp_middle_60 != 0 && tmp_middle_60 > 0)
+	{
+		middle_val_60 = tmp_middle_60;
+	}
+
 	try{
 		string time = info->cur_price.updateTime;
 	    string tmp = (time.substr(3,2));
@@ -325,10 +331,6 @@ bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mid
 		{
 			if (info->pre_open_status ==1)
 			{
-				if (info->open_price ==0)
-				{
-					cout<<"open time the middle is: "<<middle<<" the lastprice is :"<<lastprice<<endl;
-				}
 				return true;
 			}
 			else{
@@ -365,7 +367,6 @@ bool IsBandCloseTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mi
 		double lossval = middle + loss_band*(info->price_tick);
 		if (lastprice > lossval)
 		{
-			cout<<"close time  the middle is: "<<info->pre_ema_val_60<<" the lastprice is :"<<lastprice<<endl;
 			return true;
 		}
 		if (lastprice < profitval)
@@ -519,7 +520,6 @@ bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,Vo
 	bool is_triggersize_close =IsTriggerSizeSeriesCloseTime(info,lastprice,middle_val,band_profit_edge,limit_diff_volume,limit_triggersize_series);
 	if (is_triggersize_close)
 	{
-		cout<<"the middle is "<<middle_val<<" the lastprice is "<<lastprice<<endl;
 		return true;
 	}
 
