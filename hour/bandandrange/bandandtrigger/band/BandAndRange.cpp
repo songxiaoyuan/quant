@@ -59,8 +59,10 @@ void BandAndTriggerSize::clearVector(){
 	//band loss edge close
 	param->m_Param[param_index+1].EdgeAdj=0;
 	//band profit close edge close
-	param->m_Param[param_index+1].cancelEdge = 25;
+	param->m_Param[param_index+1].cancelEdge = 10;
 	//small the limit sd
+	param->m_Param[param_index+1].orderDelay = 500;
+	param->m_Param[param_index+1].edgePrice = 2;
 	param->m_Param[param_index+1].edgebWork = 60;
 	param->m_Param[param_index+1].compXave = 1000;
 

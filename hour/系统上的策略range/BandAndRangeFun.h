@@ -147,6 +147,7 @@ typedef struct
 	int current_minute_num;
 
 	int open_tick_num;
+	int triggersize_series;
 
 	double open_price;
 	double max_profit;
@@ -167,6 +168,7 @@ bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double m
 bool IsLimitTimeOpenTimeSeries(Parameter_range *param,VolumeTrendRangeInfo *info,int param_index);
 // 根据传入的这个lastprice，计算返回的ema的值。
 double GetEMADataSeries(double price,double pre_ema_val,int period);
+bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,VolumeTrendRangeInfo *info,int param_index);
 //根据传入的当前的差值和保存差值的数据，以及rsi的周期，来求返回的rsi的值。
 double GetRSIDataSeries(double lastprice,vector<double> &lastprice_vector,int period);
 void WriteMesgToFile(string path,string mesg);

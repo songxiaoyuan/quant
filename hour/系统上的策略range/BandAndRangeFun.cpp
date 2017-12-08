@@ -442,6 +442,60 @@ bool IsOpenTime(double middle_val,double middle_val_5,Parameter_range *param,Vol
 	}
 }
 
+bool IsTriggerSizeSeriesCloseTime(VolumeTrendRangeInfo *info,double lastprice,double middle,int profitedge,int limit_diff_volume,int limit_triggersize_series_num){
+	int diff_volume = info->cur_price.Volume - info->pre_price.Volume;
+	double diff_turnover = info->cur_price.Turnover - info->pre_price.Turnover;
+	if (diff_volume ==0 || diff_turnover ==0 || info->multiple ==0)
+	{
+			return false;
+	}
+	double avgprice = diff_turnover/diff_volume/info->multiple;
+	if (info->direction == 'l')
+	{
+		double profitval = middle + profitedge*info->price_tick;
+		if (lastprice < profitval)
+		{
+			return false;
+		}
+		if (avgprice <= info->pre_price.BidPrice1 && diff_volume >= limit_diff_volume )
+		{
+			info->triggersize_series +=1;
+			if (info->triggersize_series >= limit_triggersize_series_num)
+			{
+					return true;
+			}
+		}
+		else
+		{
+				info->triggersize_series = 0;
+		}
+	}
+	else if (info->direction =='s')
+	{
+		double profitval = middle - profitedge*info->price_tick;
+		if (lastprice > profitval)
+		{
+			return false;
+		}
+		if (avgprice >= info->pre_price.AskPrice1 && diff_volume >= limit_diff_volume )
+		{
+			info->triggersize_series +=1;
+			if (info->triggersize_series >= limit_triggersize_series_num)
+			{
+				return true;
+			}
+		}
+		else
+		{
+				info->triggersize_series = 0;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,VolumeTrendRangeInfo *info,int param_index){
 	if (info->open_price ==0)
 	{
@@ -452,11 +506,20 @@ bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,Vo
 	//band_profit_close_edge
 	int band_profit_edge =param->m_Param[param_index+1].cancelEdge;
 
+	int limit_diff_volume = param->m_Param[param_index+1].orderDelay;
+	int limit_triggersize_series =  param->m_Param[param_index+1].edgePrice;
+
 	double lastprice = info->cur_price.LastPrice;
 
 	bool is_band_close = IsBandCloseTimeSeries(info,lastprice,middle_val,band_loss_edge,band_profit_edge);
 	if (is_band_close)
 	{
+		return true;
+	}
+	bool is_triggersize_close =IsTriggerSizeSeriesCloseTime(info,lastprice,middle_val,band_profit_edge,limit_diff_volume,limit_triggersize_series);
+	if (is_triggersize_close)
+	{
+		cout<<"the middle is "<<middle_val<<" the lastprice is "<<lastprice<<endl;
 		return true;
 	}
 

@@ -187,13 +187,13 @@ void StartAndStopFun(Parameter_range *param,VolumeTrendRangeInfo *info,int param
 
 	if (info->lastprice_vector_hour.empty())
 	{
-		cout<<"the queue is empty and is init function"<<endl;
+		cout<<"the queue is empty and is init function range"<<endl;
 		GetConfigInfoSeries(info->pre_ema_val_60,info->pre_ema_val_5,info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
 		PrintInfo(info->pre_ema_val_60,info->pre_ema_val_5,
 			info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
 	}
 	else{
-		cout<<"the queue is not empty and is the stop function"<<endl;
+		cout<<"the queue is not empty and is the stop function range"<<endl;
 		info->lastprice_vector_hour.clear();
 		info->pre_ema_val_5 = 0;
 		info->pre_ema_val_60 = 0;
@@ -327,7 +327,7 @@ bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mid
 			{
 				if (info->open_price ==0)
 				{
-					cout<<"the middle is: "<<middle<<" the lastprice is :"<<lastprice<<endl;
+					cout<<"open time the middle is: "<<middle<<" the lastprice is :"<<lastprice<<endl;
 				}
 				return true;
 			}
@@ -365,7 +365,7 @@ bool IsBandCloseTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mi
 		double lossval = middle + loss_band*(info->price_tick);
 		if (lastprice > lossval)
 		{
-			cout<<"the middle is: "<<info->pre_ema_val_60<<" the lastprice is :"<<lastprice<<endl;
+			cout<<"close time  the middle is: "<<info->pre_ema_val_60<<" the lastprice is :"<<lastprice<<endl;
 			return true;
 		}
 		if (lastprice < profitval)
@@ -381,7 +381,6 @@ bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double m
 	{
 		if ( lastprice <  middle_val_5 && info->open_status ==1)
 		{
-			
 			return true;
 		}
 	}
@@ -389,7 +388,6 @@ bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double m
 	{
 		if ( lastprice >  middle_val_5  && info->open_status ==1)
 		{
-			cout<<"the middle is: "<<info->pre_ema_val_60<<" the lastprice is :"<<lastprice<<endl;
 			return true;
 		}
 	}
@@ -401,8 +399,8 @@ bool IsLimitTimeOpenTimeSeries(Parameter_range *param,VolumeTrendRangeInfo *info
 	int limit_open_time = param->m_Param[param_index+1].spread;
 	if (info->has_open >= limit_open_time)
 	{
-			return false;
-		}
+		return false;
+	}
 	else{
 		return true;
 	}
@@ -444,6 +442,60 @@ bool IsOpenTime(double middle_val,double middle_val_5,Parameter_range *param,Vol
 	}
 }
 
+bool IsTriggerSizeSeriesCloseTime(VolumeTrendRangeInfo *info,double lastprice,double middle,int profitedge,int limit_diff_volume,int limit_triggersize_series_num){
+	int diff_volume = info->cur_price.Volume - info->pre_price.Volume;
+	double diff_turnover = info->cur_price.Turnover - info->pre_price.Turnover;
+	if (diff_volume ==0 || diff_turnover ==0 || info->multiple ==0)
+	{
+			return false;
+	}
+	double avgprice = diff_turnover/diff_volume/info->multiple;
+	if (info->direction == 'l')
+	{
+		double profitval = middle + profitedge*info->price_tick;
+		if (lastprice < profitval)
+		{
+			return false;
+		}
+		if (avgprice <= info->pre_price.BidPrice1 && diff_volume >= limit_diff_volume )
+		{
+			info->triggersize_series +=1;
+			if (info->triggersize_series >= limit_triggersize_series_num)
+			{
+					return true;
+			}
+		}
+		else
+		{
+				info->triggersize_series = 0;
+		}
+	}
+	else if (info->direction =='s')
+	{
+		double profitval = middle - profitedge*info->price_tick;
+		if (lastprice > profitval)
+		{
+			return false;
+		}
+		if (avgprice >= info->pre_price.AskPrice1 && diff_volume >= limit_diff_volume )
+		{
+			info->triggersize_series +=1;
+			if (info->triggersize_series >= limit_triggersize_series_num)
+			{
+				return true;
+			}
+		}
+		else
+		{
+				info->triggersize_series = 0;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,VolumeTrendRangeInfo *info,int param_index){
 	if (info->open_price ==0)
 	{
@@ -454,11 +506,20 @@ bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,Vo
 	//band_profit_close_edge
 	int band_profit_edge =param->m_Param[param_index+1].cancelEdge;
 
+	int limit_diff_volume = param->m_Param[param_index+1].orderDelay;
+	int limit_triggersize_series =  param->m_Param[param_index+1].edgePrice;
+
 	double lastprice = info->cur_price.LastPrice;
 
 	bool is_band_close = IsBandCloseTimeSeries(info,lastprice,middle_val,band_loss_edge,band_profit_edge);
 	if (is_band_close)
 	{
+		return true;
+	}
+	bool is_triggersize_close =IsTriggerSizeSeriesCloseTime(info,lastprice,middle_val,band_profit_edge,limit_diff_volume,limit_triggersize_series);
+	if (is_triggersize_close)
+	{
+		cout<<"the middle is "<<middle_val<<" the lastprice is "<<lastprice<<endl;
 		return true;
 	}
 
