@@ -1,6 +1,31 @@
 #include "BandAndRangeFun.h"
 
-
+double GetMAData(double lastprice,vector<double> &lastprice_vector,int period){
+	if (lastprice_vector.size() ==0 || period ==0 )
+	{
+		return lastprice;
+	}
+	double tmp_sum = 0;
+	int index_begin = lastprice_vector.size() - period + 1;
+	if (index_begin <= 0)
+	{
+		index_begin = 0;
+	}
+	for (int i = index_begin; i < lastprice_vector.size(); i++)
+	{
+		tmp_sum = tmp_sum + lastprice_vector[i];
+	}
+	tmp_sum += lastprice;
+	if (period >= lastprice_vector.size())
+	{
+		double ret = tmp_sum/(lastprice_vector.size() +1);
+		return ret;
+	}
+	else{
+		double ret = tmp_sum/period;
+		return ret;
+	}
+}
 
 double GetEMADataSeries(double price,double pre_ema_val,int period){
 	if (period <=1)
@@ -230,7 +255,8 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 	int limit_ema_tick_5 = param->m_Param[param_index+1].edgebWork;
 	int limit_minute_num = param->m_Param[param_index+1].PositionAdj;
 
-	middle_val_60 = GetEMADataSeries(lastprice,info->pre_ema_val_60,ema_period);
+	//middle_val_60 = GetEMADataSeries(lastprice,info->pre_ema_val_60,ema_period);
+	middle_val_60 = GetMAData(lastprice,info->lastprice_vector_hour,ema_period);
 	middle_val_5 = GetEMADataSeries(lastprice,info->pre_ema_val_5,ema_period);
 
 	double rsi_data = GetRSIDataSeries(lastprice,info->lastprice_vector_hour,rsi_period);
