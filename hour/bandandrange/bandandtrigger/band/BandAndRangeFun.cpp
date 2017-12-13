@@ -16,7 +16,7 @@ double GetMAData(double lastprice,vector<double> &lastprice_vector,int period){
 		tmp_sum = tmp_sum + lastprice_vector[i];
 	}
 	tmp_sum += lastprice;
-	if (period >= lastprice_vector.size())
+	if (period > lastprice_vector.size())
 	{
 		double ret = tmp_sum/(lastprice_vector.size() +1);
 		return ret;
@@ -78,11 +78,9 @@ void WriteMesgToFile(string path,string mesg){
   fclose(file_fd);
 }
 
-void PrintInfo(double &pre_ema_val_60,double &pre_ema_val_5,
-			   vector<double> &lastprice_vector,int config_file_path){
-    cout<<"the pre ema val 60 is: "<<pre_ema_val_60<<endl;
-	cout<<"the pre ema val 5 is: "<<pre_ema_val_5<<endl;
+void PrintInfo(vector<double> &lastprice_vector,vector<double> &lastprice_vector_5minute,int config_file_path){
 	cout<<"the size of lastprice prices is : " <<lastprice_vector.size()<<endl;
+	cout<<"the size of lastprice_vector_5minute is : " <<lastprice_vector_5minute.size()<<endl;
 	cout<<"the path is  : " <<config_file_path<<endl;
 }
 
@@ -121,17 +119,15 @@ void split(std::string& s, std::string& delim,std::vector<double> &ret)
     }  
 } 
 
-void GetConfigInfoSeries(double &pre_ema_val_60,double &pre_ema_val_5,
-				   vector<double> &lastprice_vector,int config_file_path){
+void GetConfigInfoSeries(vector<double> &lastprice_vector_hour,vector<double> &lastprice_vector_5minute,int config_file_path){
 	char path[256]={0};
 	sprintf(path,"band_and_triggersize_config/%d",config_file_path);
 	FILE *file_fd = fopen(path,"r");
 	if (NULL ==file_fd)
 	{
 		cout<<"cant find the config file"<<endl;
-		pre_ema_val_60 = 0;
-		pre_ema_val_5 = 0;
-		lastprice_vector.clear();
+		lastprice_vector_hour.clear();
+		lastprice_vector_5minute.clear();
 		return;
 	}
 	char tmp[1024*100] = {0};
@@ -152,25 +148,13 @@ void GetConfigInfoSeries(double &pre_ema_val_60,double &pre_ema_val_5,
 			//cout<<front<<endl;
 			if (tmp_vector.size() >0)
 			{
-				pre_ema_val_60 = tmp_vector[0];
+				double pre_ema_val_60 = tmp_vector[0];
 			}
 			else{
 			  cout<<"the pre_ema_val_60 is wrong"<<endl;
 			}
 		}
-		else if (front.compare("pre_ema_val_5:")==0)
-		{
-			cout<<"in the pre_ema_val_5"<<endl;
-			//cout<<front<<endl;
-			if (tmp_vector.size() >0)
-			{
-				pre_ema_val_5 = tmp_vector[0];
-			}
-			else{
-			  cout<<"the pre_ema_val_5 is wrong"<<endl;
-			}
-		}
-		else if (front.compare("lastprice_array:")==0)
+		else if (front.compare("lastprice_array_hour:")==0)
 		{
 			cout<<"in the lastprice_array"<<endl;
 			//cout<<front<<endl;
@@ -179,11 +163,27 @@ void GetConfigInfoSeries(double &pre_ema_val_60,double &pre_ema_val_5,
 			{
 				for (int i = 0; i < tmp_vector.size(); i++)
 				{
-					lastprice_vector.push_back(tmp_vector[i]);
+					lastprice_vector_hour.push_back(tmp_vector[i]);
 				}
 			}
 			else{
-			  cout<<"the rsiarrray is wrong"<<endl;
+			  cout<<"the lastprice_array_hour is wrong"<<endl;
+			}
+		}
+		else if (front.compare("lastprice_array_5minute:")==0)
+		{
+			cout<<"in the lastprice_array_5minute"<<endl;
+			//cout<<front<<endl;
+			cout<<"the size of lastprice_array_5minute is: "<<tmp_vector.size()<<endl;
+			if (tmp_vector.size() >0)
+			{
+				for (int i = 0; i < tmp_vector.size(); i++)
+				{
+					lastprice_vector_5minute.push_back(tmp_vector[i]);
+				}
+			}
+			else{
+			  cout<<"the lastprice_array_5minute is wrong"<<endl;
 			}
 		}
 		else
@@ -197,7 +197,7 @@ void GetConfigInfoSeries(double &pre_ema_val_60,double &pre_ema_val_5,
 void StartAndStopFun(Parameter_range *param,VolumeTrendRangeInfo *info,int param_index){
 	int size = info->lastprice_vector_hour.size();
 	info->pre_ema_val_5 = 0;
-	info->pre_ema_val_60 = 0;
+	info->exit_quick_line = 0;
 	info->now_middle5_bar_tick = 0;
 	
 	info->open_price = 0;
@@ -207,21 +207,22 @@ void StartAndStopFun(Parameter_range *param,VolumeTrendRangeInfo *info,int param
 	info->open_status = 0;
 	info->pre_open_status = 0;
 	info->current_minute = -1;
-	info->current_minute_num = 0;
+	info->current_minute_num_hour = 0;
+	info->current_minute_num_5minute = 0;
 	info->open_tick_num = -1;
+	info->exit_quick_line = 0;
 
 	if (info->lastprice_vector_hour.empty())
 	{
 		cout<<"the queue is empty and is init function range"<<endl;
-		GetConfigInfoSeries(info->pre_ema_val_60,info->pre_ema_val_5,info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
-		PrintInfo(info->pre_ema_val_60,info->pre_ema_val_5,
-			info->lastprice_vector_hour,param->m_Param[param_index].arbitrageTypeID);
+		GetConfigInfoSeries(info->lastprice_vector_hour,info->lastprice_vector_5minute,param->m_Param[param_index].arbitrageTypeID);
+		PrintInfo(info->lastprice_vector_hour,info->lastprice_vector_5minute,param->m_Param[param_index].arbitrageTypeID);
 	}
 	else{
 		cout<<"the queue is not empty and is the stop function range"<<endl;
 		info->lastprice_vector_hour.clear();
 		info->pre_ema_val_5 = 0;
-		info->pre_ema_val_60 = 0;
+		info->exit_quick_line = 0;
 		info->now_middle5_bar_tick = 0;
 		
 		info->open_price = 0;
@@ -231,7 +232,8 @@ void StartAndStopFun(Parameter_range *param,VolumeTrendRangeInfo *info,int param
 		info->open_status = 0;
 		info->pre_open_status = 0;
 		info->current_minute = -1;
-		info->current_minute_num = 0;
+		info->current_minute_num_hour = 0;
+		info->current_minute_num_5minute = 0;
 	}
 }
 
@@ -242,10 +244,9 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 	double middle_val_60;
 	double middle_val_5;
 
-	if (info->pre_ema_val_60 ==0)
+	if (info->exit_quick_line ==0)
 	{
-		info->pre_ema_val_60 = info->cur_price.LastPrice;
-		info->pre_ema_val_5 = info->cur_price.LastPrice;
+		info->exit_quick_line = info->cur_price.LastPrice;
 	}
 
 	double lastprice = info->cur_price.LastPrice;
@@ -253,11 +254,14 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 	int rsi_period = param->m_Param[param_index].AdjEmaFast;
 
 	int limit_ema_tick_5 = param->m_Param[param_index+1].edgebWork;
-	int limit_minute_num = param->m_Param[param_index+1].PositionAdj;
+	int limit_minute_num_hour = param->m_Param[param_index+1].PositionAdj;
+	int limit_minute_num_5minute = param->m_Param[param_index+1].AdjEmaFast;
 
 	//middle_val_60 = GetEMADataSeries(lastprice,info->pre_ema_val_60,ema_period);
 	middle_val_60 = GetMAData(lastprice,info->lastprice_vector_hour,ema_period);
-	middle_val_5 = GetEMADataSeries(lastprice,info->pre_ema_val_5,ema_period);
+	middle_val_5 = GetMAData(lastprice,info->lastprice_vector_5minute,ema_period);
+
+	info->exit_quick_line = GetEMADataSeries(lastprice,info->exit_quick_line,ema_period);
 
 	double rsi_data = GetRSIDataSeries(lastprice,info->lastprice_vector_hour,rsi_period);
 
@@ -275,14 +279,19 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 		if (minute != info->current_minute)
 		{
 			info->current_minute = minute;
-			info->current_minute_num +=1;
-			if (info->current_minute_num > limit_minute_num)
+			info->current_minute_num_hour +=1;
+			info->current_minute_num_5minute +=1;
+			if (info->current_minute_num_hour > limit_minute_num_hour)
 			{
-				info->current_minute_num = 0;
-				info->pre_ema_val_60 = middle_val_60;
+				info->current_minute_num_hour = 1;
 			    info->lastprice_vector_hour.push_back(lastprice);
 				//limit the time num
 				info->has_open = 0;
+			}
+			if (info->current_minute_num_5minute > limit_minute_num_5minute)
+			{
+				info->current_minute_num_5minute = 1;
+				info->lastprice_vector_5minute.push_back(lastprice);
 			}
 		}
 	}
@@ -291,29 +300,19 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 		return ret;
 	}
 
-	if (info->now_middle5_bar_tick >= limit_ema_tick_5)
-	{
-		info->now_middle5_bar_tick = 0;
-		info->pre_ema_val_5 = middle_val_5;
-	}
-	else
-	{
-		info->now_middle5_bar_tick +=1;
-	}
-
 	if (info->open_tick_num >0)
 	{
 		info->open_tick_num +=1;
 	}
 	
 	ret.isTrendOpenTime = IsOpenTime(middle_val_60,middle_val_5,param,info,param_index);
-	ret.isTrendCloseTime = IsCloseTime(middle_val_60,middle_val_5,param,info,param_index);
+	ret.isTrendCloseTime = IsCloseTime(middle_val_60,info->exit_quick_line,param,info,param_index);
 	return ret;
 }
 
 
 
-bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle,double open_edge1,double open_edge_increase){
+bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle,double middle_5minute,double open_edge1,double open_edge_increase){
 	if (info->direction =='l')
 	{
 		double startval = middle + open_edge1*(info->price_tick);
@@ -330,7 +329,7 @@ bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mid
 		}
 		else
 		{
-			if (info->pre_open_status ==1)
+			if (info->pre_open_status ==1 && lastprice >= middle_5minute)
 			{
 				return true;
 			}
@@ -355,7 +354,7 @@ bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mid
 		}
 		else
 		{
-			if (info->pre_open_status ==1)
+			if (info->pre_open_status ==1  && lastprice <= middle_5minute)
 			{
 				return true;
 			}
@@ -403,17 +402,17 @@ bool IsBandCloseTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mi
 	return false;
 }
 
-bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double middle_val_5){
+bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double exit_quick_line){
 	if (info->direction	==	'l')
 	{
-		if ( lastprice <  middle_val_5 && info->open_status ==1)
+		if ( lastprice <  exit_quick_line && info->open_status ==1)
 		{
 			return true;
 		}
 	}
 	else if (info->direction ==	's')
 	{
-		if ( lastprice >  middle_val_5  && info->open_status ==1)
+		if ( lastprice >  exit_quick_line  && info->open_status ==1)
 		{
 			return true;
 		}
@@ -449,7 +448,7 @@ bool IsOpenTime(double middle_val,double middle_val_5,Parameter_range *param,Vol
 	{
 		return false;
 	}
-	bool is_band_open = IsBandOpenTimeSeries(info,lastprice,middle_val,band_open_edge,band_open_increase);
+	bool is_band_open = IsBandOpenTimeSeries(info,lastprice,middle_val,middle_val_5,band_open_edge,band_open_increase);
 	if (is_band_open == false)
 	{
 		return false;

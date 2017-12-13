@@ -127,7 +127,7 @@ typedef struct
 	mdPrice_range pre_price;
 	mdPrice_range cur_price;
 
-	double pre_ema_val_60;
+	double exit_quick_line;
 	double pre_ema_val_5;
 
 	int now_middle5_bar_tick;
@@ -139,12 +139,14 @@ typedef struct
 	char direction;
 
 	vector<double> lastprice_vector_hour;
+	vector<double> lastprice_vector_5minute;
 
 	int open_status;
 	int pre_open_status;
 	int has_open;
 	int current_minute;
-	int current_minute_num;
+	int current_minute_num_hour;
+	int current_minute_num_5minute;
 
 	int open_tick_num;
 	int triggersize_series;
@@ -160,14 +162,15 @@ typedef struct
 	bool isTrendCloseTime;
 }BandAndRangeRetStatus;
 
-bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle,double open_edge1,double open_edge_increase);
+bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle,double middle_5minute,double open_edge1,double open_edge_increase);
 bool IsBandCloseTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle
 					 ,double loss_band,double profit_band);
 
-bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double middle_val_5);
+bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double exit_quick_line);
 bool IsLimitTimeOpenTimeSeries(Parameter_range *param,VolumeTrendRangeInfo *info,int param_index);
 // 根据传入的这个lastprice，计算返回的ema的值。
 double GetEMADataSeries(double price,double pre_ema_val,int period);
+double GetMAData(double lastprice,vector<double> &lastprice_vector,int period);
 bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,VolumeTrendRangeInfo *info,int param_index);
 //根据传入的当前的差值和保存差值的数据，以及rsi的周期，来求返回的rsi的值。
 double GetRSIDataSeries(double lastprice,vector<double> &lastprice_vector,int period);

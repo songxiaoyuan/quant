@@ -67,7 +67,7 @@ void BandAndTriggerSize::clearVector(){
 	param->m_Param[param_index+1].compXave = 1000;
 
 	param->m_Param[param_index+1].PositionAdj = 60;
-
+	param->m_Param[param_index+1].AdjEmaFast = 5;
 	param->m_Param[param_index+1].maxDrawDown = 0;
 
 	param->m_Param[param_index].arbitrageTypeID = 320;
