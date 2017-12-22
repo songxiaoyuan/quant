@@ -1,0 +1,20 @@
+右边的参数：
+positionadj ：20 表示所有的周期middle60 快线都是按照20来算，这个参数一般不用修改，只是middle线的生成过程。
+
+
+左边主要是限制时间策略和band参数。
+固定价差： 一小时开单次数，我设置的参数是2.
+开仓边界：  从middle线的第几个tick开始做long单。一般设置为3。开仓条件是当lastprice跌破middle线上面的+3个tick，然后又上涨超过或者等于3个tick，那么开始做long单。
+平仓边界：  最多追几个tick，一般设置为2，也就是当lastpice从midlle线的+3个tick到+5个tick，是long的开仓范围，如果lastprice超过+5个tick，就不再开仓，就是不追高。
+边界调整： 止损的位置在哪，一般设置为0，就是在middle线止损，当有long单的时候，如果lastprice跌破middle线，那么就止损。
+撤单边界： profit edge. 就是止盈的tick位置在哪，一般设置多少个tick数。当lastprice超过middle线的设置的tick数，同时lastprice又跌破快线的时候，那么就止盈。
+edgeBwork: 设置快线的周期是多少，根据的是tick数来算。我设置的是40，及20秒是一个bar，然后按照20个bar来算ema来计算快线。
+orderdelay：成交量的大小。当lastprice超过设置的止盈tick数目之后，如果有连续的大单是相反方向的，那么提早平仓。这个就是类似于trigger size的size数。
+滑价上线：连续出现几个大单才会平仓。这个参数是和orderdelay一起用。
+
+compxave : 就是限制两个同方向平仓和开仓的时间间隔，不能刚平完一个，马上又开一个，根据tick的数目来算，我设置的是360，及当平完一个多仓之后，过3分钟之后，才能再开另一个多仓。
+
+maxdrawdown：设置临时middle线，因为现在的周期是一小时，middle线反应比较慢，如果想开仓的话，可以修改middle线的位置，通过这个参数设置，注意设置的middle值时要乘以10，我在计算的时候会除以10.
+因为有的商品的lastprice有小数。
+
+positonadj：就是限制时间的bar的大小，就是60分钟是一个bar。一个bar可以开2单。同时计算middle线的时候也需要用这个bar，这个参数一般不用修改。

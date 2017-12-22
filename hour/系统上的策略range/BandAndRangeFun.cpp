@@ -250,25 +250,29 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 	}
 
 	double lastprice = info->cur_price.LastPrice;
-	int ema_period = param->m_Param[param_index].PositionAdj;
-	int rsi_period = param->m_Param[param_index].AdjEmaFast;
+	int ma_period = param->m_Param[param_index].parameter1;
 
-	int limit_ema_tick_5 = param->m_Param[param_index+1].edgebWork;
-	int limit_minute_num_hour = param->m_Param[param_index+1].PositionAdj;
-	int limit_minute_num_5minute = param->m_Param[param_index+1].AdjEmaFast;
+	int quick_line_period = (param->m_Param[param_index].fastCycle)*2;
+	int limit_minute_num_hour = param->m_Param[param_index].cycle;
+	int limit_minute_num_5minute = param->m_Param[param_index].barTime;
 
-	//middle_val_60 = GetEMADataSeries(lastprice,info->pre_ema_val_60,ema_period);
-	middle_val_60 = GetMAData(lastprice,info->lastprice_vector_hour,ema_period);
-	middle_val_5 = GetMAData(lastprice,info->lastprice_vector_5minute,ema_period);
+	//middle_val_60 = GetEMADataSeries(lastprice,info->pre_ema_val_60,ma_period);
+	middle_val_60 = GetMAData(lastprice,info->lastprice_vector_hour,ma_period);
+	middle_val_5 = GetMAData(lastprice,info->lastprice_vector_5minute,ma_period);
 
-	info->exit_quick_line = GetEMADataSeries(lastprice,info->exit_quick_line,ema_period);
+	info->exit_quick_line = GetEMADataSeries(lastprice,info->exit_quick_line,quick_line_period);
 
-	double rsi_data = GetRSIDataSeries(lastprice,info->lastprice_vector_hour,rsi_period);
+	double rsi_data = GetRSIDataSeries(lastprice,info->lastprice_vector_hour,14);
 
-	double tmp_middle_60 = ((double)param->m_Param[param_index+1].maxDrawDown)/10;
-	if (tmp_middle_60 != 0 && tmp_middle_60 > 0)
+	int addorreduciton = param->m_Param[param_index].parameter2;
+	int moveticknum = param->m_Param[param_index].parameter3;
+	if (addorreduciton == 0 )
 	{
-		middle_val_60 = tmp_middle_60;
+		middle_val_60 = middle_val_60 + (moveticknum*info->price_tick);
+	}
+	else if (addorreduciton ==1)
+	{
+		middle_val_60 = middle_val_60 - (moveticknum * info->price_tick);
 	}
 
 	try{
@@ -422,7 +426,7 @@ bool IsMiddleCrossCloseTime(VolumeTrendRangeInfo *info,double lastprice,double e
 
 
 bool IsLimitTimeOpenTimeSeries(Parameter_range *param,VolumeTrendRangeInfo *info,int param_index){
-	int limit_open_time = param->m_Param[param_index+1].spread;
+	int limit_open_time = param->m_Param[param_index].openCount;
 	if (info->has_open >= limit_open_time)
 	{
 		return false;
@@ -436,12 +440,12 @@ bool IsLimitTimeOpenTimeSeries(Parameter_range *param,VolumeTrendRangeInfo *info
 bool IsOpenTime(double middle_val,double middle_val_5,Parameter_range *param,VolumeTrendRangeInfo *info,int param_index){
 	
 	//band_open_noraml
-	int band_open_edge =  param->m_Param[param_index+1].openEdge;
-	int band_open_increase =  param->m_Param[param_index+1].closeEdge;
+	int band_open_edge =  param->m_Param[param_index].openTick;
+	int band_open_increase =  param->m_Param[param_index].runTick;
 
 	double lastprice = info->cur_price.LastPrice;
 
-	int limit_tick_num =  param->m_Param[param_index+1].compXave;
+	int limit_tick_num =  (param->m_Param[param_index].timeGaps)*2;
 
 	bool is_time_open = IsLimitTimeOpenTimeSeries(param,info,param_index);
 	if (is_time_open == false)
@@ -528,12 +532,12 @@ bool IsCloseTime(double middle_val,double middle_val_5,Parameter_range *param,Vo
 		return false;
 	}
 	//band_loss_close_edge
-	int band_loss_edge = param->m_Param[param_index+1].EdgeAdj;
+	int band_loss_edge = param->m_Param[param_index].lossTick;
 	//band_profit_close_edge
-	int band_profit_edge =param->m_Param[param_index+1].cancelEdge;
+	int band_profit_edge =param->m_Param[param_index].profitTick;
 
-	int limit_diff_volume = param->m_Param[param_index+1].orderDelay;
-	int limit_triggersize_series =  param->m_Param[param_index+1].edgePrice;
+	int limit_diff_volume = param->m_Param[param_index].profitVolume;
+	int limit_triggersize_series =  param->m_Param[param_index].profitCount;
 
 	double lastprice = info->cur_price.LastPrice;
 

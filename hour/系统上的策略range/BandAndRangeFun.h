@@ -94,7 +94,6 @@ typedef struct
 	int lockLoss;
 	int closeLoss;
 
-
 	int profitStart;
 	int profitStop;
 	int lockAdj;
@@ -109,6 +108,28 @@ typedef struct
 
 	int dayStopTime;
 	int midStopTime;
+
+	int cycle;
+	int openCount;
+	int openTick;
+	int runTick;
+	int lossTick;
+	int profitTick;
+	int fastCycle;
+	int profitVolume;
+	int profitCount;
+	int timeGaps;
+	double middleLine;
+	int barTime;
+
+	int parameter1;
+	int parameter2;
+	int parameter3;
+	int parameter4;
+	int parameter5;
+	double parameter6;
+	double parameter7;
+	double parameter8;
 
 	int hedgeInfoSize;
 	HedgeInfo_range hedgeInfo[6];

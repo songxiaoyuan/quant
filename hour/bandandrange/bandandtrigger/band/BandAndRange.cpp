@@ -37,38 +37,22 @@ void BandAndTriggerSize::clearVector(){
 	//init the param 
 	int param_index =0;
 	//bar tick
-	param->m_Param[param_index].spread = 10;
+	param->m_Param[param_index].cycle= 60;
 	//limit large period
-	param->m_Param[param_index].openEdge = 3;
-	param->m_Param[param_index].closeEdge = 2;
-	
-	//rsi_bar_period
-	param->m_Param[param_index].PositionAdj = 20;
-	//rsi_period
-	param->m_Param[param_index].AdjEmaFast = 14;
-	//limit_rsi_data
-	param->m_Param[param_index].AdjEmaSlow =70;
-
-	
-	//limit multiple bigger
-	param->m_Param[param_index+1].spread =2;
-	//band open egde start the bigger 10 beishu,base the tick
-	param->m_Param[param_index+1].openEdge=3;
-	//band open edge start2
-	param->m_Param[param_index+1].closeEdge=2;
-	//band loss edge close
-	param->m_Param[param_index+1].EdgeAdj=0;
-	//band profit close edge close
-	param->m_Param[param_index+1].cancelEdge = 10;
-	//small the limit sd
-	param->m_Param[param_index+1].orderDelay = 500;
-	param->m_Param[param_index+1].edgePrice = 2;
-	param->m_Param[param_index+1].edgebWork = 60;
-	param->m_Param[param_index+1].compXave = 1000;
-
-	param->m_Param[param_index+1].PositionAdj = 60;
-	param->m_Param[param_index+1].AdjEmaFast = 5;
-	param->m_Param[param_index+1].maxDrawDown = 0;
+	param->m_Param[param_index].openCount = 2;
+	param->m_Param[param_index].openTick = 3;
+	param->m_Param[param_index].runTick = 2;
+	param->m_Param[param_index].lossTick = 2;
+	param->m_Param[param_index].profitTick = 20;
+	param->m_Param[param_index].fastCycle = 30;
+	param->m_Param[param_index].profitVolume = 1000;
+	param->m_Param[param_index].profitCount = 2;
+	param->m_Param[param_index].timeGaps = 60;
+	param->m_Param[param_index].middleLine = 0;
+	param->m_Param[param_index].barTime = 5;
+	param->m_Param[param_index].parameter1 = 20;
+	param->m_Param[param_index].parameter2 = 0;
+	param->m_Param[param_index].parameter3 = 20;
 
 	param->m_Param[param_index].arbitrageTypeID = 320;
 
