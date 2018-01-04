@@ -254,7 +254,7 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 
 	int quick_line_period = (param->m_Param[param_index].fastCycle)*2;
 	int limit_minute_num_hour = param->m_Param[param_index].cycle;
-	int limit_minute_num_5minute = param->m_Param[param_index].barTime;
+	int limit_minute_num_5minute = (param->m_Param[param_index].barTime)*2;
 
 	//middle_val_60 = GetEMADataSeries(lastprice,info->pre_ema_val_60,ma_period);
 	middle_val_60 = GetMAData(lastprice,info->lastprice_vector_hour,ma_period);
@@ -275,6 +275,12 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 		middle_val_60 = middle_val_60 - (moveticknum * info->price_tick);
 	}
 
+	info->current_minute_num_5minute +=1;
+	if (info->current_minute_num_5minute > limit_minute_num_5minute)
+	{
+		info->current_minute_num_5minute = 1;
+		info->lastprice_vector_5minute.push_back(lastprice);
+	}
 	try{
 		string time = info->cur_price.updateTime;
 	    string tmp = (time.substr(3,2));
@@ -284,18 +290,12 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 		{
 			info->current_minute = minute;
 			info->current_minute_num_hour +=1;
-			info->current_minute_num_5minute +=1;
 			if (info->current_minute_num_hour > limit_minute_num_hour)
 			{
 				info->current_minute_num_hour = 1;
 			    info->lastprice_vector_hour.push_back(lastprice);
 				//limit the time num
 				info->has_open = 0;
-			}
-			if (info->current_minute_num_5minute > limit_minute_num_5minute)
-			{
-				info->current_minute_num_5minute = 1;
-				info->lastprice_vector_5minute.push_back(lastprice);
 			}
 		}
 	}
@@ -316,7 +316,7 @@ BandAndRangeRetStatus GetMdData(Parameter_range *param,VolumeTrendRangeInfo *inf
 
 
 
-bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle,double middle_5minute,double open_edge1,double open_edge_increase){
+bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle,double middle_5minute,double open_edge1,double open_edge_increase,int bar_limit){
 	if (info->direction =='l')
 	{
 		double startval = middle + open_edge1*(info->price_tick);
@@ -333,9 +333,12 @@ bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mid
 		}
 		else
 		{
-			if (info->pre_open_status ==1 && lastprice >= middle_5minute)
+			if (info->pre_open_status ==1)
 			{
-				return true;
+				if (bar_limit ==0 || lastprice >= middle_5minute)
+				{
+					return true;
+				}
 			}
 			else{
 				return false;
@@ -358,9 +361,12 @@ bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double mid
 		}
 		else
 		{
-			if (info->pre_open_status ==1  && lastprice <= middle_5minute)
+			if (info->pre_open_status ==1)
 			{
-				return true;
+			  if (bar_limit ==0 || lastprice <= middle_5minute)
+				{
+					return true;
+				}
 			}
 			else{
 				return false;
@@ -447,12 +453,14 @@ bool IsOpenTime(double middle_val,double middle_val_5,Parameter_range *param,Vol
 
 	int limit_tick_num =  (param->m_Param[param_index].timeGaps)*2;
 
+	int band_limit = param->m_Param[param_index].barTime;
+
 	bool is_time_open = IsLimitTimeOpenTimeSeries(param,info,param_index);
 	if (is_time_open == false)
 	{
 		return false;
 	}
-	bool is_band_open = IsBandOpenTimeSeries(info,lastprice,middle_val,middle_val_5,band_open_edge,band_open_increase);
+	bool is_band_open = IsBandOpenTimeSeries(info,lastprice,middle_val,middle_val_5,band_open_edge,band_open_increase,band_limit);
 	if (is_band_open == false)
 	{
 		return false;

@@ -183,7 +183,7 @@ typedef struct
 	bool isTrendCloseTime;
 }BandAndRangeRetStatus;
 
-bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle,double middle_5minute,double open_edge1,double open_edge_increase);
+bool IsBandOpenTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle,double middle_5minute,double open_edge1,double open_edge_increase,int bar_limit);
 bool IsBandCloseTimeSeries(VolumeTrendRangeInfo* info,double lastprice,double middle
 					 ,double loss_band,double profit_band);
 

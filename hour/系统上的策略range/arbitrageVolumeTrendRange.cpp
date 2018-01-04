@@ -61,10 +61,6 @@ bool CHyArbitrageVolumeTrendRange::get_fv(SThreadChannel *threadChannel,double &
 		return false;
 	}
 
-	if (status	==	STATUS_Exit	||	status	==	STATUS_Pause)
-	{
-		return false;
-	}
 
 	volumeTrendInfo->multiple = getVolumeMultiple(g_arrChannel,md_index);
 	//get the price tick num rb is 1 ,ru is 5
@@ -95,6 +91,11 @@ bool CHyArbitrageVolumeTrendRange::get_fv(SThreadChannel *threadChannel,double &
 	threadChannel->isTrendOpenTime	=	ret_status.isTrendOpenTime;
 	threadChannel->isTrendCloseTime	=	ret_status.isTrendCloseTime;
 
+
+	if (status	==	STATUS_Exit	||	status	==	STATUS_Pause)
+	{
+		threadChannel->isTrendOpenTime = false
+	}
 
 	if (threadChannel->isTrendOpenTime)
 	{
